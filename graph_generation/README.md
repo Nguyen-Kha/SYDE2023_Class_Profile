@@ -10,17 +10,25 @@ In this directory, you have access to the following files:
 
 To generate graphs do the following
 
-1. Create a python file in this directory
+1. Create a new branch
+`git checkout -b YOUR_BRANCH_NAME`
+2. Create a python file in this directory, or use the default ones given above
 OPTIONAL: also create a jupyter notebook file. You can also create graphs here to test stuff out
-2. Follow the template, or have a look at the other graph generation python files to understand how to use graphs.py
-3. Use the libraries to create the graph
+3. Follow the template, or have a look at the other graph generation python files to understand how to use graphs.py
+4. Use the libraries to create the graph
 
 Once you have finished above, do the following to output your graph
-4. go into your terminal / command line
-5. navigate to this directory.
+5. go into your terminal / command line
+6. navigate to this directory.
 - `pwd`
 - `cd (whatever it takes to get here)`
 - `cd SYDE2023_Class_Profile/graph_generation`
-6. run the following
+7. run the following
 - `python <YOUR_PYTHON_FILE_NAME_WITH_GRAPHS>.py`
-7. Graphs should be found in the ./graphs/ folder
+8. Graphs should be found in the ./graphs/ folder
+9. Push your changes, Open a Pull Request on github and merge
+```
+git add "FILES_THAT_YOU_HAVE_CHANGED.py" "ANOTHER_FILE_THAT_YOU_CHANGED.py"
+git commit -m "YOUR COMMIT MESSAGE"
+git push
+```
