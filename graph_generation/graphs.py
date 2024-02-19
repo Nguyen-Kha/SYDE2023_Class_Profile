@@ -5,6 +5,7 @@ import numpy as np
 import math
 from collections import Counter
 import helpers
+import os
 
 def create_bar(
     df,                                 # pandas Series or pandas DataFrame. (Non aggregate cleaned values)
@@ -151,7 +152,7 @@ def create_bar(
 
     if(not file_name):
         file_name = str(column_name)
-    plt.savefig('./graphs/' + file_name + '.png')
+    plt.savefig('./graphs/' + file_name + '.png', bbox_inches='tight')
 
     plt.close()
 
@@ -238,7 +239,7 @@ def create_bar_stacked(
         legend_title = 'Legend'
     plt.legend(list_df_columns, title=legend_title, facecolor='white')
     plt.title(title)
-    plt.savefig('./graphs/' + str(file_name) + '.png')
+    plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
 
 def create_boxplot(
@@ -270,14 +271,15 @@ def create_line(
     # Still working on it
 
 def create_pie( 
-    df,                 # pandas DataFrame, Non Aggregate and cleaned
-    column_name,        # column name in the dataframe
-    title,              # title of the pie chart
+    df,                     # pandas DataFrame, Non Aggregate and cleaned
+    column_name,            # column name in the dataframe
+    title,                  # title of the pie chart
 
-    labels = [],        # labels for the legend to follow in specific order,
-    drop_values = [],   # list of strings. If need to drop column value quickly, use this
-    colours = [],       # list of strings. Hex colours for pie chart 
-    file_name = None    # Name of file to save bar graph to
+    labels = [],            # labels for the legend to follow in specific order,
+    drop_values = [],       # list of strings. If need to drop column value quickly, use this
+    colours = [],           # list of strings. Hex colours for pie chart 
+    file_name = None,       # Name of file to save bar graph to,
+    legend_title = None     # Name to be displayed on legend
 ): 
     count = Counter()
 
@@ -330,7 +332,7 @@ def create_pie(
 
     if(not file_name):
         file_name = str(column_name)
-    plt.savefig('./graphs/' + file_name + '.png')
+    plt.savefig('./graphs/' + file_name + '.png', bbox_inches='tight')
 
     plt.close()
 
@@ -374,6 +376,6 @@ def create_scatter(
 
     if(not file_name):
         file_name = str(x_column_name) + " vs " + str(y_column_name)
-    plt.savefig('./graphs/' + file_name + '.png')
+    plt.savefig('./graphs/' + file_name + '.png', bbox_inches='tight')
 
     plt.close()

@@ -18,9 +18,22 @@ If you don't have access, message Kha
 
 2. Jupyter / Google Colab + Matplotlib / Seaborn
 - Download the CSVs from Google Cloud Storage
-- Follow the template in the template folder
+- Follow the template in the template folder, then navigate over to the ./graph_generation/ folder
 - Either use the premade graph functions, or create your own custom graphs through numpy, panads, matplotlib, and seaborn
 
 3. Classic Excel
 
 If there are any issues with chart generation, message Kha and he will fix up the cleaning for that and change the CSV + BigQuery tables
+
+## Software setup
+You will need to install and set up python 3.X to run this. Follow some instructions somewhere to get that set up, and maybe pip / pip3 as well
+
+Necessary imports / pip installs
+- python
+- numpy
+- pandas
+- matplotlib
+- seaborn
+
+Optional imports
+- Jupyter Notebook - this makes life sooooo much easier

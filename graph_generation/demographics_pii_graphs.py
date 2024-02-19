@@ -5,11 +5,11 @@ import math
 import matplotlib.pyplot as plt   # use to make graphs
 import seaborn as sns
 from collections import Counter
-import helpers
+# import helpers
 import graphs
 import functools
 
-df = pd.read_csv('')
+df = pd.read_csv('C:\\Users\\Kha\\Documents\\Programming\\SYDE2023_Class_Profile\\csv\\final\\1_DHP_PII_final.csv')
 
 df_join_year = df[['join_year']]
 df_join_year = df_join_year.dropna(axis=0)
@@ -28,7 +28,7 @@ graphs.create_bar(
     True,
     splice_required = True, 
     display_as_percentage = True,
-    rotation_angle = 45
+    title_label_rotation_angle = 45
 )
 
 df_birth_year = df[['birth_year']].dropna(axis = 0)
@@ -45,7 +45,7 @@ graphs.create_bar(
     values_increment = 5,
     splice_required = True, 
     display_as_percentage = True,
-    rotation_angle = 0
+    title_label_rotation_angle = 0
 )
 
 df_sex = df[['sex']].dropna(axis=0)
@@ -59,7 +59,8 @@ graphs.create_bar(
     values_increment = 10,
     splice_required = True, 
     display_as_percentage = True,
-    rotation_angle = 0
+    title_label_rotation_angle = 0,
+    file_name='sexual_orientation'
 )
 
 df_birth_location = df[['birth_location']].dropna(axis=0)
@@ -71,7 +72,7 @@ graphs.create_bar(
     'Where were you born?', 
     vertical = False,
     display_as_percentage = True,
-    rotation_angle = 0
+    title_label_rotation_angle = 0
 )
 
 df_hometown = df[['hometown_location']].dropna(axis=0)
@@ -83,7 +84,7 @@ graphs.create_bar(
     'In which city do you consider to be your hometown?', 
     vertical = False,
     display_as_percentage = True,
-    rotation_angle = 0
+    title_label_rotation_angle = 0
 )
 
 df_politics = df[['politics']].dropna(axis=0)
@@ -95,7 +96,7 @@ graphs.create_bar(
     'How would you describe yourself politically?', 
     vertical = True,
     display_as_percentage = True,
-    rotation_angle = 0,
+    title_label_rotation_angle = 0,
     labels = ['Far Left', 'Left', 'Center Left', 'Center', 'Center Right', 'Right', 'Far Right']
 )
 
@@ -108,7 +109,7 @@ graphs.create_bar(
     'If the election was held today (June 2023), which party would you vote for?', 
     vertical = True,
     display_as_percentage = True,
-    rotation_angle = 45,
+    title_label_rotation_angle = 45,
     labels = ['Green', 'NDP', 'Liberal', 'Conservative', "People's Party of Canada", 'I would not vote']
 )
 
@@ -122,7 +123,7 @@ graphs.create_bar(
     vertical = True,
     values_increment = 5,
     display_as_percentage = True,
-    rotation_angle = 45,
+    title_label_rotation_angle = 45,
 )
 
 df_number_languages = df[['number_languages']].dropna(axis=0)
@@ -136,7 +137,7 @@ graphs.create_bar(
     splice_required = True,
     values_increment = 5,
     display_as_percentage = False,
-    rotation_angle = 45,
+    title_label_rotation_angle = 45,
     drop_values = ['English']
 )
 
@@ -181,7 +182,8 @@ graphs.create_bar_stacked(
     labels = ['Left', 'Center Left', 'Center', 'Center Right', 'Right', 'Far Right', 'No Answer'],
     values_increment = 5,
     colours = ['#F62D2D', '#D3212D', '#A2264B', '#722B6A', '#412F88', '#1034A6','black'],
-    legend_title = "Parents' political views"
+    legend_title = "Parents' political views",
+    file_name= 'political_views_vs_parents_political_views'
 )
 
 
@@ -210,7 +212,8 @@ graphs.create_bar_stacked(
     values_increment = 5,
     colours = ['#F62D2D', '#D3212D', '#A2264B', '#722B6A', '#412F88', '#1034A6'],
     title_label_rotation_angle=45,
-    legend_title = 'SYDE 2023 political views'
+    legend_title = 'SYDE 2023 political views',
+    file_name='political_views_vs_election_vote_intention'
 )
 
 
@@ -248,5 +251,7 @@ graphs.create_bar_stacked(
     vertical = True,
 #     labels = list_religion_parents,
     values_increment = 5,
-    title_label_rotation_angle=45
+    title_label_rotation_angle=45,
+    legend_title="Parents' religious views",
+    file_name = 'religion_vs_religion_parents'
 )
