@@ -10,6 +10,8 @@ In this directory, you have access to the following files:
 
 To generate graphs do the following
 
+Choose which graphs you want to generate in the notion, and assign it to yourself
+
 1. Create a new branch
 `git checkout -b YOUR_BRANCH_NAME`
 2. Create a python file in this directory, or use the default ones given above
