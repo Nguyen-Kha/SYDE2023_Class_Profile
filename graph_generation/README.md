@@ -11,6 +11,8 @@ In this directory, you have access to the following files:
 To generate graphs do the following
 
 Choose which graphs you want to generate in the notion, and assign it to yourself
+You may need to know what the values in the graph actually mean. Use this spreadsheet to get a mapping of the values. This spreadsheet is organized to match the CSVs in Google Cloud Storage
+https://docs.google.com/spreadsheets/d/1-94ugrPMWif4J0ziSc2-xgccZcz3a5b9YqfNJL_eJus/edit#gid=0
 
 1. Create a new branch
 `git checkout -b YOUR_BRANCH_NAME`
