@@ -7,24 +7,24 @@ from collections import Counter
 import helpers
 
 def create_bar(
-    df, # pandas Series or pandas DataFrame
-    column_name: str, # name of column in dataframe
-    title_label: str, # x axis label (vertical)
-    values_label : str, # y axis label (vertical)
-    title: str, # title of graph
-    vertical: bool, # True for vertical bars, False for horizontal bars
+    df,                                 # pandas Series or pandas DataFrame. (Non aggregate cleaned values)
+    column_name: str,                   # name of column in dataframe
+    title_label: str,                   # x axis label (vertical)
+    values_label : str,                 # y axis label (vertical)
+    title: str,                         # title of graph
+    vertical: bool,                     # True for vertical bars, False for horizontal bars
 
-    file_name = None, # name of file
-    values_increment: float = None, # default 1/10 of the max value in the y axis / count of dataframe
-    values_max: float = None, # the max value in the dataframe
-    splice_required: bool = False, # Use True if the values in the cells have commas that need to be split
-    labels: list = [], # order in which the labels should be arranged
-    colours = [], # list of strings of hexcodes ['#0000FF', '#eb884a']
-    display_as_percentage = False,
-    display_legend = False,
-    title_label_rotation_angle = 0,
-    drop_values = [],
-    convert_to_string = False # used if your DataFrame column are not strings
+    file_name = None,                   # name of file to save as 
+    values_increment: float = None,     # default 1/10 of the max value in the y axis / count of dataframe
+    values_max: float = None,           # the max value in the dataframe
+    splice_required: bool = False,      # Use True if the values in the cells have commas that need to be split
+    labels: list = [],                  # list of strings, order in which the x axis / title labels should be arranged
+    colours = [],                       # list of strings of hexcodes ['#0000FF', '#eb884a'] for bar colours
+    display_as_percentage = False,      # display the y axis as a percentage rather than the count occurence
+    display_legend = False,             # show the legend if necessary
+    title_label_rotation_angle = 0,     # the angle where the x axis labels is skewed. Use 45 if title labels are too long
+    drop_values = [],                   # list of strings. Use when you need to quickly drop title values from a dataframe to hide it from the bar graph
+    convert_to_string = False           # used if your DataFrame column are not strings
 ):    
     # Set default colour palette
     if (not colours):
@@ -72,11 +72,15 @@ def create_bar(
     
     else:
         df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
-        if(vertical):
-            df_temp = df_temp.sort_values(by=['values'], ascending = False)
-        else:
-            df_temp = df_temp.sort_values(by=['values'], ascending = True)
-        x = df_temp['title']
+        df_temp = df_temp.sort_values(by=['values'], ascending = False)
+        
+        if(not vertical):
+            reverse_title_order = df_temp['title'].tolist()
+            reverse_title_order.reverse()
+            df_temp['title'] = pd.Categorical(df_temp['title'], reverse_title_order)
+            df_temp = df_temp.sort_values('title')
+
+        x = df_temp['title'] # the label locations
         
     ######################
     ## Convert amount of people responded into percentages
@@ -133,12 +137,11 @@ def create_bar(
         if(labels):
             ax.set_yticks(x)
             ax.set_yticklabels(labels)
-        if(rotation_angle == 0):
-            plt.xticks(rotation=rotation_angle)
+        if(title_label_rotation_angle == 0):
+            plt.xticks(rotation=title_label_rotation_angle)
         else:
-            plt.xticks(rotation=rotation_angle, ha='right')
+            plt.xticks(rotation=title_label_rotation_angle, ha='right')
         
-    
     plt.rcParams['axes.facecolor'] = '#F0F0F0'
     ax.grid(color='w', linestyle='solid', zorder=0)
     if(display_legend):
@@ -152,22 +155,23 @@ def create_bar(
 
     plt.close()
 
-def create_stacked_bar(
-    df,
-    column_name_list: list, # list of dataframe column names
-    title_label, # title axis labels
-    values_label, # value axis labels
-    title, # title of graph
-    file_name,
-    vertical = False,
-    values_increment = None, # If display_as_percentage = True, this value is 10
-    values_max = None, # If display_as_percentage = True, this value is 100
-    labels = [], # if passing multiple values in column_name_list, labels will be the same for all of them
-    colours = [], # list of hex code strings
-    display_as_percentage = False,
-    title_label_rotation_angle = 0,
-    convert_to_string = False,
-    legend_title = None
+def create_bar_stacked(
+    df,                             # pandas DataFrame, non aggregate cleaned columns
+    column_name_list: list,         # list of dataframe column names you want to compare and have values stacked
+    title_label,                    # title axis labels
+    values_label,                   # value axis labels
+    title,                          # title of graph
+    file_name,                      # name to save the file to
+
+    vertical = False,               # True for vertical bar graph, False for horizontal bar graph
+    values_increment = None,        # value to increment y axis by. If display_as_percentage = True, this value is 10
+    values_max = None,              # The maximum y axis value of the graph. If display_as_percentage = True, this value is 100
+    labels = [],                    # List of strings, specific order to arrange bars by. if passing multiple values in column_name_list, labels will be the same for all of them
+    colours = [],                   # list of hex code strings for column_name colours
+    display_as_percentage = False,  # Display the y axis values as a percentage instead of a count
+    title_label_rotation_angle = 0, # angle of the x axis labels. If overlapping, use 45
+    convert_to_string = False,      # convert title labels to string
+    legend_title = None             # Name of the legend title
 ):
 
     if (not colours):
@@ -191,9 +195,9 @@ def create_stacked_bar(
     list_df_columns = working_df.columns.tolist()
     list_df_columns.pop(0) # remove column_name from list
     list_df_columns.remove("Total")
-            
-    fig, ax = plt.subplots(figsize = (11, 9))
+    
     offset = pd.Series(0) # this allows for bar stacking
+    fig, ax = plt.subplots(figsize = (11, 9))
     if(vertical):
         for i in range (0, len(list_df_columns)):
             ax.bar(
@@ -201,7 +205,7 @@ def create_stacked_bar(
                 working_df[list_df_columns[i]],
                 zorder = 3,
                 bottom = offset,
-                color = colours[i]
+                # color = colours[i]
             )
             offset = offset + working_df[list_df_columns[i]]
             
@@ -211,13 +215,18 @@ def create_stacked_bar(
         if(title_label_rotation_angle != 0):
             plt.xticks(rotation = title_label_rotation_angle, ha = 'right')
     else:
+        # Horizontal graphs have ascending top to bottom display. Reverse this to keep it consistent with bar graph
+        reverse_column_name = working_df['column_name'].tolist() # You could theoretically sort it by total, but that doesn't keep order
+        reverse_column_name.reverse() # Have to make this its own call cause otherwise it will return None
+        working_df['column_name'] = pd.Categorical(working_df['column_name'], reverse_column_name)
+        working_df = working_df.sort_values('column_name')
         for i in range (0, len(list_df_columns)):
             ax.barh(
                 working_df['column_name'],
                 working_df[list_df_columns[i]],
                 zorder = 3,
                 left = offset,
-                color = colours[i]
+                # color = colours[i]
             )
             offset = offset + working_df[list_df_columns[i]]
 
@@ -232,15 +241,43 @@ def create_stacked_bar(
     plt.savefig('./graphs/' + str(file_name) + '.png')
     plt.close()
 
-def create_pie( 
-    df, # your smaller pandas dataframe
-    column_name, # column name in the dataframe
-    title, # title of the pie chart
+def create_boxplot(
+    df,
+    column_name,
+    title
+):
+    pass
+    # Still working on it
+    # Need 
+        # single df column aggregate box plot
+        # multi df column box plot
 
-    labels = [], # labels for the legend to follow in specific order,
-    drop_values = [],
-    colours = [],
-    file_name = None
+def create_histogram(
+    df,
+    column_name,
+    title
+):
+    pass
+    # Still working on it
+    # Low priority - use create_bar with predefined labels and custom df
+
+def create_line(
+    df,
+    column_name,
+    title
+):
+    pass
+    # Still working on it
+
+def create_pie( 
+    df,                 # pandas DataFrame, Non Aggregate and cleaned
+    column_name,        # column name in the dataframe
+    title,              # title of the pie chart
+
+    labels = [],        # labels for the legend to follow in specific order,
+    drop_values = [],   # list of strings. If need to drop column value quickly, use this
+    colours = [],       # list of strings. Hex colours for pie chart 
+    file_name = None    # Name of file to save bar graph to
 ): 
     count = Counter()
 
@@ -298,18 +335,21 @@ def create_pie(
     plt.close()
 
 def create_scatter(
-    df,
-    x_column_name,
-    y_column_name,
-    title,
-    file_name = None,
-    x_axis_label = None,
-    y_axis_label = None,
-    x_axis_values: list = []
+    df,                         # pandas Dataframe. Non Aggregate cleaned values
+    x_column_name,              # x axis column values
+    y_column_name,              # y axis column values
+    title,                      # title of graph
+
+    file_name = None,           # name of the file to save the bar graph to
+    x_axis_label = None,        # label of the x axis
+    y_axis_label = None,        # label of the y axis
+    x_axis_values: list = []    # Order of x axis labels to follow - TODO: CHECK IF ACTUALLY WORKS
 ): 
     df_temp = pd.DataFrame({x_column_name: df[x_column_name], y_column_name: df[y_column_name]})
+
     if(df_temp.isnull().values.any()):
-        df = df.dropna(axis=0)
+        df_temp = df_temp.dropna(axis=0)
+
     if(x_axis_values):
         df_temp = df_temp.sort_values(by=[x_axis_values])
     else:

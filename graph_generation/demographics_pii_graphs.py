@@ -171,7 +171,7 @@ for label in labels_politics_vs_parents:
         list_df_bar_politics_vs_parents.append(df_temp)
 df_politics_vs_parents_cleaned = functools.reduce(lambda df1, df2: df1.append(df2), list_df_bar_politics_vs_parents)
 df_politics_vs_parents_cleaned = df_politics_vs_parents_cleaned.reset_index().drop(columns='index')
-graphs.create_stacked_bar(
+graphs.create_bar_stacked(
     df_politics_vs_parents_cleaned,
     column_name_list = ['Far Left', 'Left', 'Center Left', 'Center', 'Center Right', 'Right'],
     title_label = 'SYDE 2023 political views',
@@ -199,7 +199,7 @@ for label in labels_politics_vs_election_election:
         list_df_politics_vs_election.append(df_temp)
 df_politics_vs_election_cleaned = functools.reduce(lambda df1, df2: df1.append(df2), list_df_politics_vs_election)
 df_politics_vs_election_cleaned = df_politics_vs_election_cleaned.reset_index().drop(columns='index')
-graphs.create_stacked_bar(
+graphs.create_bar_stacked(
     df_politics_vs_election_cleaned,
     column_name_list = labels_politics_vs_election_election,
     title_label = 'Canadian Federal Political Party',
@@ -239,7 +239,7 @@ for religion in list_religion:
         df_temp = df_temp.drop(columns = 'religion')
         list_df_religion.append(df_temp)
 df_religion_vs_parents_cleaned = functools.reduce(lambda df1, df2: df1.append(df2), list_df_religion).reset_index().drop(columns = 'index')
-graphs.create_stacked_bar(
+graphs.create_bar_stacked(
     df_religion_vs_parents_cleaned,
     column_name_list = list_religion,
     title_label = 'SYDE 2023 Religion',
