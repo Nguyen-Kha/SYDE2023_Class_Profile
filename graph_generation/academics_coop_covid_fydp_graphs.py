@@ -21,3 +21,14 @@ graphs.create_bar(
   display_as_percentage=True,
   values_increment=5,
 )
+
+graphs.create_bar(
+  df_school,
+  "fav_profs",
+  'Professor', 
+  'Percentage of Respondents', 
+  'Which prof was your favorite?',
+  False,
+  display_as_percentage=True,
+  splice_required=True,
+)
