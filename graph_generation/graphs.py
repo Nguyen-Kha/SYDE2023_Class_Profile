@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -25,7 +26,8 @@ def create_bar(
     display_legend = False,             # show the legend if necessary
     title_label_rotation_angle = 0,     # the angle where the x axis labels is skewed. Use 45 if title labels are too long
     drop_values = [],                   # list of strings. Use when you need to quickly drop title values from a dataframe to hide it from the bar graph
-    convert_to_string = False           # used if your DataFrame column are not strings
+    convert_to_string = False,          # used if your DataFrame column are not strings
+    num_decimals = 0,                   # number of decimal places to display; only used if display_as_percentage=True
 ):    
     # Set default colour palette
     if (not colours):
@@ -116,6 +118,8 @@ def create_bar(
         if(labels):
             ax.set_xticks(x)
             ax.set_xticklabels(labels)
+        if(display_as_percentage):
+            ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
             plt.xticks(rotation=title_label_rotation_angle)
         else:
@@ -138,6 +142,8 @@ def create_bar(
         if(labels):
             ax.set_yticks(x)
             ax.set_yticklabels(labels)
+        if(display_as_percentage):
+            ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
             plt.xticks(rotation=title_label_rotation_angle)
         else:

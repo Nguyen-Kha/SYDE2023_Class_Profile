@@ -9,5 +9,17 @@ from collections import Counter
 import graphs
 import functools
 
-df = pd.read_csv('')
-df1 = pd.read_csv('')
+df = pd.read_csv('csv/before_syde.csv')
+
+## HOW DID YOU HEAR ABOUT SYDE
+graphs.create_bar(
+    df, 
+    'hear_about_syde', 
+    'Option', 
+    'Percentage of Respondents', 
+    'How did you hear about SYDE?',
+    False,
+    display_as_percentage=True,
+    values_increment=5,
+    convert_to_string=True,
+)
