@@ -1,8 +1,17 @@
 from collections import Counter
 import pandas as pd
+import math
 
 def splice_cells_with_commas(df, column_name): # TODO: TEST
     """
+    If a column value has commas in it, turns it into an array of strings to be parsed
+    +---------------------+---------------------------+
+    |     column_name     | spliced_cells_with_commas |
+    +---------------------+---------------------------+
+    | text                | [text]                    |
+    | text1, text2, text3 | [text1, text2, text3]     |
+    | text                | [text]                    |
+    +---------------------+---------------------------+
     RETURNS: ARRAY of values to be counted with COUNTER
     # TODO: Do some dictionary work instead
     """
@@ -23,10 +32,27 @@ def transform_stacked_bar_df(
     convert_to_string = False
 ):
     """
+    This is used to construct the stacked bar graph, where the categories themselves are the number of occurences of that in the column/group
+    Once all of these are completed, it will be UNIONed together to make the df to make the stacked bar
     Transforms pandas Series to 1 x n DataFrame of occurences of each value
-    Creates df columns:
-     column_name  | Category 1 | Category 2 |    ...   | Category n |   Total
-    <column_name> |     num    |    num     |          |    num     |    num
+    Turns:
+    +------------+
+    |  column_A  |
+    +------------+
+    | category 1 |
+    | category 2 |
+    | category 4 |
+    | category 1 |
+    | category 3 |
+    | category 4 |
+    | category 1 |
+    +------------+
+    into 
+    +-------------+------------+------------+------------+------------+
+    | column_name | category 1 | category 2 | category 3 | category 4 |
+    +-------------+------------+------------+------------+------------+
+    | column_A    |          3 |          1 |          1 |          2 |
+    +-------------+------------+------------+------------+------------+
     """
     df = df_working.copy()
     if(df[column_name].isnull().values.any()):
@@ -76,3 +102,42 @@ def display_as_percentage_transform_stacked_bar_df(display_as_percentage, workin
     else:
         working_dict['Total'] = [number_of_answers]
     return working_dict
+
+def turn_dates_into_actual_values(dates):
+    """
+    Some of the values displayed as dates are meant to represent a range. This happens if the data is from Google Sheets or Excel
+    To use this, do the following on your dataframe before generating a graph:
+    df['column_name'] = df['column_name'].apply(turn_dates_into_actual_values)
+    """
+    if(type(dates) == float):
+        if(math.isnan(dates)):
+            return dates
+    
+    if(dates == '05-Jan'):
+        return '1 - 5'
+    elif(dates == '10-Jun'):
+        return '6 - 10'
+    elif(dates == '15-Nov'):
+        return '11 - 15'
+    elif(dates == '05-Apr'):
+        return '4 - 5'
+    elif(dates == '06-May'):
+        return '5 - 6'
+    elif(dates == '07-Jun'):
+        return '6 - 7'
+    elif(dates == '08-Jul'):
+        return '7 - 8'
+    elif(dates == '09-Aug'):
+        return '8 - 9'
+    elif(dates == '10-Sep'):
+        return '9 - 10'
+    elif(dates == '11-Oct'):
+        return '10 - 11'
+    elif(dates == '12-Nov'):
+        return '11 - 12'
+    elif(dates == '10-May'):
+        return '5 - 10'
+    elif(dates == '25-Jan'):
+        return '1 - 25'
+    else:
+        return dates
