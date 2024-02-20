@@ -20,6 +20,5 @@ graphs.create_bar(
     'How did you hear about SYDE?',
     False,
     display_as_percentage=True,
-    values_increment=5,
     convert_to_string=True,
 )

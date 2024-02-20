@@ -9,5 +9,15 @@ from collections import Counter
 import graphs
 import functools
 
-df = pd.read_csv('')
-df1 = pd.read_csv('')
+df_school = pd.read_csv('csv/school.csv')
+
+graphs.create_bar(
+  df_school,
+  "fav_core",
+  'Core Course', 
+  'Percentage of Respondents', 
+  'Which core course was your favorite?',
+  False,
+  display_as_percentage=True,
+  values_increment=5,
+)
