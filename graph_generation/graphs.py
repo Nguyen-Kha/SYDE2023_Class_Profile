@@ -265,15 +265,108 @@ def create_bar_stacked(
     plt.close()
 
 def create_boxplot(
-    df,
-    column_name,
-    title
+    df,                                 # pandas input dataframe (see below for format)
+    column_name_list: list,             # list of column names to display in boxplot, in order
+    title_label: str,                   # title label of graph (x axis label for vertical graph) 
+    values_label: str,                  # values label of graph (y axis label for horizontal graph)
+    title,                              # title of graph
+    
+    vertical: bool = True,              # orientation of boxplots
+    comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
+    comparison_labels = [],             # order of the comparison labels
+    values_increment = None,            # values to increment by on the values axis
+    values_min = None,                  # smallest value to display on graph
+    values_max = None,                  # largest value to display on graph
+#     colours = [],                     # list of hex code strings
+    convert_to_string = False,          # use if need to convert column_values to string
+    drop_values = {}                    # {str(column_name): number, ...} , drop certain values or outliers if necessary
 ):
-    pass
-    # Still working on it
-    # Need 
-        # single df column aggregate box plot
-        # multi df column box plot
+    """
+    Input Dataframe format: 
+    +---------------+-----+---------------+
+    | column_name_a | ... | column_name_n |
+    +---------------+-----+---------------+
+    | number_a1     |     | number_n1     |
+    | number_a2     |     | number_n2     |
+    | number_a3     |     | number_n3     |
+    | number_a4     |     | number_n4     |
+    +---------------+-----+---------------+
+    """
+    if(convert_to_string):
+        for i in range(0, len(column_name_list)):
+            column_name_list[i] = str(column_name_list[i])
+    
+    # construct dataframe to be used for boxplot
+    if(len(column_name_list) == 1):            
+        df_boxplot = helpers.transform_df_for_boxplot(df, column_name_list[0], comparison_column, comparison_labels, drop_values)
+    else:
+        list_df = []
+        for column_name in column_name_list:
+            working_df = helpers.transform_df_for_boxplot(df, column_name, comparison_column, comparison_labels, drop_values)
+            list_df.append(working_df)
+        df_boxplot = pd.concat(list_df)
+    df_boxplot = df_boxplot.reset_index().drop(columns='index')
+    
+    if(values_min == None):
+        values_min = min(df_boxplot['boxplot_value'])
+    
+    if(values_max == None):
+        values_max = max(df_boxplot['boxplot_value'])
+    
+    if(values_increment == None):
+        values_increment = math.ceil(values_max / 10)
+    
+    fig, ax = plt.subplots(figsize = (11,9))
+    
+    if(vertical and comparison_column):
+        ax = sns.boxplot(
+            x = df_boxplot['column_name'],
+            y = df_boxplot['boxplot_value'],
+            orient = 'v',
+            hue = df_boxplot['comparison_column'],
+    #         color = colours,
+        )
+        ax.set_xlabel(title_label)
+        ax.set_ylabel(values_label)
+        ax.yaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
+    elif(vertical and not comparison_column):
+        ax = sns.boxplot(
+            x = df_boxplot['column_name'],
+            y = df_boxplot['boxplot_value'],
+            orient = 'v',
+    #         color = colours,
+        )
+        ax.set_xlabel(title_label)
+        ax.set_ylabel(values_label)
+        ax.yaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
+    elif(not vertical and comparison_column):
+        ax = sns.boxplot(
+            x = df_boxplot['boxplot_value'],
+            y = df_boxplot['column_name'],
+            orient = 'h',
+            hue = df_boxplot['comparison_column']
+    #         color = colours,
+        )
+        ax.set_xlabel(values_label)
+        ax.set_ylabel(title_label)
+        ax.xaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
+    elif(not vertical and not comparison_column):
+        ax = sns.boxplot(
+            x = df_boxplot['boxplot_value'],
+            y = df_boxplot['column_name'],
+            orient = 'h',
+    #         color = colours,
+        )
+        ax.set_xlabel(values_label)
+        ax.set_ylabel(title_label)
+        ax.xaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
+        
+    plt.rcParams['axes.facecolor'] = '#F0F0F0'
+    sns.set() # Gridlines
+    plt.title(title)
+    
+    if(comparison_column):
+        plt.legend(title=comparison_column)
 
 def create_histogram(
     df,
