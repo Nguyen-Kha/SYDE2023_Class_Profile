@@ -29,7 +29,7 @@ def create_bar(
     title_label_rotation_angle = 0,     # the angle where the x axis labels is skewed. Use 45 if title labels are too long
     drop_values = [],                   # list of strings. Use when you need to quickly drop title values from a dataframe to hide it from the bar graph
     convert_to_string = False,          # used if your DataFrame column are not strings
-    max_label_length = 20,
+    max_label_length = 20,              # max number of characters to use for a label before wrapping it
     num_decimals = 0,                   # number of decimal places to display; only used if display_as_percentage=True
 ):    
     # Set default colour palette
