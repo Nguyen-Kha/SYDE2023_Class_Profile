@@ -32,3 +32,27 @@ graphs.create_bar(
   display_as_percentage=True,
   splice_required=True,
 )
+
+graphs.create_bar(
+  df_school,
+  "fav_te",
+  'Technical Elective', 
+  'Percentage of Respondents', 
+  'What was your favorite TE?',
+  False,
+  display_as_percentage=True,
+  splice_required=True,
+  max_label_length=40,
+)
+
+graphs.create_bar(
+  df_school,
+  "fav_cse",
+  'Complementary Studies Elective', 
+  'Percentage of Respondents', 
+  'What was your favorite CSE?',
+  False,
+  display_as_percentage=True,
+  splice_required=True,
+)
+
