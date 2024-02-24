@@ -75,8 +75,6 @@ def create_bar(
         for key, value in dictionary.items():
             df_temp.loc[df_temp.title == key, 'values'] = value
         x = np.arange(len(labels))  # the label locations
-        if type(x[0]) == str:
-            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
     
     else:
         df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
