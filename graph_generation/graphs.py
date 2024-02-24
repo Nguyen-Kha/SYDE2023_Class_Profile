@@ -1,12 +1,11 @@
 import pandas as pd
-import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import math
 from collections import Counter
 import helpers
-import os
+from textwrap import wrap
 
 def create_bar(
     df,                                 # pandas Series or pandas DataFrame. (Non aggregate cleaned values)
@@ -27,22 +26,8 @@ def create_bar(
     title_label_rotation_angle = 0,     # the angle where the x axis labels is skewed. Use 45 if title labels are too long
     drop_values = [],                   # list of strings. Use when you need to quickly drop title values from a dataframe to hide it from the bar graph
     convert_to_string = False,          # used if your DataFrame column are not strings
-    num_decimals = 0,                   # number of decimal places to display; only used if display_as_percentage=True
+    max_label_length = 20,
 ):    
-    """
-    DataFrame format:
-    +------------+
-    |  column_A  |
-    +------------+
-    | category 1 |
-    | category 2 |
-    | category 4 |
-    | category 1 |
-    | category 3 |
-    | category 4 |
-    | category 1 |
-    +------------+
-    """
     # Set default colour palette
     if (not colours):
         colours = sns.color_palette('muted')
@@ -86,6 +71,7 @@ def create_bar(
         for key, value in dictionary.items():
             df_temp.loc[df_temp.title == key, 'values'] = value
         x = np.arange(len(labels))  # the label locations
+        x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
     
     else:
         df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
@@ -98,6 +84,7 @@ def create_bar(
             df_temp = df_temp.sort_values('title')
 
         x = df_temp['title'] # the label locations
+        x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
         
     ######################
     ## Convert amount of people responded into percentages
@@ -132,12 +119,10 @@ def create_bar(
         if(labels):
             ax.set_xticks(x)
             ax.set_xticklabels(labels)
-        if(display_as_percentage):
-            ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
             plt.xticks(rotation=title_label_rotation_angle)
         else:
-            plt.xticks(rotation=title_label_rotation_angle, ha='right')
+            plt.xticks(rotation=title_label_rotation_angle, ha='right')            
         
     else:
         ax.barh(
@@ -148,7 +133,6 @@ def create_bar(
             color = colours,
             label = column_name,
             alpha = 0.75,
-
         )
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
@@ -156,12 +140,10 @@ def create_bar(
         if(labels):
             ax.set_yticks(x)
             ax.set_yticklabels(labels)
-        if(display_as_percentage):
-            ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
-            plt.xticks(rotation=title_label_rotation_angle)
+            plt.yticks(rotation=title_label_rotation_angle)
         else:
-            plt.xticks(rotation=title_label_rotation_angle, ha='right')
+            plt.yticks(rotation=title_label_rotation_angle, ha='right')
         
     plt.rcParams['axes.facecolor'] = '#F0F0F0'
     ax.grid(color='w', linestyle='solid', zorder=0)
@@ -194,19 +176,7 @@ def create_bar_stacked(
     convert_to_string = False,      # convert title labels to string
     legend_title = None             # Name of the legend title
 ):
-    """
-    DataFrame format:
-    +---------------+----------------+-----+---------------+
-    | column_name_A | column_name_B  | ... | column_name_n |
-    +---------------+----------------+-----+---------------+
-    | val 1         | val 4          |     | val 2         |
-    | val 2         | val 2          |     | val 2         |
-    | val 3         | val 1          |     | val 3         |
-    | val 4         | val 1          |     | val 1         |
-    +---------------+----------------+-----+---------------+
-    
-    The values in all the columns must be a part of the same set. AKA they should all be the same. Ex, ['Yes', 'No']: all columns have these values
-    """
+
     if (not colours):
         colours = sns.color_palette('muted')
     
@@ -313,20 +283,6 @@ def create_pie(
     file_name = None,       # Name of file to save bar graph to,
     legend_title = None     # Name to be displayed on legend
 ): 
-    """
-    DataFrame format:
-    +------------+
-    |  column_A  |
-    +------------+
-    | category 1 |
-    | category 2 |
-    | category 4 |
-    | category 1 |
-    | category 3 |
-    | category 4 |
-    | category 1 |
-    +------------+
-    """
     count = Counter()
 
     if (not colours):
@@ -393,17 +349,6 @@ def create_scatter(
     y_axis_label = None,        # label of the y axis
     x_axis_values: list = []    # Order of x axis labels to follow - TODO: CHECK IF ACTUALLY WORKS
 ): 
-    """
-    DataFrame format:
-    +------------------+---------------+
-    |  column_name_X   | column_name_Y |
-    +------------------+---------------+
-    | number string 1  | number 1      |
-    | number string 2  | number 2      |
-    | number string 3  | number 3      |
-    | number string 4  | number 4      |
-    +------------------+---------------+
-    """
     df_temp = pd.DataFrame({x_column_name: df[x_column_name], y_column_name: df[y_column_name]})
 
     if(df_temp.isnull().values.any()):
