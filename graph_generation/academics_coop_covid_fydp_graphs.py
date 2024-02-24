@@ -55,3 +55,36 @@ graphs.create_bar(
   display_as_percentage=True,
   splice_required=True,
 )
+
+graphs.create_bar(
+  df_school,
+  "cr_ncr",
+  'Number of Courses', 
+  'Percentage of Respondents', 
+  'How many courses did you CR/NCR?',
+  True,
+  display_as_percentage=True,
+)
+
+# TODO: fix label formatting
+# graphs.create_bar(
+#   df_school,
+#   "te",
+#   'Technical Elective', 
+#   'Percentage of Respondents', 
+#   'Which TEs did you take?',
+#   False,
+#   display_as_percentage=True,
+#   splice_required=True,
+# )
+
+# graphs.create_bar(
+#   df_school,
+#   "cse",
+#   'Complementary Studies Elective', 
+#   'Percentage of Respondents', 
+#   'Which CSEs did you take?',
+#   False,
+#   display_as_percentage=True,
+#   splice_required=True,
+# )
