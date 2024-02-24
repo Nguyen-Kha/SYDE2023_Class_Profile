@@ -1,12 +1,14 @@
-import pandas as pd
-import matplotlib.ticker as mtick
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-import math
 from collections import Counter
-import helpers
+import math
 from textwrap import wrap
+
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+import helpers
 
 def create_bar(
     df,                                 # pandas Series or pandas DataFrame. (Non aggregate cleaned values)
