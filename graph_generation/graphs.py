@@ -1,12 +1,14 @@
-import pandas as pd
-import matplotlib.ticker as mtick
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-import math
 from collections import Counter
+import math
+from textwrap import wrap
+
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
 import helpers
-import os
 
 def create_bar(
     df,                                 # pandas Series or pandas DataFrame. (Non aggregate cleaned values)
@@ -27,22 +29,9 @@ def create_bar(
     title_label_rotation_angle = 0,     # the angle where the x axis labels is skewed. Use 45 if title labels are too long
     drop_values = [],                   # list of strings. Use when you need to quickly drop title values from a dataframe to hide it from the bar graph
     convert_to_string = False,          # used if your DataFrame column are not strings
+    max_label_length = 20,              # max number of characters to use for a label before wrapping it
     num_decimals = 0,                   # number of decimal places to display; only used if display_as_percentage=True
 ):    
-    """
-    DataFrame format:
-    +------------+
-    |  column_A  |
-    +------------+
-    | category 1 |
-    | category 2 |
-    | category 4 |
-    | category 1 |
-    | category 3 |
-    | category 4 |
-    | category 1 |
-    +------------+
-    """
     # Set default colour palette
     if (not colours):
         colours = sns.color_palette('muted')
@@ -98,6 +87,8 @@ def create_bar(
             df_temp = df_temp.sort_values('title')
 
         x = df_temp['title'] # the label locations
+        if type(x[0]) == str:
+            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
         
     ######################
     ## Convert amount of people responded into percentages
@@ -137,7 +128,7 @@ def create_bar(
         if(title_label_rotation_angle == 0):
             plt.xticks(rotation=title_label_rotation_angle)
         else:
-            plt.xticks(rotation=title_label_rotation_angle, ha='right')
+            plt.xticks(rotation=title_label_rotation_angle, ha='right')            
         
     else:
         ax.barh(
@@ -148,7 +139,6 @@ def create_bar(
             color = colours,
             label = column_name,
             alpha = 0.75,
-
         )
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
@@ -159,9 +149,9 @@ def create_bar(
         if(display_as_percentage):
             ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
-            plt.xticks(rotation=title_label_rotation_angle)
+            plt.yticks(rotation=title_label_rotation_angle)
         else:
-            plt.xticks(rotation=title_label_rotation_angle, ha='right')
+            plt.yticks(rotation=title_label_rotation_angle, ha='right')
         
     plt.rcParams['axes.facecolor'] = '#F0F0F0'
     ax.grid(color='w', linestyle='solid', zorder=0)
@@ -312,7 +302,7 @@ def create_pie(
     colours = [],           # list of strings. Hex colours for pie chart 
     file_name = None,       # Name of file to save bar graph to,
     legend_title = None     # Name to be displayed on legend
-): 
+):
     """
     DataFrame format:
     +------------+
@@ -392,7 +382,7 @@ def create_scatter(
     x_axis_label = None,        # label of the x axis
     y_axis_label = None,        # label of the y axis
     x_axis_values: list = []    # Order of x axis labels to follow - TODO: CHECK IF ACTUALLY WORKS
-): 
+):
     """
     DataFrame format:
     +------------------+---------------+
