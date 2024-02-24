@@ -182,7 +182,19 @@ def create_bar_stacked(
     convert_to_string = False,      # convert title labels to string
     legend_title = None             # Name of the legend title
 ):
-
+    """
+    DataFrame format:
+    +---------------+----------------+-----+---------------+
+    | column_name_A | column_name_B  | ... | column_name_n |
+    +---------------+----------------+-----+---------------+
+    | val 1         | val 4          |     | val 2         |
+    | val 2         | val 2          |     | val 2         |
+    | val 3         | val 1          |     | val 3         |
+    | val 4         | val 1          |     | val 1         |
+    +---------------+----------------+-----+---------------+
+    
+    The values in all the columns must be a part of the same set. AKA they should all be the same. Ex, ['Yes', 'No']: all columns have these values
+    """
     if (not colours):
         colours = sns.color_palette('muted')
     
@@ -288,7 +300,21 @@ def create_pie(
     colours = [],           # list of strings. Hex colours for pie chart 
     file_name = None,       # Name of file to save bar graph to,
     legend_title = None     # Name to be displayed on legend
-): 
+):
+    """
+    DataFrame format:
+    +------------+
+    |  column_A  |
+    +------------+
+    | category 1 |
+    | category 2 |
+    | category 4 |
+    | category 1 |
+    | category 3 |
+    | category 4 |
+    | category 1 |
+    +------------+
+    """
     count = Counter()
 
     if (not colours):
@@ -354,7 +380,18 @@ def create_scatter(
     x_axis_label = None,        # label of the x axis
     y_axis_label = None,        # label of the y axis
     x_axis_values: list = []    # Order of x axis labels to follow - TODO: CHECK IF ACTUALLY WORKS
-): 
+):
+    """
+    DataFrame format:
+    +------------------+---------------+
+    |  column_name_X   | column_name_Y |
+    +------------------+---------------+
+    | number string 1  | number 1      |
+    | number string 2  | number 2      |
+    | number string 3  | number 3      |
+    | number string 4  | number 4      |
+    +------------------+---------------+
+    """
     df_temp = pd.DataFrame({x_column_name: df[x_column_name], y_column_name: df[y_column_name]})
 
     if(df_temp.isnull().values.any()):
