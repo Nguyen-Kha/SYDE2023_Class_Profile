@@ -142,7 +142,13 @@ def turn_dates_into_actual_values(dates):
     else:
         return dates
     
-def transform_df_for_boxplot(df_working, column_name: str, comparison_column = None, comparison_labels = [], drop_values = {}):
+def transform_df_for_boxplot(
+    df_working,                 # Pandas Dataframe, format shown below
+    column_name: str,           # column to plot on box plot
+    comparison_column = None,   # OPTIONAL: to splice the boxplot into groups to compare
+    comparison_labels = [],     # OPTIONAL: order in which the comparison values are arranged
+    drop_values = {}            # {str(column_name): number, ...} values to remove from the boxplot (aka outliers)
+):
     """
     For both single column and multi column dataframes
     Turns this DataFrame
