@@ -270,7 +270,8 @@ def create_boxplot(
     title_label: str,                   # title label of graph (x axis label for vertical graph) 
     values_label: str,                  # values label of graph (y axis label for horizontal graph)
     title,                              # title of graph
-    
+    file_name,                          # file name to save graph as
+
     vertical: bool = True,              # orientation of boxplots
     comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
     comparison_labels = [],             # order of the comparison labels
@@ -367,6 +368,10 @@ def create_boxplot(
     
     if(comparison_column):
         plt.legend(title=comparison_column)
+
+    if(not file_name):
+        file_name = str(column_name_list[0]) + "_boxplot"
+    plt.savefig('./graphs/' + file_name + '.png', bbox_inches='tight')
 
 def create_histogram(
     df,
