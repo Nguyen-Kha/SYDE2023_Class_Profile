@@ -192,3 +192,38 @@ def transform_df_for_boxplot(
         df = df.sort_values('comparison_column')
 
     return df
+
+def transform_df_for_line_unnamed_rows(
+    df,
+    column_name_list,
+    row_object_name = 'row_object'
+):
+    """
+    Transforms the following dataframe
+    +--------------+-----+--------------+
+    | row_object_a | ... | row_object_n |
+    +--------------+-----+--------------+
+    | number a1    |     | number n1    |
+    | number a2    |     | number n2    |
+    | number a3    |     | number n3    |
+    +--------------+-----+--------------+
+    into 
+    +--------------+------------+-----------+
+    |    index     | row_object |   value   |
+    +--------------+------------+-----------+
+    | row_object_a |          0 | number a1 |
+    | row_object_n |          0 | number n1 |
+    | row_object_a |          1 | number a2 |
+    | row_object_n |          1 | number n2 |
+    | row_object_a |          2 | number a3 |
+    | row_object_n |          2 | number n3 |
+    +--------------+------------+-----------+
+    which makes as many lines as the number of values in a row_object_n column
+    
+    This assumes the data has already been cleaned, and null values are already accounted for
+    Use this if the line graph does not need a legend, where there is no particular meaning to each row, or each row can be unlabelled. 
+    """
+    df = df.transpose().reset_index().drop(columns = 'index')
+    df['index'] = column_name_list
+    df = pd.melt(df, id_vars = ['index'], var_name = row_object_name)
+    return df
