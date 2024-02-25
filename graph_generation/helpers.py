@@ -193,6 +193,51 @@ def transform_df_for_boxplot(
 
     return df
 
+def transform_df_for_line_named_rows(
+    df,
+    column_name_list,
+    row_object_name,
+    row_object_list
+):
+    """
+    Transforms the following dataframe
+    +--------------+-----+--------------+
+    | row_object_a | ... | row_object_n |
+    +--------------+-----+--------------+
+    | number a1    |     | number n1    | (Albert)
+    | number a2    |     | number n2    | (Brenda)
+    | number a3    |     | number n3    | (Charlie)
+    +--------------+-----+--------------+
+    into 
+    +--------------+-----------------+-----------+
+    |    index     | row_object_name |   value   |
+    +--------------+-----------------+-----------+
+    | row_object_a | Albert          | number a1 |
+    | row_object_n | Albert          | number n1 |
+    | row_object_a | Brenda          | number a2 |
+    | row_object_n | Brenda          | number n2 |
+    | row_object_a | Charlie         | number a3 |
+    | row_object_n | Charlie         | number n3 |
+    +--------------+-----------------+-----------+
+    This assumes the data has already been cleaned, and null values are already accounted for
+    Use this when each row has a specific meaning. The legend will show the lines for Albert, Brenda, and Charlie
+    """
+    if(len(row_object_list) != len(df.index)):
+        print("row label and row count mismatch")
+        return False
+    
+    df = df.transpose().reset_index().drop(columns = 'index')
+    df['index'] = column_name_list
+    
+    dict_row_object = {}
+    for i in range(0, len(row_object_list)):
+        dict_row_object[i] = row_object_list[i]
+    
+    df = df.rename(columns = dict_row_object)
+    df = pd.melt(df, id_vars = ['index'], var_name = row_object_name)
+    
+    return df
+
 def transform_df_for_line_unnamed_rows(
     df,
     column_name_list,
