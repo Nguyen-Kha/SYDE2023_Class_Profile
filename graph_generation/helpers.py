@@ -141,3 +141,54 @@ def turn_dates_into_actual_values(dates):
         return '1 - 25'
     else:
         return dates
+    
+def transform_df_for_boxplot(
+    df_working,                 # Pandas Dataframe, format shown below
+    column_name: str,           # column to plot on box plot
+    comparison_column = None,   # OPTIONAL: to splice the boxplot into groups to compare
+    comparison_labels = [],     # OPTIONAL: order in which the comparison values are arranged
+    drop_values = {}            # {str(column_name): number, ...} values to remove from the boxplot (aka outliers)
+):
+    """
+    For both single column and multi column dataframes
+    Turns this DataFrame
+    +---------------+------------------------------+
+    | column_name_a | comparison_column (optional) |
+    +---------------+------------------------------+
+    | number_a1     | Class A                      |
+    | number_a2     | Class B                      |
+    | number_a3     | Class B                      |
+    +---------------+------------------------------+
+    into
+    +---------------+----------------+-----------------------+
+    | boxplot_title | boxplot_values | comparison (optional) |
+    +---------------+----------------+-----------------------+
+    | column_name_a | number_a1      | Class A               |
+    | column_name_a | number_a2      | Class B               |
+    | column_name_a | number_a3      | Class B               |
+    +---------------+----------------+-----------------------+
+    """
+    df = df_working.copy()
+            
+    if(comparison_column):
+        df = df[[column_name, comparison_column]]
+        df = df.rename(columns = {comparison_column: 'comparison_column'})
+    else:
+        df = df[[column_name]]
+        
+    if(drop_values):
+        for key, value in drop_values.items():
+            if(key == column_name):
+                df = df.drop(df[df[key] == value].index)
+    
+    if(df.isnull().values.any()):
+        df = df.dropna(axis = 0)
+    
+    df['column_name'] = column_name
+    df = df.rename(columns = {column_name: 'boxplot_value'})
+    
+    if(comparison_labels and comparison_column):
+        df['comparison_column'] = pd.Categorical(df['comparison_column'], comparison_labels)
+        df = df.sort_values('comparison_column')
+
+    return df
