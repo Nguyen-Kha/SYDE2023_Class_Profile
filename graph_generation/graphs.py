@@ -384,11 +384,120 @@ def create_histogram(
 
 def create_line(
     df,
+    column_name_list,
+    sequential_label,
+    values_label,
+    title,
+    file_name,
+    values_min = None,
+    values_max = None,
+    values_increment = None,
+    handle_null_by: str = 'interpolation', # Options: ('interpolation', 'drop_row', 'mean', 'median'),
+    row_object_name = 'row_object_name',
+    row_object_list = [],
+):
+    """
+    will interpolate values as default since this is seaborn based. If you are looking for discontinuity for np.nan values, use matplotlib
+    """
+    # Clean dataset with nulls
+    df = df[column_name_list]
+    
+    if(handle_null_by == 'drop_row'):
+        df = df.dropna(axis = 0)
+    elif(handle_null_by == 'mean'):
+        df = df.fillna(df.mean())
+        pass
+    elif(handle_null_by == 'median'):
+        df = df.fillna(df.median())
+        pass
+    elif(handle_null_by == 'interpolation'):
+        # This is seaborn, it will automatically interpret np.nan to be interpolated. Don't need to do anything
+        pass
+    else:
+        print("handle_null_by invalid. Interpolating")
+        pass
+    
+    # Transform dataset
+    if(row_object_name):
+        df_line = helpers.transform_df_for_line_named_rows(df, column_name_list, row_object_name, row_object_list)
+    else:
+        df_line = helpers.transform_df_for_line_unnamed_rows(df, column_name_list)
+    
+    fig, ax = plt.subplots(figsize = (11,9))
+    
+    if(row_object_name):
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            hue=row_object_name, 
+            marker='o'
+        )
+    else:
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            hue = 'row_object',
+            marker='o',
+            legend = False,
+        )
+    
+    ax.set_xlabel(sequential_label)
+    ax.set_ylabel(values_label)
+    plt.title(title)
+    
+    values_max_was_automatically_set = False
+    values_min_was_automatically_set = False
+    if(values_max == None):
+        values_max = max(df_line['value'])
+        values_max_was_automatically_set = True
+    if(values_min == None):
+        values_min = min(df_line['value'])
+        values_min_was_automatically_set = True
+    if(values_increment == None):
+        values_increment = math.ceil(values_max / 10)
+        
+    if(values_max_was_automatically_set):
+        values_max = values_max + values_increment
+    else:
+        values_max = values_max + (values_increment / 100) # np.arange for set_ticks is not inclusive
+    if(values_min_was_automatically_set):
+        values_min = values_min - values_increment
+        
+    ax.yaxis.set_ticks(np.arange(values_min, values_max, values_increment))
+    
+    plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
+    plt.close()
+
+
+def create_line_no_interpolation(
+    df,
     column_name,
     title
 ):
+    """
+    Use this line graph for datasets that contain np.nan and you DON'T want drop them.
+    This will create non continous graphs
+    Uses matplotlib
+    """
     pass
     # Still working on it
+    # Low priority - use create_line with null handling for the time being
+
+def create_line_category_traversal(
+    df,
+    column_name_list,
+    sequential_label,
+    categorical_label,
+    title,
+    # file_name,
+    categorical_order: list, # sorted 0 to n
+    show_individual_lines = True,
+    show_average_confidence_line = False,
+):
+    # encode the categorical variables
+    pass
 
 def create_pie( 
     df,                     # pandas DataFrame, Non Aggregate and cleaned
