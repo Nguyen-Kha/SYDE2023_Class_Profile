@@ -393,7 +393,7 @@ def create_line(
     values_max = None,
     values_increment = None,
     handle_null_by: str = 'interpolation', # Options: ('interpolation', 'drop_row', 'mean', 'median'),
-    row_object_name = 'row_object_name',
+    row_object_name = None,
     row_object_list = [],
 ):
     """
@@ -420,6 +420,8 @@ def create_line(
     # Transform dataset
     if(row_object_name):
         df_line = helpers.transform_df_for_line_named_rows(df, column_name_list, row_object_name, row_object_list)
+    elif(row_object_list and row_object_name == None):
+        df_line = helpers.transform_df_for_line_named_rows(df, column_name_list, 'row_object', row_object_list)
     else:
         df_line = helpers.transform_df_for_line_unnamed_rows(df, column_name_list)
     
@@ -431,6 +433,14 @@ def create_line(
             x='index', 
             y='value', 
             hue=row_object_name, 
+            marker='o'
+        )
+    elif(row_object_list and row_object_name == None):
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            hue='row_object', 
             marker='o'
         )
     else:
@@ -469,7 +479,6 @@ def create_line(
     
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
-
 
 def create_line_no_interpolation(
     df,

@@ -223,7 +223,7 @@ def transform_df_for_line_named_rows(
     Use this when each row has a specific meaning. The legend will show the lines for Albert, Brenda, and Charlie
     """
     if(len(row_object_list) != len(df.index)):
-        print("row label and row count mismatch")
+        print("row label and row count mismatch. Or, you are missing row_object_list")
         return False
     
     df = df.transpose().reset_index().drop(columns = 'index')
