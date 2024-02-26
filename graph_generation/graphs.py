@@ -388,13 +388,14 @@ def create_line(
     sequential_label,
     values_label,
     title,
-    file_name,
+    file_name, 
     values_min = None,
     values_max = None,
     values_increment = None,
     handle_null_by: str = 'interpolation', # Options: ('interpolation', 'drop_row', 'mean', 'median'),
     row_object_name = None,
     row_object_list = [],
+    only_show_average = False # Only available for no row_object_name and no row_object_list
 ):
     """
     will interpolate values as default since this is seaborn based. If you are looking for discontinuity for np.nan values, use matplotlib
@@ -442,6 +443,14 @@ def create_line(
             y='value', 
             hue='row_object', 
             marker='o'
+        )
+    elif((not row_object_list and row_object_name == None) and only_show_average):
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            marker='o',
+            legend = False,
         )
     else:
         sns.lineplot(
