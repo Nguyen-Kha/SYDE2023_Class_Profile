@@ -395,7 +395,8 @@ def create_line(
     handle_null_by: str = 'interpolation', # Options: ('interpolation', 'drop_row', 'mean', 'median'),
     row_object_name = None,
     row_object_list = [],
-    only_show_average = False # Only available for no row_object_name and no row_object_list
+    only_show_average = False, # Only available for no row_object_name and no row_object_list,
+    sequential_label_rotation_angle = 0
 ):
     """
     will interpolate values as default since this is seaborn based. If you are looking for discontinuity for np.nan values, use matplotlib
@@ -434,7 +435,8 @@ def create_line(
             x='index', 
             y='value', 
             hue=row_object_name, 
-            marker='o'
+            marker='o',
+            sort = False
         )
     elif(row_object_list and row_object_name == None):
         sns.lineplot(
@@ -442,7 +444,8 @@ def create_line(
             x='index', 
             y='value', 
             hue='row_object', 
-            marker='o'
+            marker='o',
+            sort = False
         )
     elif((not row_object_list and row_object_name == None) and only_show_average):
         sns.lineplot(
@@ -451,6 +454,7 @@ def create_line(
             y='value', 
             marker='o',
             legend = False,
+            sort = False
         )
     else:
         sns.lineplot(
@@ -460,6 +464,7 @@ def create_line(
             hue = 'row_object',
             marker='o',
             legend = False,
+            sort = False
         )
     
     ax.set_xlabel(sequential_label)
@@ -485,6 +490,11 @@ def create_line(
         values_min = values_min - values_increment
         
     ax.yaxis.set_ticks(np.arange(values_min, values_max, values_increment))
+
+    if(sequential_label_rotation_angle == 0):
+        plt.xticks(rotation=sequential_label_rotation_angle)
+    else:
+        plt.xticks(rotation=sequential_label_rotation_angle, ha='right')
     
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
