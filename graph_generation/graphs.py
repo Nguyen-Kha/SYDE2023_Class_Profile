@@ -33,7 +33,20 @@ def create_bar(
     convert_to_string = False,          # used if your DataFrame column are not strings
     max_label_length = 20,              # max number of characters to use for a label before wrapping it
     num_decimals = 0,                   # number of decimal places to display; only used if display_as_percentage=True
-):    
+):  
+    """
+    Input dataframe format:
+    DataFrame format:
+    +-------------+
+    | column_name |
+    +-------------+
+    | string 1    |
+    | string 2    |
+    | string 3    |
+    | ...         |
+    +-------------+
+    """
+
     # Set default colour palette
     if (not colours):
         colours = sns.color_palette('muted')
@@ -385,12 +398,242 @@ def create_histogram(
     # Low priority - use create_bar with predefined labels and custom df
 
 def create_line(
+    df,                                     # pandas dataframe. see below for input format
+    column_name_list,                       # list of the sequential columns in order (ex gpa_1a, gpa_1b, ...)
+    sequential_label,                       # Sequential axis (x axis) label
+    values_label,                           # y axis label
+    title,                                  # title of graph
+    file_name,                              # file name in which to save the graph to
+
+    values_min = None,                      # the minimum number to display on the graph
+    values_max = None,                      # the maximum number to display on the graph
+    values_increment = None,                # The value in which to increment the y axis by
+    handle_null_by: str = 'interpolation',  # Options: ('interpolation', 'drop_row', 'mean', 'median'), fill null values by using ...
+    row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
+    row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
+    only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
+    sequential_label_rotation_angle = 0     # x axis rotation angle for overflow
+):
+    """
+    will interpolate values as default since this is seaborn based. If you are looking for discontinuity for np.nan values, use matplotlib
+    
+    input dataframe format:
+    +------------------------+------+------------------------+
+    | sequence_column_part_1 | ...  | sequence_column_part_n |
+    +------------------------+------+------------------------+
+    | number a_part_1        |      | number a_part_n        |
+    | number b_part_1        |      | number b_part_n        |
+    | number c_part_1        |      | number c_part_n        |
+    +------------------------+------+------------------------+
+    """
+    # Clean dataset with nulls
+    df = df[column_name_list]
+    
+    if(handle_null_by == 'drop_row'):
+        df = df.dropna(axis = 0)
+    elif(handle_null_by == 'mean'):
+        df = df.fillna(df.mean())
+        pass
+    elif(handle_null_by == 'median'):
+        df = df.fillna(df.median())
+        pass
+    elif(handle_null_by == 'interpolation'):
+        # This is seaborn, it will automatically interpret np.nan to be interpolated. Don't need to do anything
+        pass
+    else:
+        print("handle_null_by invalid. Interpolating")
+        pass
+    
+    # Transform dataset
+    if(row_object_name):
+        df_line = helpers.transform_df_for_line_named_rows(df, column_name_list, row_object_name, row_object_list)
+    elif(row_object_list and row_object_name == None):
+        df_line = helpers.transform_df_for_line_named_rows(df, column_name_list, 'row_object', row_object_list)
+    else:
+        df_line = helpers.transform_df_for_line_unnamed_rows(df, column_name_list)
+    
+    fig, ax = plt.subplots(figsize = (11,9))
+    
+    if(row_object_name):
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            hue=row_object_name, 
+            marker='o',
+            sort = False
+        )
+    elif(row_object_list and row_object_name == None):
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            hue='row_object', 
+            marker='o',
+            sort = False
+        )
+    elif((not row_object_list and row_object_name == None) and only_show_average):
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            marker='o',
+            legend = False,
+            sort = False
+        )
+    else:
+        sns.lineplot(
+            data=df_line, 
+            x='index', 
+            y='value', 
+            hue = 'row_object',
+            marker='o',
+            legend = False,
+            sort = False
+        )
+    
+    ax.set_xlabel(sequential_label)
+    ax.set_ylabel(values_label)
+    plt.title(title)
+    
+    values_max_was_automatically_set = False
+    values_min_was_automatically_set = False
+    if(values_max == None):
+        values_max = max(df_line['value'])
+        values_max_was_automatically_set = True
+    if(values_min == None):
+        values_min = min(df_line['value'])
+        values_min_was_automatically_set = True
+    if(values_increment == None):
+        values_increment = math.ceil(values_max / 10)
+        
+    if(values_max_was_automatically_set):
+        values_max = values_max + values_increment
+    else:
+        values_max = values_max + (values_increment / 100) # np.arange for set_ticks is not inclusive
+    if(values_min_was_automatically_set):
+        values_min = values_min - values_increment
+        
+    ax.yaxis.set_ticks(np.arange(values_min, values_max, values_increment))
+
+    if(sequential_label_rotation_angle == 0):
+        plt.xticks(rotation=sequential_label_rotation_angle)
+    else:
+        plt.xticks(rotation=sequential_label_rotation_angle, ha='right')
+    
+    plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
+    plt.close()
+
+def create_line_no_interpolation(
     df,
     column_name,
     title
 ):
+    """
+    Use this line graph for datasets that contain np.nan and you DON'T want drop them.
+    This will create non continous graphs
+    Uses matplotlib
+    """
     pass
     # Still working on it
+    # Low priority - use create_line with null handling for the time being
+
+def create_line_category_traversal(
+    df,                                     # pandas dataframe, see below for input format
+    column_name_list,                       # list of the sequential columns in order (ex gpa_1a, gpa_1b, ...) 
+    sequential_label,                       # x axis label, sequential labels
+    categorical_label,                      # y axis label
+    title,                                  # title of graph
+    file_name,                              # file name in which to save the graph to
+    categorical_order_list: list,           # Order in which the categories appear on the y axis, bottom to top, sorted 0 to n
+    row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
+    row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
+    only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
+    sequential_label_rotation_angle = 0     # x axis rotation angle for overflow
+):
+    """
+    Line graph for discrete categorical variable traversal. Shows how a state changes at given time point, where the state is not numerical
+    This code borrows a lot from the line graph creation. null values between two variables will be interpolated.
+
+    Input dataframe format:
+    +------------------------+------+------------------------+
+    | sequence_column_part_1 | ...  | sequence_column_part_n |
+    +------------------------+------+------------------------+
+    | string a_part_1        |      | string a_part_n        |
+    | string b_part_1        |      | string b_part_n        |
+    | string c_part_1        |      | string c_part_n        |
+    +------------------------+------+------------------------+
+    """
+    # handle nulls by interpolation automatically with seaborn
+    
+    if(row_object_name):
+        df_line_categorical = helpers.transform_df_for_line_named_rows(df, column_name_list, row_object_name, row_object_list)
+    elif(row_object_list and row_object_name == None):
+        df_line_categorical = helpers.transform_df_for_line_named_rows(df, column_name_list, 'row_object', row_object_list)
+    else:
+        df_line_categorical = helpers.transform_df_for_line_unnamed_rows(df, column_name_list)
+        
+    categorical_mapping_dict = {}
+    for i in range(1, len(categorical_order_list) + 1):
+        categorical_mapping_dict[categorical_order_list[i - 1]] = i
+    
+    df_line_categorical['value'] = df_line_categorical['value'].map(categorical_mapping_dict)
+    
+    fig, ax = plt.subplots(figsize = (11,9))
+    
+    if(row_object_name):
+        sns.lineplot(
+            data=df_line_categorical, 
+            x='index', 
+            y='value', 
+            hue=row_object_name, 
+            marker='o',
+            sort = False
+        )
+    elif(row_object_list and row_object_name == None):
+        sns.lineplot(
+            data=df_line_categorical, 
+            x='index', 
+            y='value', 
+            hue='row_object', 
+            marker='o',
+            sort = False
+        )
+    elif((not row_object_list and row_object_name == None) and only_show_average):
+        sns.lineplot(
+            data=df_line_categorical, 
+            x='index', 
+            y='value', 
+            marker='o',
+            legend = False,
+            sort = False
+        )
+    else:
+        sns.lineplot(
+            data=df_line_categorical, 
+            x='index', 
+            y='value', 
+            hue = 'row_object',
+            marker='o',
+            legend = False,
+            sort = False
+        )
+    
+    ax.set_xlabel(sequential_label)
+    ax.set_ylabel(categorical_label)
+    plt.title(title)
+    
+    ax.yaxis.set_ticks(np.arange(0, len(categorical_order_list) + 1, 1)) # values_increment will always be 1 since it's the difference for categories
+    categorical_order_list.insert(0, '') # Placed at front since the first value of the categorical_mapping_dict is 1, but seaborn will set 0 as the first value, so this value acts as a shift on the axis
+    ax.set_yticklabels(categorical_order_list)
+    
+    if(sequential_label_rotation_angle == 0):
+        plt.xticks(rotation=sequential_label_rotation_angle)
+    else:
+        plt.xticks(rotation=sequential_label_rotation_angle, ha='right')
+    
+    plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
+    plt.close()
 
 def create_pie( 
     df,                     # pandas DataFrame, Non Aggregate and cleaned
@@ -405,17 +648,14 @@ def create_pie(
 ):
     """
     DataFrame format:
-    +------------+
-    |  column_A  |
-    +------------+
-    | category 1 |
-    | category 2 |
-    | category 4 |
-    | category 1 |
-    | category 3 |
-    | category 4 |
-    | category 1 |
-    +------------+
+    +-------------+
+    | column_name |
+    +-------------+
+    | string 1    |
+    | string 2    |
+    | string 3    |
+    | ...         |
+    +-------------+
     """
     count = Counter()
 
