@@ -528,16 +528,27 @@ def create_scatter(
     plt.close()
 
 def create_wordcloud(
-    df,
-    column_name,
-    file_name,
+    df,                         # pandas dataframe, shown in format below
+    column_name,                # column name in dataframe
+    file_name,                  # name of the wordcloud image
 
-    width: int = 600,
-    height: int = 400,
-    background_color = None, # str: colours or hex representation of colour. Use None for transparent background,
-    include_numbers = True,
-    stopwords = None # set. Pass in a set of words to ignore. Ex: ('The', 'it', 'a', 'because', ...) If None, default stopwords are used
+    width: int = 600,           # width of the image
+    height: int = 400,          # height of the image
+    background_color = None,    # str: colours or hex representation of colour. Use None for transparent background,
+    include_numbers = True,     # include numbers when plotting words in wordcloud
+    stopwords = None            # set. Pass in a set of words to ignore. Ex: ('The', 'it', 'a', 'because', ...) If None, default stopwords are used
 ):
+    """
+    Dataframe input format:
+    +-------------+
+    | column_name |
+    +-------------+
+    | string 1    |
+    | string 2    |
+    | string 3    |
+    | ...         |
+    +-------------+
+    """
     if(df[column_name].isnull().values.any()):
         df[column_name] = df[column_name].dropna(axis=0)
 
