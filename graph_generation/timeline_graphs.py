@@ -42,9 +42,11 @@ df_eu_working['course'] = df_eu_working['course'].apply(lambda x: x.replace("SYD
 
 graphs.create_scatter(
     df_eu_working,
-    'easiness rating of course',
-    'usefulness rating of course',
+    'easiness',
+    'usefulness',
     'SYDE Core Courses: How Easy and How Useful?',
+    x_axis_label = 'Easiness rating of course',
+    y_axis_label = 'Usefulness rating of course',
     annotate = True,
     annotated_column_name = 'course',
     x_values_min = -3,
