@@ -711,26 +711,33 @@ def create_pie(
     plt.close()
 
 def create_scatter(
-    df,                         # pandas Dataframe. Non Aggregate cleaned values
-    x_column_name,              # x axis column values
-    y_column_name,              # y axis column values
-    title,                      # title of graph
+    df,                             # pandas Dataframe. Non Aggregate cleaned values
+    x_column_name,                  # x axis column values
+    y_column_name,                  # y axis column values
+    title,                          # title of graph
 
-    file_name = None,           # name of the file to save the bar graph to
-    x_axis_label = None,        # label of the x axis
-    y_axis_label = None,        # label of the y axis
-    x_axis_values: list = []    # Order of x axis labels to follow - TODO: CHECK IF ACTUALLY WORKS
+    file_name = None,               # name of the file to save the bar graph to
+    x_axis_label = None,            # label of the x axis
+    y_axis_label = None,            # label of the y axis
+    x_axis_values: list = [],       # Order of x axis labels to follow - TODO: CHECK IF ACTUALLY WORKS
+    annotate = False,               # Label the points on the graphs, default False
+    annotated_column_name = None,   # Column name containing the name of the points to be annotated
+    x_values_min = None,
+    x_values_max = None,
+    x_values_increment = None,
+    y_values_min = None,
+    y_values_max = None,
+    y_values_increment = None
 ):
     """
     DataFrame format:
-    +------------------+---------------+
-    |  column_name_X   | column_name_Y |
-    +------------------+---------------+
-    | number string 1  | number 1      |
-    | number string 2  | number 2      |
-    | number string 3  | number 3      |
-    | number string 4  | number 4      |
-    +------------------+---------------+
+    +-----------------+---------------+----------------------------------+
+    |  column_name_X  | column_name_Y | annotated_column_name (optional) |
+    +-----------------+---------------+----------------------------------+
+    | number string 1 | number 1      | Albert                           |
+    | number string 2 | number 1      | Brenda                           |
+    | number string 3 | number 1      | Charlie                          |
+    +-----------------+---------------+----------------------------------+
     """
     df_temp = pd.DataFrame({x_column_name: df[x_column_name], y_column_name: df[y_column_name]})
 
@@ -742,7 +749,8 @@ def create_scatter(
     else:
         df_temp = df_temp.sort_values(by=[x_column_name], ascending=True)
     
-    plt.figure(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (11,9))
+    
     plt.scatter(
         x = df_temp[x_column_name],
         y = df_temp[y_column_name],
@@ -758,6 +766,47 @@ def create_scatter(
         plt.ylabel(y_column_name)
     else:
         plt.ylabel(y_axis_label)
+    
+    if(annotate):
+        df_temp[annotated_column_name] = df[annotated_column_name]        
+        
+        for i, row in df_temp.iterrows():
+            ax.annotate(row[annotated_column_name], (row[x_column_name], row[y_column_name]), textcoords="offset points", xytext=(0,10))
+    
+    # This is by far the worst code I have ever written
+    x_values_min_was_auto_set = False
+    x_values_max_was_auto_set = False
+    y_values_min_was_auto_set = False
+    y_values_max_was_auto_set = False
+    
+    if(x_values_min == None):
+        x_values_min = helpers.compute_initial_values_min(df_temp, x_column_name)
+        x_values_min_was_auto_set = True
+    if(x_values_max == None):
+        x_values_max = helpers.compute_initial_values_max(df_temp, x_column_name)
+        x_values_max_was_auto_set = True
+    if(y_values_min == None):
+        y_values_min = helpers.compute_initial_values_max(df_temp, y_column_name)
+        y_values_min_was_auto_set = True
+    if(y_values_max == None):
+        y_values_max = helpers.compute_initial_values_max(df_temp, y_column_name)
+        y_values_max_was_auto_set = True
+        
+    if(x_values_increment == None):
+        x_values_increment = math.ceil((x_values_max - x_values_min) / 10)
+    if(y_values_increment == None):
+        y_values_increment = math.ceil((y_values_max - y_values_min) / 10)
+    
+    x_values_max = helpers.compute_displayed_values_max(x_values_max, x_values_increment, x_values_max_was_auto_set)
+    y_values_min = helpers.compute_displayed_values_min(y_values_min, y_values_increment, y_values_min_was_auto_set)
+    x_values_min = helpers.compute_displayed_values_min(x_values_min, x_values_increment, x_values_min_was_auto_set)
+    y_values_max = helpers.compute_displayed_values_max(y_values_max, y_values_increment, y_values_max_was_auto_set)
+        
+    ax.xaxis.set_ticks(np.arange(x_values_min, x_values_max, x_values_increment))
+    ax.yaxis.set_ticks(np.arange(y_values_min, y_values_max, y_values_increment))
+    
+    plt.axvline(0) # highlights the origin
+    plt.axhline(0) # highlights the origin
 
     if(not file_name):
         file_name = str(x_column_name) + " vs " + str(y_column_name)
