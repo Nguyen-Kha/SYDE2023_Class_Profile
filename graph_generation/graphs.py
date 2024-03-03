@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from wordcloud import WordCloud
+
 import helpers
 
 def create_bar(
@@ -764,3 +766,46 @@ def create_scatter(
     plt.savefig('./graphs/' + file_name + '.png', bbox_inches='tight')
 
     plt.close()
+
+def create_wordcloud(
+    df,                         # pandas dataframe, shown in format below
+    column_name,                # column name in dataframe
+    file_name,                  # name of the wordcloud image
+
+    width: int = 600,           # width of the image
+    height: int = 400,          # height of the image
+    background_color = None,    # str: colours or hex representation of colour. Use None for transparent background,
+    include_numbers = True,     # include numbers when plotting words in wordcloud
+    stopwords = None            # set. Pass in a set of words to ignore. Ex: ('The', 'it', 'a', 'because', ...) If None, default stopwords are used
+):
+    """
+    Dataframe input format:
+    +-------------+
+    | column_name |
+    +-------------+
+    | string 1    |
+    | string 2    |
+    | string 3    |
+    | ...         |
+    +-------------+
+    """
+    if(df[column_name].isnull().values.any()):
+        df[column_name] = df[column_name].dropna(axis=0)
+
+    count = Counter()
+    column_values = helpers.splice_cells_with_commas(df, column_name)
+    for i in column_values:
+        count[i] += 1
+    
+    wordcloud = WordCloud(
+        width = width, 
+        height = height, 
+        background_color = background_color,
+        include_numbers = include_numbers,
+        stopwords = stopwords
+    ).generate_from_frequencies(count)
+
+    plt.imshow(wordcloud, interpolation = 'bilinear')
+    plt.axis("off")
+
+    wordcloud.to_file('./graphs/' + file_name + '_wordmap.png')
