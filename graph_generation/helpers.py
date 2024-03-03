@@ -349,6 +349,9 @@ def transform_df_for_single_line_percentage(
     return df
 
 def compute_initial_values_min(df, column_name_list: list):
+    """
+    This computes the smallest value in the dataframe
+    """
     if(len(column_name_list) == 1):
         return min(df[column_name_list[0]])
     
@@ -359,6 +362,9 @@ def compute_initial_values_min(df, column_name_list: list):
             initial_values_min = column_min
 
 def compute_initial_values_max(df, column_name_list: list):
+    """
+    This computes the largest value in the dataframe
+    """
     if(len(column_name_list) == 1):
         return max(df[column_name_list[0]])
     
@@ -371,6 +377,14 @@ def compute_initial_values_max(df, column_name_list: list):
     return initial_values_max
 
 def compute_displayed_values_min(values_min, values_increment, autoset: bool):
+    """
+    This adjusts the smallest value so that it is properly displayed in matplotlib and seaborn graphs.
+    Matplotlib and seaborn sometimes excludes the smallest or largest number from the ticks. You'll often see graphs with
+    values from 0 - 100, but the top value is missing and the last tick on the y axis is 90. This happens because matplotlib
+    (and maybe seaborn) sets the ranges as [start, end)
+    
+    This will adjust the values_min value to show that first tick
+    """
     if(autoset):
         values_min = values_min - values_increment
     else:
@@ -378,6 +392,14 @@ def compute_displayed_values_min(values_min, values_increment, autoset: bool):
     return values_min
         
 def compute_displayed_values_max(values_max, values_increment, autoset: bool):
+    """
+    This adjusts the largest value so that it is properly displayed in matplotlib and seaborn graphs.
+    Matplotlib and seaborn sometimes excludes the smallest or largest number from the ticks. You'll often see graphs with
+    values from 0 - 100, but the top value is missing and the last tick on the y axis is 90. This happens because matplotlib
+    (and maybe seaborn) sets the ranges as [start, end)
+    
+    This will adjust the values_max value to show that last tick
+    """
     if(autoset):
         values_max = values_max + values_increment
     else:
