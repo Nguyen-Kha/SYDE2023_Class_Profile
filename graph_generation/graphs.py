@@ -198,7 +198,7 @@ def create_bar_stacked(
     values_increment = None,        # value to increment y axis by. If display_as_percentage = True, this value is 10
     values_max = None,              # The maximum y axis value of the graph. If display_as_percentage = True, this value is 100
     labels = [],                    # List of strings, specific order to arrange bars by. if passing multiple values in column_name_list, labels will be the same for all of them
-    column_labels = [],
+    column_labels = [],             # List of strings, Change the column names associated with each combined bar on the graph
 #     colours = [],                   # list of hex code strings for column_name colours
     display_as_percentage = False,  # Display the y axis values as a percentage instead of a count
     num_decimals = 0,               # number of decimal places to display; only used if display_as_percentage=True
@@ -317,19 +317,19 @@ def create_boxplot(
     file_name,                          # file name to save graph as
 
     vertical: bool = True,              # orientation of boxplots
-    column_labels = [],
+    column_labels = [],                 # List of strings, used to rename the column_name for each box on graph
     comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
     comparison_labels = [],             # order of the comparison labels
     values_increment = None,            # values to increment by on the values axis
     values_min = None,                  # smallest value to display on graph
     values_max = None,                  # largest value to display on graph
-    value_is_percentage = False,
-    num_decimals = 0,
+    value_is_percentage = False,        # Adds a percent sign to the values axis
+    num_decimals = 0,                   # Specify number of decimals you want the percent to show. Only active if value_is_percentage = True
 #     colours = [],                     # list of hex code strings
     convert_to_string = False,          # use if need to convert column_values to string
     drop_values = {},                   # {str(column_name): number, ...} , drop certain values or outliers if necessary
-    figure_height: int = 9,
-    figure_width: int = 11,
+    figure_height: int = 9,             # Height of figure
+    figure_width: int = 11,             # Width of figure
 ):
     """
     Input Dataframe format: 
@@ -454,7 +454,7 @@ def create_line(
     values_min = None,                      # the minimum number to display on the graph
     values_max = None,                      # the maximum number to display on the graph
     values_increment = None,                # The value in which to increment the y axis by
-    value_is_percentage = False,
+    value_is_percentage = False,            # Adds a percent sign to the y axis
     num_decimals = 0,                       # number of decimal places to display; only used if display_as_percentage=True
     handle_null_by: str = 'interpolation',  # Options: ('interpolation', 'drop_row', 'mean', 'median'), fill null values by using ...
     row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
