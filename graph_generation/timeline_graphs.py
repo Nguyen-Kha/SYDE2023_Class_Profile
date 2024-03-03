@@ -21,6 +21,7 @@ df_stress = pd.read_csv('timeline_stress.csv')
 df_rent = pd.read_csv('timeline_rent.csv')
 df_pay = pd.read_csv('timeline_pay.csv')
 df_find_job = pd.read_csv('timeline_find_job.csv')
+df_ww_rating = pd.read_csv('timeline_ww_rating.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -329,3 +330,29 @@ graphs.create_bar_stacked(
     labels = ['WaterlooWorks', 'Networking / Referral', 'Cold Applying / External', 'Previous employer', 'CECA', 'Family', 'Not Disclosed', 'Unemployed']
 )
 #### END: Create find job stacked bar ###################
+
+#### Create WaterlooWorks rating stacked bar ############
+df_ww_rating_working = df_ww_rating.join(df_employed.set_index('uid'), on = 'uid')
+df_ww_rating_working = df_ww_rating_working.drop(columns = 'uid').drop(index = 33).reset_index().drop(columns = 'index')
+
+ww_rating_columns = df_ww_rating_working.columns.tolist()[0:6]
+employed_columns = df_ww_rating_working.columns.tolist()[6:]
+
+for i in range(0, len(ww_rating_columns)):
+    df_ww_rating_working.loc[df_ww_rating_working[employed_columns[i]] == 'No', ww_rating_columns[i]] = 'Unemployed'
+    
+df_ww_rating_working = df_ww_rating_working.drop(columns = employed_columns)
+df_ww_rating_working = df_ww_rating_working.fillna("Not Disclosed")
+
+graphs.create_bar_stacked(
+    df_ww_rating_working,
+    ww_rating_columns,
+    'Co-op Term',
+    'Percentage of Students',
+    'What was your rating on WaterlooWorks for that co-op term',
+    vertical = True,
+    column_labels = helpers.get_coop_term_list(),
+    display_as_percentage = True,
+    labels = ['Satisfactory', 'Good', 'Very Good', 'Excellent', 'Outstanding', 'Not Disclosed', 'Unemployed']
+)
+#### END: Create WaterlooWorks rating stacked bar ###############
