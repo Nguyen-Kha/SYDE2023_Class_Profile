@@ -20,6 +20,7 @@ df_lectures = pd.read_csv('timeline_lectures.csv')
 df_stress = pd.read_csv('timeline_stress.csv')
 df_rent = pd.read_csv('timeline_rent.csv')
 df_pay = pd.read_csv('timeline_pay.csv')
+df_find_job = pd.read_csv('timeline_find_job.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -301,3 +302,30 @@ graphs.create_boxplot(
     values_increment = 5,
 )
 #### END: Create Co-op Pay boxplot ######################
+
+#### Create find job stacked bar #######################
+df_find_job_working = df_find_job.join(df_employed.set_index('uid'), on = 'uid')
+df_find_job_working = df_find_job_working.drop(columns = 'uid').drop(index = 33).reset_index().drop(columns = 'index')
+
+find_job_columns = df_find_job_working.columns.tolist()[0:6]
+employed_columns = df_find_job_working.columns.tolist()[6:]
+
+for i in range(0, len(find_job_columns)):
+    df_find_job_working.loc[df_find_job_working[employed_columns[i]] == 'No', find_job_columns[i]] = 'Unemployed'
+
+df_find_job_working = df_find_job_working.drop(columns = employed_columns)
+df_find_job_working = df_find_job_working.fillna("Not Disclosed")
+df_find_job_working
+
+graphs.create_bar_stacked(
+    df_find_job_working,
+    find_job_columns,
+    'Co-op Term',
+    'Percentage of Students',
+    'How did you find your co-op job',
+    vertical = True,
+    column_labels = helpers.get_coop_term_list(),
+    display_as_percentage = True,
+    labels = ['WaterlooWorks', 'Networking / Referral', 'Cold Applying / External', 'Previous employer', 'CECA', 'Family', 'Not Disclosed', 'Unemployed']
+)
+#### END: Create find job stacked bar ###################
