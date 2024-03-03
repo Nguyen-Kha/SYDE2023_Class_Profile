@@ -2,6 +2,48 @@ from collections import Counter
 import pandas as pd
 import math
 
+SYDE_CORE_COURSES_LIST = [
+    'SYDE 101',
+    'SYDE 101L',
+    'SYDE 111',
+    'SYDE 112',
+    'SYDE 113',
+    'SYDE 114',
+    'SYDE 121',
+    'SYDE 161',
+    'SYDE 162',
+    'SYDE 181',
+    'SYDE 182',
+    'SYDE 192',
+    'SYDE 192L',
+    'SYDE 211',
+    'SYDE 212',
+    'SYDE 223',
+    'SYDE 252',
+    'SYDE 261',
+    'SYDE 262',
+    'SYDE 283',
+    'SYDE 285',
+    'SYDE 286',
+    'SYDE 292',
+    'SYDE 292L',
+    'SYDE 311',
+    'SYDE 312',
+    'SYDE 351',
+    'SYDE 352',
+    'SYDE 352L',
+    'SYDE 361',
+    'SYDE 362',
+    'SYDE 381',
+    'SYDE 383',
+    'SYDE 411',
+    'SYDE 461',
+    'SYDE 462'
+]
+
+def get_syde_core_courses_list():
+    return SYDE_CORE_COURSES_LIST
+
 def splice_cells_with_commas(df, column_name): # TODO: TEST
     """
     If a column value has commas in it, turns it into an array of strings to be parsed
@@ -272,3 +314,23 @@ def transform_df_for_line_unnamed_rows(
     df['index'] = column_name_list
     df = pd.melt(df, id_vars = ['index'], var_name = row_object_name)
     return df
+
+def compute_initial_values_min(df, column_name: str):
+    return min(df[column_name])
+
+def compute_initial_values_max(df, column_name: str):
+    return max(df[column_name])
+
+def compute_displayed_values_min(values_min, values_increment, autoset: bool):
+    if(autoset):
+        values_min = values_min - values_increment
+    else:
+        values_min = values_min - (values_increment / 10000)
+    return values_min
+        
+def compute_displayed_values_max(values_max, values_increment, autoset: bool):
+    if(autoset):
+        values_max = values_max - values_increment
+    else:
+        values_max = values_max + (values_increment / 10000)
+    return values_max
