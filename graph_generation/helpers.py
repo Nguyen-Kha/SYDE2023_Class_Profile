@@ -1,4 +1,5 @@
 from collections import Counter
+import numpy as np
 import pandas as pd
 import math
 
@@ -203,7 +204,7 @@ def transform_df_for_boxplot(
     +---------------+------------------------------+
     into
     +---------------+----------------+-----------------------+
-    | boxplot_title | boxplot_values | comparison (optional) |
+    | column_name   | boxplot_values | comparison (optional) |
     +---------------+----------------+-----------------------+
     | column_name_a | number_a1      | Class A               |
     | column_name_a | number_a2      | Class B               |
@@ -315,13 +316,75 @@ def transform_df_for_line_unnamed_rows(
     df = pd.melt(df, id_vars = ['index'], var_name = row_object_name)
     return df
 
-def compute_initial_values_min(df, column_name: str):
-    return min(df[column_name])
+def transform_df_for_single_line_percentage(
+    df,
+    column_name_list: list,
+):
+    """
+    Generates a dataframe to have a single line showing the change in percentage
+    Assumes already cleaned dataframe.
+    To be called before calling create_line()
+    
+    Input Dataframe format:
+    +------------------------+------+------------------------+
+    | sequence_column_part_1 | ...  | sequence_column_part_n |
+    +------------------------+------+------------------------+
+    | number a_part_1        |      | number a_part_n        |
+    | number b_part_1        |      | number b_part_n        |
+    | number c_part_1        |      | number c_part_n        |
+    +------------------------+------+------------------------+
+    
+    Returns Dataframe:
+    +------------------------+------+------------------------+
+    | sequence_column_part_1 | ...  | sequence_column_part_n |
+    +------------------------+------+------------------------+
+    | % a_part_1             |      | % a_part_n             |
+    +------------------------+------+------------------------+
+    """
+    number_of_answers = len(df)
+    df.loc['Total'] = df.sum(numeric_only = True, axis = 0)
+    df = df.drop(index = np.arange(0, number_of_answers, 1))
+    df[column_name_list] = df[column_name_list] / number_of_answers * 100
+    
+    return df
 
-def compute_initial_values_max(df, column_name: str):
-    return max(df[column_name])
+def compute_initial_values_min(df, column_name_list: list):
+    """
+    This computes the smallest value in the dataframe
+    """
+    if(len(column_name_list) == 1):
+        return min(df[column_name_list[0]])
+    
+    initial_values_min = float('inf')
+    for column_name in column_name_list:
+        column_min = min(df[column_name])
+        if(column_min < initial_values_min):
+            initial_values_min = column_min
+
+def compute_initial_values_max(df, column_name_list: list):
+    """
+    This computes the largest value in the dataframe
+    """
+    if(len(column_name_list) == 1):
+        return max(df[column_name_list[0]])
+    
+    initial_values_max = 0
+    for column_name in column_name_list:
+        column_max = max(df[column_name])
+        if(column_max > initial_values_max):
+            initial_values_max = column_max
+        
+    return initial_values_max
 
 def compute_displayed_values_min(values_min, values_increment, autoset: bool):
+    """
+    This adjusts the smallest value so that it is properly displayed in matplotlib and seaborn graphs.
+    Matplotlib and seaborn sometimes excludes the smallest or largest number from the ticks. You'll often see graphs with
+    values from 0 - 100, but the top value is missing and the last tick on the y axis is 90. This happens because matplotlib
+    (and maybe seaborn) sets the ranges as [start, end)
+    
+    This will adjust the values_min value to show that first tick
+    """
     if(autoset):
         values_min = values_min - values_increment
     else:
@@ -329,6 +392,14 @@ def compute_displayed_values_min(values_min, values_increment, autoset: bool):
     return values_min
         
 def compute_displayed_values_max(values_max, values_increment, autoset: bool):
+    """
+    This adjusts the largest value so that it is properly displayed in matplotlib and seaborn graphs.
+    Matplotlib and seaborn sometimes excludes the smallest or largest number from the ticks. You'll often see graphs with
+    values from 0 - 100, but the top value is missing and the last tick on the y axis is 90. This happens because matplotlib
+    (and maybe seaborn) sets the ranges as [start, end)
+    
+    This will adjust the values_max value to show that last tick
+    """
     if(autoset):
         values_max = values_max + values_increment
     else:

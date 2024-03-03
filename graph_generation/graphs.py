@@ -33,6 +33,8 @@ def create_bar(
     convert_to_string = False,          # used if your DataFrame column are not strings
     max_label_length = 20,              # max number of characters to use for a label before wrapping it
     num_decimals = 0,                   # number of decimal places to display; only used if display_as_percentage=True
+    figure_height: int = 9,             # height of figure
+    figure_width: int = 11              # width of figure
 ):  
     """
     Input dataframe format:
@@ -113,14 +115,17 @@ def create_bar(
     
     ###################
     ## Set axis interval increments
-    
-    if(not values_max):
-        values_max = max(df_temp['values'])
-        
-    if(not values_increment):
+    values_max_was_auto_set = False
+    if(values_max == None):
+        values_max = helpers.compute_initial_values_max(df_temp, ['values'])
+        values_max_was_auto_set = True
+
+    if(values_increment == None):
         values_increment = math.ceil(values_max / 10)
 
-    fig, ax = plt.subplots(figsize = (11,9))
+    values_max = helpers.compute_displayed_values_max(values_max, values_increment, values_max_was_auto_set)
+
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(vertical):
         ax.bar(
@@ -134,7 +139,7 @@ def create_bar(
         )
         ax.set_xlabel(title_label)
         ax.set_ylabel(values_label)
-        ax.yaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
         if(labels):
             ax.set_xticks(x)
             ax.set_xticklabels(labels)
@@ -157,7 +162,7 @@ def create_bar(
         )
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
-        ax.xaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
         if(labels):
             ax.set_yticks(x)
             ax.set_yticklabels(labels)
@@ -171,7 +176,7 @@ def create_bar(
     plt.rcParams['axes.facecolor'] = '#F0F0F0'
     ax.grid(color='w', linestyle='solid', zorder=0)
     if(display_legend):
-        plt.legend(title="Legend", facecolor='white')
+        plt.legend(title="Legend", facecolor='white', bbox_to_anchor=(1.04, 1), loc='upper left')
 
     plt.title(title)
 
@@ -193,11 +198,16 @@ def create_bar_stacked(
     values_increment = None,        # value to increment y axis by. If display_as_percentage = True, this value is 10
     values_max = None,              # The maximum y axis value of the graph. If display_as_percentage = True, this value is 100
     labels = [],                    # List of strings, specific order to arrange bars by. if passing multiple values in column_name_list, labels will be the same for all of them
-    colours = [],                   # list of hex code strings for column_name colours
+    column_labels = [],             # List of strings, Change the column names associated with each combined bar on the graph
+#     colours = [],                   # list of hex code strings for column_name colours
     display_as_percentage = False,  # Display the y axis values as a percentage instead of a count
+    num_decimals = 0,               # number of decimal places to display; only used if display_as_percentage=True
     title_label_rotation_angle = 0, # angle of the x axis labels. If overlapping, use 45
     convert_to_string = False,      # convert title labels to string
-    legend_title = None             # Name of the legend title
+    max_label_length = 20,          # max number of characters to use for a label before wrapping it
+    legend_title = None ,           # Name of the legend title
+    figure_height: int = 9,         # height of figure
+    figure_width: int = 11          # width of figure
 ):
     """
     DataFrame format:
@@ -212,14 +222,16 @@ def create_bar_stacked(
     
     The values in all the columns must be a part of the same set. AKA they should all be the same. Ex, ['Yes', 'No']: all columns have these values
     """
-    if (not colours):
-        colours = sns.color_palette('muted')
+#     if (not colours):
+#         colours = sns.color_palette('muted')
     
     list_df = []
     for column_name in column_name_list:
         list_df.append(helpers.transform_stacked_bar_df(df, column_name, labels, display_as_percentage, convert_to_string))
     working_df = pd.concat(list_df) # combine the individual dataframes together via UNION
     working_df = working_df.fillna(0) # if no labels provided, turn all np.nan values for offset calculation
+    if(type(working_df['column_name'][0]) == str):
+        working_df['column_name'] = [ '\n'.join(wrap(label, max_label_length)) for label in working_df['column_name'] ]
     
     if(not values_max):
         values_max = working_df['Total'].max(0)
@@ -234,8 +246,16 @@ def create_bar_stacked(
     list_df_columns.pop(0) # remove column_name from list
     list_df_columns.remove("Total")
     
+    values_max_was_auto_set = False
+    if(values_max == None):
+        values_max = helpers.compute_initial_values_max(working_df, list_df_columns)
+        values_max_was_auto_set = True
+    if(values_increment == None):
+        values_increment = math.ceil(values_max / 10)
+    values_max = helpers.compute_displayed_values_max(values_max, values_increment, values_max_was_auto_set)
+    
     offset = pd.Series(0) # this allows for bar stacking
-    fig, ax = plt.subplots(figsize = (11, 9))
+    fig, ax = plt.subplots(figsize = (figure_width, figure_height))
     if(vertical):
         for i in range (0, len(list_df_columns)):
             ax.bar(
@@ -249,9 +269,15 @@ def create_bar_stacked(
             
         ax.set_ylabel(values_label)
         ax.set_xlabel(title_label)
-        ax.yaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
+        if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
+            ax.set_xticklabels(column_labels)
         if(title_label_rotation_angle != 0):
             plt.xticks(rotation = title_label_rotation_angle, ha = 'right')
+            
+        if(display_as_percentage):
+            ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
     else:
         # Horizontal graphs have ascending top to bottom display. Reverse this to keep it consistent with bar graph
         reverse_column_name = working_df['column_name'].tolist() # You could theoretically sort it by total, but that doesn't keep order
@@ -270,12 +296,20 @@ def create_bar_stacked(
 
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
-        ax.xaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
+        if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
+            column_labels.reverse()
+            ax.set_yticklabels(column_labels)
+        
+        if(display_as_percentage):
+            ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         
     if(not legend_title):
         legend_title = 'Legend'
-    plt.legend(list_df_columns, title=legend_title, facecolor='white')
+    plt.legend(list_df_columns, title=legend_title, facecolor='white', bbox_to_anchor=(1.04, 1), loc='upper left')
     plt.title(title)
+
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
 
@@ -288,17 +322,20 @@ def create_boxplot(
     file_name,                          # file name to save graph as
 
     vertical: bool = True,              # orientation of boxplots
-    column_labels = [],                 # Text to display on the title axis to replace the actual column_name being shown. Must be in the order of column_name_list
+    column_labels = [],                 # List of strings, used to rename the column_name for each box on graph
     comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
     comparison_labels = [],             # order of the comparison labels
     values_increment = None,            # values to increment by on the values axis
     values_min = None,                  # smallest value to display on graph
     values_max = None,                  # largest value to display on graph
+    value_is_percentage = False,        # Adds a percent sign to the values axis
+    num_decimals = 0,                   # Specify number of decimals you want the percent to show. Only active if value_is_percentage = True
 #     colours = [],                     # list of hex code strings
     convert_to_string = False,          # use if need to convert column_values to string
+    max_label_length = 20,              # max number of characters to use for a label before wrapping it
     drop_values = {},                   # {str(column_name): number, ...} , drop certain values or outliers if necessary
-    figure_height: int = 9,             # Height of graph
-    figure_width: int = 11,             # Width of graph
+    figure_height: int = 9,             # Height of figure
+    figure_width: int = 11,             # Width of figure
 ):
     """
     Input Dataframe format: 
@@ -325,6 +362,8 @@ def create_boxplot(
             list_df.append(working_df)
         df_boxplot = pd.concat(list_df)
     df_boxplot = df_boxplot.reset_index().drop(columns='index')
+    if(type(df_boxplot['column_name'][0]) == str):
+        df_boxplot['column_name'] = [ '\n'.join(wrap(label, max_label_length)) for label in df_boxplot['column_name'] ]
     
     fig, ax = plt.subplots(figsize = (figure_width, figure_height))
     
@@ -371,10 +410,10 @@ def create_boxplot(
     values_max_was_auto_set = False
     
     if(values_min == None):
-        values_min = helpers.compute_initial_values_min(df_boxplot, 'boxplot_value')
+        values_min = helpers.compute_initial_values_min(df_boxplot, ['boxplot_value'])
         values_min_was_auto_set = True
     if(values_max == None):
-        values_max = helpers.compute_initial_values_max(df_boxplot, 'boxplot_value')
+        values_max = helpers.compute_initial_values_max(df_boxplot, ['boxplot_value'])
         values_max_was_auto_set = True
     if(values_increment == None):
         values_increment = math.ceil(values_max / 10)
@@ -386,13 +425,19 @@ def create_boxplot(
         ax.set_xlabel(title_label)
         ax.set_ylabel(values_label)
         if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
             ax.set_xticklabels(column_labels)
+        if(value_is_percentage):
+            ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
     else:
         ax.xaxis.set_ticks(np.arange(values_min, values_max, values_increment))
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
         if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
             ax.set_yticklabels(column_labels)
+        if(value_is_percentage):
+            ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
 
     if(not file_name):
         file_name = str(column_name_list[0]) + "_boxplot"
@@ -410,19 +455,25 @@ def create_histogram(
 def create_line(
     df,                                     # pandas dataframe. see below for input format
     column_name_list,                       # list of the sequential columns in order (ex gpa_1a, gpa_1b, ...)
-    sequential_label,                       # Sequential axis (x axis) label
+    title_label,                            # title axis (x axis) label
     values_label,                           # y axis label
     title,                                  # title of graph
     file_name,                              # file name in which to save the graph to
-
+    
+    sequential_labels = [],
     values_min = None,                      # the minimum number to display on the graph
     values_max = None,                      # the maximum number to display on the graph
     values_increment = None,                # The value in which to increment the y axis by
+    value_is_percentage = False,            # Adds a percent sign to the y axis
+    num_decimals = 0,                       # number of decimal places to display; only used if display_as_percentage=True
     handle_null_by: str = 'interpolation',  # Options: ('interpolation', 'drop_row', 'mean', 'median'), fill null values by using ...
     row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
-    sequential_label_rotation_angle = 0     # x axis rotation angle for overflow
+    title_label_rotation_angle = 0,         # x axis rotation angle for overflow
+    max_label_length = 20,                  # max number of characters to use for a label before wrapping it
+    figure_height: int = 9,                 # height of figure
+    figure_width: int = 11                  # width of figure
 ):
     """
     will interpolate values as default since this is seaborn based. If you are looking for discontinuity for np.nan values, use matplotlib
@@ -461,8 +512,11 @@ def create_line(
         df_line = helpers.transform_df_for_line_named_rows(df, column_name_list, 'row_object', row_object_list)
     else:
         df_line = helpers.transform_df_for_line_unnamed_rows(df, column_name_list)
+
+    if(type(df_line['index'][0]) == str):
+        df_line['index'] = [ '\n'.join(wrap(label, max_label_length)) for label in df_line['index'] ]
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(row_object_name):
         sns.lineplot(
@@ -502,9 +556,13 @@ def create_line(
             sort = False
         )
     
-    ax.set_xlabel(sequential_label)
+    ax.set_xlabel(title_label)
     ax.set_ylabel(values_label)
     plt.title(title)
+    
+    if(sequential_labels):
+        sequential_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), sequential_labels))
+        ax.set_xticklabels(sequential_labels)
     
     values_max_was_automatically_set = False
     values_min_was_automatically_set = False
@@ -524,12 +582,15 @@ def create_line(
     if(values_min_was_automatically_set):
         values_min = values_min - values_increment
         
+    if(value_is_percentage):
+        ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
+        
     ax.yaxis.set_ticks(np.arange(values_min, values_max, values_increment))
 
-    if(sequential_label_rotation_angle == 0):
-        plt.xticks(rotation=sequential_label_rotation_angle)
+    if(title_label_rotation_angle == 0):
+        plt.xticks(rotation=title_label_rotation_angle)
     else:
-        plt.xticks(rotation=sequential_label_rotation_angle, ha='right')
+        plt.xticks(rotation=title_label_rotation_angle, ha='right')
     
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
@@ -559,7 +620,9 @@ def create_line_category_traversal(
     row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
-    sequential_label_rotation_angle = 0     # x axis rotation angle for overflow
+    sequential_label_rotation_angle = 0,    # x axis rotation angle for overflow
+    figure_height: int = 9,                 # height of figure
+    figure_width: int = 11                  # width of figure
 ):
     """
     Line graph for discrete categorical variable traversal. Shows how a state changes at given time point, where the state is not numerical
@@ -589,7 +652,7 @@ def create_line_category_traversal(
     
     df_line_categorical['value'] = df_line_categorical['value'].map(categorical_mapping_dict)
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(row_object_name):
         sns.lineplot(
@@ -646,15 +709,17 @@ def create_line_category_traversal(
     plt.close()
 
 def create_pie( 
-    df,                     # pandas DataFrame, Non Aggregate and cleaned
-    column_name,            # column name in the dataframe
-    title,                  # title of the pie chart
+    df,                         # pandas DataFrame, Non Aggregate and cleaned
+    column_name,                # column name in the dataframe
+    title,                      # title of the pie chart
 
-    labels = [],            # labels for the legend to follow in specific order,
-    drop_values = [],       # list of strings. If need to drop column value quickly, use this
-    colours = [],           # list of strings. Hex colours for pie chart 
-    file_name = None,       # Name of file to save bar graph to,
-    legend_title = None     # Name to be displayed on legend
+    labels = [],                # labels for the legend to follow in specific order,
+    drop_values = [],           # list of strings. If need to drop column value quickly, use this
+    colours = [],               # list of strings. Hex colours for pie chart 
+    file_name = None,           # Name of file to save bar graph to,
+    legend_title = None,        # Name to be displayed on legend
+    figure_height: int = 9,     # height of figure
+    figure_width: int = 11      # width of figure
 ):
     """
     DataFrame format:
@@ -698,7 +763,7 @@ def create_pie(
         df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
         df_temp = df_temp.sort_values(by=['values'], ascending = False)
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     plt.pie(
         x = df_temp['values'],
         labels = df_temp['title'],
@@ -713,7 +778,7 @@ def create_pie(
     
     if(legend_title == None):
         legend_title = "Legend"
-    plt.legend(df_temp['title'], title=legend_title)
+    plt.legend(df_temp['title'], title=legend_title, bbox_to_anchor=(1.04, 1), loc='upper left')
     plt.axis('equal')
 
     if(not file_name):
@@ -739,7 +804,9 @@ def create_scatter(
     x_values_increment = None,
     y_values_min = None,
     y_values_max = None,
-    y_values_increment = None
+    y_values_increment = None,
+    figure_height: int = 9,         # height of figure
+    figure_width: int = 11          # width of figure
 ):
     """
     DataFrame format:
@@ -761,7 +828,7 @@ def create_scatter(
     else:
         df_temp = df_temp.sort_values(by=[x_column_name], ascending=True)
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     plt.scatter(
         x = df_temp[x_column_name],
@@ -792,16 +859,16 @@ def create_scatter(
     y_values_max_was_auto_set = False
     
     if(x_values_min == None):
-        x_values_min = helpers.compute_initial_values_min(df_temp, x_column_name)
+        x_values_min = helpers.compute_initial_values_min(df_temp, [x_column_name])
         x_values_min_was_auto_set = True
     if(x_values_max == None):
-        x_values_max = helpers.compute_initial_values_max(df_temp, x_column_name)
+        x_values_max = helpers.compute_initial_values_max(df_temp, [x_column_name])
         x_values_max_was_auto_set = True
     if(y_values_min == None):
-        y_values_min = helpers.compute_initial_values_max(df_temp, y_column_name)
+        y_values_min = helpers.compute_initial_values_max(df_temp, [y_column_name])
         y_values_min_was_auto_set = True
     if(y_values_max == None):
-        y_values_max = helpers.compute_initial_values_max(df_temp, y_column_name)
+        y_values_max = helpers.compute_initial_values_max(df_temp, [y_column_name])
         y_values_max_was_auto_set = True
         
     if(x_values_increment == None):
