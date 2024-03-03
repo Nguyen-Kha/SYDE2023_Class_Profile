@@ -33,6 +33,8 @@ def create_bar(
     convert_to_string = False,          # used if your DataFrame column are not strings
     max_label_length = 20,              # max number of characters to use for a label before wrapping it
     num_decimals = 0,                   # number of decimal places to display; only used if display_as_percentage=True
+    figure_height: int = 9,             # height of figure
+    figure_width: int = 11              # width of figure
 ):  
     """
     Input dataframe format:
@@ -113,14 +115,17 @@ def create_bar(
     
     ###################
     ## Set axis interval increments
-    
-    if(not values_max):
-        values_max = max(df_temp['values'])
-        
-    if(not values_increment):
+    values_max_was_auto_set = False
+    if(values_max == None):
+        values_max = helpers.compute_initial_values_max(df_temp, 'values')
+        values_max_was_auto_set = True
+
+    if(values_increment == None):
         values_increment = math.ceil(values_max / 10)
 
-    fig, ax = plt.subplots(figsize = (11,9))
+    values_max = helpers.compute_displayed_values_max(values_max, values_increment, values_max_was_auto_set)
+
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(vertical):
         ax.bar(
@@ -134,7 +139,7 @@ def create_bar(
         )
         ax.set_xlabel(title_label)
         ax.set_ylabel(values_label)
-        ax.yaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
         if(labels):
             ax.set_xticks(x)
             ax.set_xticklabels(labels)
@@ -157,7 +162,7 @@ def create_bar(
         )
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
-        ax.xaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
         if(labels):
             ax.set_yticks(x)
             ax.set_yticklabels(labels)
@@ -197,7 +202,9 @@ def create_bar_stacked(
     display_as_percentage = False,  # Display the y axis values as a percentage instead of a count
     title_label_rotation_angle = 0, # angle of the x axis labels. If overlapping, use 45
     convert_to_string = False,      # convert title labels to string
-    legend_title = None             # Name of the legend title
+    legend_title = None ,           # Name of the legend title
+    figure_height: int = 9,         # height of figure
+    figure_width: int = 11          # width of figure
 ):
     """
     DataFrame format:
@@ -235,7 +242,7 @@ def create_bar_stacked(
     list_df_columns.remove("Total")
     
     offset = pd.Series(0) # this allows for bar stacking
-    fig, ax = plt.subplots(figsize = (11, 9))
+    fig, ax = plt.subplots(figsize = (figure_width, figure_height))
     if(vertical):
         for i in range (0, len(list_df_columns)):
             ax.bar(
@@ -422,7 +429,9 @@ def create_line(
     row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
-    sequential_label_rotation_angle = 0     # x axis rotation angle for overflow
+    sequential_label_rotation_angle = 0,    # x axis rotation angle for overflow
+    figure_height: int = 9,                 # height of figure
+    figure_width: int = 11                  # width of figure
 ):
     """
     will interpolate values as default since this is seaborn based. If you are looking for discontinuity for np.nan values, use matplotlib
@@ -462,7 +471,7 @@ def create_line(
     else:
         df_line = helpers.transform_df_for_line_unnamed_rows(df, column_name_list)
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(row_object_name):
         sns.lineplot(
@@ -559,7 +568,9 @@ def create_line_category_traversal(
     row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
-    sequential_label_rotation_angle = 0     # x axis rotation angle for overflow
+    sequential_label_rotation_angle = 0,    # x axis rotation angle for overflow
+    figure_height: int = 9,                 # height of figure
+    figure_width: int = 11                  # width of figure
 ):
     """
     Line graph for discrete categorical variable traversal. Shows how a state changes at given time point, where the state is not numerical
@@ -589,7 +600,7 @@ def create_line_category_traversal(
     
     df_line_categorical['value'] = df_line_categorical['value'].map(categorical_mapping_dict)
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(row_object_name):
         sns.lineplot(
@@ -646,15 +657,17 @@ def create_line_category_traversal(
     plt.close()
 
 def create_pie( 
-    df,                     # pandas DataFrame, Non Aggregate and cleaned
-    column_name,            # column name in the dataframe
-    title,                  # title of the pie chart
+    df,                         # pandas DataFrame, Non Aggregate and cleaned
+    column_name,                # column name in the dataframe
+    title,                      # title of the pie chart
 
-    labels = [],            # labels for the legend to follow in specific order,
-    drop_values = [],       # list of strings. If need to drop column value quickly, use this
-    colours = [],           # list of strings. Hex colours for pie chart 
-    file_name = None,       # Name of file to save bar graph to,
-    legend_title = None     # Name to be displayed on legend
+    labels = [],                # labels for the legend to follow in specific order,
+    drop_values = [],           # list of strings. If need to drop column value quickly, use this
+    colours = [],               # list of strings. Hex colours for pie chart 
+    file_name = None,           # Name of file to save bar graph to,
+    legend_title = None,        # Name to be displayed on legend
+    figure_height: int = 9,     # height of figure
+    figure_width: int = 11      # width of figure
 ):
     """
     DataFrame format:
@@ -698,7 +711,7 @@ def create_pie(
         df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
         df_temp = df_temp.sort_values(by=['values'], ascending = False)
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     plt.pie(
         x = df_temp['values'],
         labels = df_temp['title'],
@@ -739,7 +752,9 @@ def create_scatter(
     x_values_increment = None,
     y_values_min = None,
     y_values_max = None,
-    y_values_increment = None
+    y_values_increment = None,
+    figure_height: int = 9,         # height of figure
+    figure_width: int = 11          # width of figure
 ):
     """
     DataFrame format:
@@ -761,7 +776,7 @@ def create_scatter(
     else:
         df_temp = df_temp.sort_values(by=[x_column_name], ascending=True)
     
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     plt.scatter(
         x = df_temp[x_column_name],
