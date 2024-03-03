@@ -17,6 +17,7 @@ df_employed = pd.read_csv('timeline_employed.csv')
 df_coop_category = pd.read_csv('timeline_coop_category.csv')
 df_location = pd.read_csv('timeline_location.csv')
 df_lectures = pd.read_csv('timeline_lectures.csv')
+df_stress = pd.read_csv('timeline_stress.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -103,6 +104,24 @@ graphs.create_line(
     values_min = 1
 )
 #### END: Create lecture attendance line #######
+
+#### Create stress levels line #################
+df_stress_working = df_stress.drop(columns = 'uid').drop(index = 33).reset_index().drop(columns = 'index')
+df_stress_working = df_stress_working.fillna(df_stress_working.median())
+stress_list = df_stress_working.columns.tolist()
+
+graphs.create_line(
+    df_stress_working,
+    stress_list,
+    'Study Term',
+    'Reported Stress Level',
+    'How stressful was this term',
+    values_min = 1,
+    sequential_labels = helpers.get_study_term_list(),
+    only_show_average = True,
+    figure_height = 7,
+)
+#### END: Create stress levels line ###############
 
 #### Create Co-op Category Stacked bar ##########
 
