@@ -13,6 +13,8 @@ df = pd.read_csv('')
 df1 = pd.read_csv('')
 df_easy_useful = pd.read_csv('timeline_easy_useful_courses.csv')
 df_gpa = pd.read_csv('timeline_gpa.csv')
+df_employed = pd.read_csv('timeline_employed.csv')
+df_coop_category = pd.read_csv('timeline_coop_category.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -79,3 +81,67 @@ graphs.create_boxplot(
 #     figure_height = 15,
 #     figure_width = 15
 )
+#### END: Create gpa boxplot ##############
+
+#### Create Co-op Category Stacked bar ##########
+
+def change_coop_category(value):
+    if(type(value) == float):
+        if(math.isnan(value)):
+            return np.nan
+    
+    if(value == '3D Modelling'):
+        value = 'Mechanical / Hardware'
+    elif(value == 'Teacher Assistant / Curriculum Planning'):
+        value = 'Project Management'
+    elif(value == 'Manufacturing Technician'):
+        value = 'Mechanical / Hardware'
+    elif(value == 'analyst mixed with tech support'):
+        value = 'Analyst'
+    elif(value == 'Event planning'):
+        value = 'Project Management'
+    elif(value == 'Automation'):
+        value = 'Mechanical / Hardware'
+    elif(value == 'UX/Data Analyst'):
+        value = 'UI / UX'
+    elif(value == 'Design'):
+        value = 'UI / UX'
+    elif(value == 'Hardware (Embedded Software, Electrical)'):
+        value = 'Mechanical / Hardware'
+    elif(value == 'Data Science' or value == 'Machine Learning / Artificial Intelligence' or value == 'Data Engineering'):
+        value = 'DE / DS / ML / AI'
+    elif(value == 'Mechanical'):
+        value = 'Mechanical / Hardware'
+    return value
+
+# SELECT coop_category.*, employed.* FROM coop_category JOIN employed ON coop_category.uid = employed.uid
+df_coop_category_working = df_coop_category.join(df_employed.set_index('uid'), on = 'uid')
+df_coop_category_working = df_coop_category_working.drop(columns = 'uid')
+
+coop_cat_list = df_coop_category_working.columns.tolist()[0:6]
+employed_status_list = df_coop_category_working.columns.tolist()[6:]
+
+employed_status_list = list(map(lambda x: x.replace('\n', ""), employed_status_list))
+df_coop_category_working = df_coop_category_working.drop(index = 33)
+
+
+for i in range(0, len(coop_cat_list)):
+    df_coop_category_working.loc[df_coop_category_working[employed_status_list[i]] == 'No', coop_cat_list[i] ] = 'Unemployed'
+df_coop_category_working = df_coop_category_working.drop(columns = list(employed_status_list))
+df_coop_category_working = df_coop_category_working.fillna("Uncategorized")
+
+for i in range(0, len(coop_cat_list)):
+    df_coop_category_working[coop_cat_list[i]] = df_coop_category_working[coop_cat_list[i]].apply(change_coop_category)
+    
+graphs.create_bar_stacked(
+    df_coop_category_working,
+    coop_cat_list,
+    'Co-op Term',
+    'Percentage of Students',
+    'Co-op categories by term',
+    display_as_percentage = True,
+    vertical = True,
+    labels = ['Software', 'UI / UX','Product Management','Product Design', 'IT', 'QA', 'Analyst', 'Mechanical / Hardware',   'Project Management',   'DE / DS / ML / AI', 'Research', 'Technical Writing','Uncategorized', 'Unemployed']
+)
+
+#### END: Create Co-op Category Stacked bar ##########
