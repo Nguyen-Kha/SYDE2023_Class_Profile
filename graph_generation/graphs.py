@@ -117,7 +117,7 @@ def create_bar(
     ## Set axis interval increments
     values_max_was_auto_set = False
     if(values_max == None):
-        values_max = helpers.compute_initial_values_max(df_temp, 'values')
+        values_max = helpers.compute_initial_values_max(df_temp, ['values'])
         values_max_was_auto_set = True
 
     if(values_increment == None):
@@ -241,6 +241,14 @@ def create_bar_stacked(
     list_df_columns.pop(0) # remove column_name from list
     list_df_columns.remove("Total")
     
+    values_max_was_auto_set = False
+    if(values_max == None):
+        values_max = helpers.compute_initial_values_max(working_df, list_df_columns)
+        values_max_was_auto_set = True
+    if(values_increment == None):
+        values_increment = math.ceil(values_max / 10)
+    values_max = helpers.compute_displayed_values_max(values_max, values_increment, values_max_was_auto_set)
+    
     offset = pd.Series(0) # this allows for bar stacking
     fig, ax = plt.subplots(figsize = (figure_width, figure_height))
     if(vertical):
@@ -256,7 +264,7 @@ def create_bar_stacked(
             
         ax.set_ylabel(values_label)
         ax.set_xlabel(title_label)
-        ax.yaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
         if(title_label_rotation_angle != 0):
             plt.xticks(rotation = title_label_rotation_angle, ha = 'right')
     else:
@@ -277,11 +285,11 @@ def create_bar_stacked(
 
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
-        ax.xaxis.set_ticks(np.arange(0, values_max + values_increment, values_increment))
+        ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
         
     if(not legend_title):
         legend_title = 'Legend'
-    plt.legend(list_df_columns, title=legend_title, facecolor='white')
+    plt.legend(list_df_columns, title=legend_title, facecolor='white', bbox_to_anchor=(1.04, 1), loc='upper left')
     plt.title(title)
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
@@ -295,7 +303,7 @@ def create_boxplot(
     file_name,                          # file name to save graph as
 
     vertical: bool = True,              # orientation of boxplots
-    column_labels = [],                 # Text to display on the title axis to replace the actual column_name being shown. Must be in the order of column_name_list
+    column_labels = [],
     comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
     comparison_labels = [],             # order of the comparison labels
     values_increment = None,            # values to increment by on the values axis
@@ -304,8 +312,8 @@ def create_boxplot(
 #     colours = [],                     # list of hex code strings
     convert_to_string = False,          # use if need to convert column_values to string
     drop_values = {},                   # {str(column_name): number, ...} , drop certain values or outliers if necessary
-    figure_height: int = 9,             # Height of graph
-    figure_width: int = 11,             # Width of graph
+    figure_height: int = 9,
+    figure_width: int = 11,
 ):
     """
     Input Dataframe format: 
@@ -378,10 +386,10 @@ def create_boxplot(
     values_max_was_auto_set = False
     
     if(values_min == None):
-        values_min = helpers.compute_initial_values_min(df_boxplot, 'boxplot_value')
+        values_min = helpers.compute_initial_values_min(df_boxplot, ['boxplot_value'])
         values_min_was_auto_set = True
     if(values_max == None):
-        values_max = helpers.compute_initial_values_max(df_boxplot, 'boxplot_value')
+        values_max = helpers.compute_initial_values_max(df_boxplot, ['boxplot_value'])
         values_max_was_auto_set = True
     if(values_increment == None):
         values_increment = math.ceil(values_max / 10)
@@ -807,16 +815,16 @@ def create_scatter(
     y_values_max_was_auto_set = False
     
     if(x_values_min == None):
-        x_values_min = helpers.compute_initial_values_min(df_temp, x_column_name)
+        x_values_min = helpers.compute_initial_values_min(df_temp, [x_column_name])
         x_values_min_was_auto_set = True
     if(x_values_max == None):
-        x_values_max = helpers.compute_initial_values_max(df_temp, x_column_name)
+        x_values_max = helpers.compute_initial_values_max(df_temp, [x_column_name])
         x_values_max_was_auto_set = True
     if(y_values_min == None):
-        y_values_min = helpers.compute_initial_values_max(df_temp, y_column_name)
+        y_values_min = helpers.compute_initial_values_max(df_temp, [y_column_name])
         y_values_min_was_auto_set = True
     if(y_values_max == None):
-        y_values_max = helpers.compute_initial_values_max(df_temp, y_column_name)
+        y_values_max = helpers.compute_initial_values_max(df_temp, [y_column_name])
         y_values_max_was_auto_set = True
         
     if(x_values_increment == None):

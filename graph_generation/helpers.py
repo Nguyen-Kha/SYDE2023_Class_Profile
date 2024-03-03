@@ -315,11 +315,27 @@ def transform_df_for_line_unnamed_rows(
     df = pd.melt(df, id_vars = ['index'], var_name = row_object_name)
     return df
 
-def compute_initial_values_min(df, column_name: str):
-    return min(df[column_name])
+def compute_initial_values_min(df, column_name_list: list):
+    if(len(column_name_list) == 1):
+        return min(df[column_name_list[0]])
+    
+    initial_values_min = float('inf')
+    for column_name in column_name_list:
+        column_min = min(df[column_name])
+        if(column_min < initial_values_min):
+            initial_values_min = column_min
 
-def compute_initial_values_max(df, column_name: str):
-    return max(df[column_name])
+def compute_initial_values_max(df, column_name_list: list):
+    if(len(column_name_list) == 1):
+        return max(df[column_name_list[0]])
+    
+    initial_values_max = 0
+    for column_name in column_name_list:
+        column_max = max(df[column_name])
+        if(column_max > initial_values_max):
+            initial_values_max = column_max
+        
+    return initial_values_max
 
 def compute_displayed_values_min(values_min, values_increment, autoset: bool):
     if(autoset):
