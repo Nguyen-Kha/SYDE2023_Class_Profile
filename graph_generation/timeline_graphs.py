@@ -12,6 +12,7 @@ import functools
 df = pd.read_csv('')
 df1 = pd.read_csv('')
 df_easy_useful = pd.read_csv('timeline_easy_useful_courses.csv')
+df_gpa = pd.read_csv('timeline_gpa.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -57,3 +58,24 @@ graphs.create_scatter(
     y_values_increment = 1
 )
 #### END: Create easiness vs usefulness scatter plot ###################
+
+#### Create gpa boxplot ###################
+df_gpa_working = df_gpa.drop(index = 33) # This row has all null
+df_gpa_working = df_gpa_working.drop(columns = 'uid')
+df_gpa_working = df_gpa_working.fillna(df_gpa_working.median())
+df_gpa_working_columns = df_gpa_working.columns.tolist()
+
+graphs.create_boxplot(
+    df_gpa_working,
+    df_gpa_working_columns,
+    'Term',
+    'Percentage',
+    'GPA per Term',
+    vertical = True,
+    values_min = 60,
+    values_max = 100,
+    values_increment = 5,
+    column_labels = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B'],
+#     figure_height = 15,
+#     figure_width = 15
+)
