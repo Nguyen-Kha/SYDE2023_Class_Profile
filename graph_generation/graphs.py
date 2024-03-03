@@ -204,6 +204,7 @@ def create_bar_stacked(
     num_decimals = 0,               # number of decimal places to display; only used if display_as_percentage=True
     title_label_rotation_angle = 0, # angle of the x axis labels. If overlapping, use 45
     convert_to_string = False,      # convert title labels to string
+    max_label_length = 20,          # max number of characters to use for a label before wrapping it
     legend_title = None ,           # Name of the legend title
     figure_height: int = 9,         # height of figure
     figure_width: int = 11          # width of figure
@@ -229,6 +230,8 @@ def create_bar_stacked(
         list_df.append(helpers.transform_stacked_bar_df(df, column_name, labels, display_as_percentage, convert_to_string))
     working_df = pd.concat(list_df) # combine the individual dataframes together via UNION
     working_df = working_df.fillna(0) # if no labels provided, turn all np.nan values for offset calculation
+    if(type(working_df['column_name'][0]) == str):
+        working_df['column_name'] = [ '\n'.join(wrap(label, max_label_length)) for label in working_df['column_name'] ]
     
     if(not values_max):
         values_max = working_df['Total'].max(0)
@@ -268,6 +271,7 @@ def create_bar_stacked(
         ax.set_xlabel(title_label)
         ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
         if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
             ax.set_xticklabels(column_labels)
         if(title_label_rotation_angle != 0):
             plt.xticks(rotation = title_label_rotation_angle, ha = 'right')
@@ -294,6 +298,7 @@ def create_bar_stacked(
         ax.set_ylabel(title_label)
         ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
         if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
             column_labels.reverse()
             ax.set_yticklabels(column_labels)
         
@@ -327,6 +332,7 @@ def create_boxplot(
     num_decimals = 0,                   # Specify number of decimals you want the percent to show. Only active if value_is_percentage = True
 #     colours = [],                     # list of hex code strings
     convert_to_string = False,          # use if need to convert column_values to string
+    max_label_length = 20,              # max number of characters to use for a label before wrapping it
     drop_values = {},                   # {str(column_name): number, ...} , drop certain values or outliers if necessary
     figure_height: int = 9,             # Height of figure
     figure_width: int = 11,             # Width of figure
@@ -356,6 +362,8 @@ def create_boxplot(
             list_df.append(working_df)
         df_boxplot = pd.concat(list_df)
     df_boxplot = df_boxplot.reset_index().drop(columns='index')
+    if(type(df_boxplot['column_name'][0]) == str):
+        df_boxplot['column_name'] = [ '\n'.join(wrap(label, max_label_length)) for label in df_boxplot['column_name'] ]
     
     fig, ax = plt.subplots(figsize = (figure_width, figure_height))
     
@@ -417,6 +425,7 @@ def create_boxplot(
         ax.set_xlabel(title_label)
         ax.set_ylabel(values_label)
         if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
             ax.set_xticklabels(column_labels)
         if(value_is_percentage):
             ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
@@ -425,6 +434,7 @@ def create_boxplot(
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
         if(column_labels):
+            column_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), column_labels))
             ax.set_yticklabels(column_labels)
         if(value_is_percentage):
             ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
@@ -445,7 +455,7 @@ def create_histogram(
 def create_line(
     df,                                     # pandas dataframe. see below for input format
     column_name_list,                       # list of the sequential columns in order (ex gpa_1a, gpa_1b, ...)
-    title_label,                       # title axis (x axis) label
+    title_label,                            # title axis (x axis) label
     values_label,                           # y axis label
     title,                                  # title of graph
     file_name,                              # file name in which to save the graph to
@@ -460,7 +470,8 @@ def create_line(
     row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
-    title_label_rotation_angle = 0,    # x axis rotation angle for overflow
+    title_label_rotation_angle = 0,         # x axis rotation angle for overflow
+    max_label_length = 20,                  # max number of characters to use for a label before wrapping it
     figure_height: int = 9,                 # height of figure
     figure_width: int = 11                  # width of figure
 ):
@@ -501,6 +512,9 @@ def create_line(
         df_line = helpers.transform_df_for_line_named_rows(df, column_name_list, 'row_object', row_object_list)
     else:
         df_line = helpers.transform_df_for_line_unnamed_rows(df, column_name_list)
+
+    if(type(df_line['index'][0]) == str):
+        df_line['index'] = [ '\n'.join(wrap(label, max_label_length)) for label in df_line['index'] ]
     
     fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
@@ -547,6 +561,7 @@ def create_line(
     plt.title(title)
     
     if(sequential_labels):
+        sequential_labels = list(map(lambda x: '\n'.join(wrap(x, max_label_length)), sequential_labels))
         ax.set_xticklabels(sequential_labels)
     
     values_max_was_automatically_set = False

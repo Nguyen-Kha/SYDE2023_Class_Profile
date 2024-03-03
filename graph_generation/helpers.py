@@ -204,7 +204,7 @@ def transform_df_for_boxplot(
     +---------------+------------------------------+
     into
     +---------------+----------------+-----------------------+
-    | boxplot_title | boxplot_values | comparison (optional) |
+    | column_name   | boxplot_values | comparison (optional) |
     +---------------+----------------+-----------------------+
     | column_name_a | number_a1      | Class A               |
     | column_name_a | number_a2      | Class B               |
