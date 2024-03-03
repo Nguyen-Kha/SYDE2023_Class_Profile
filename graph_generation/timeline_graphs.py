@@ -16,6 +16,7 @@ df_gpa = pd.read_csv('timeline_gpa.csv')
 df_employed = pd.read_csv('timeline_employed.csv')
 df_coop_category = pd.read_csv('timeline_coop_category.csv')
 df_location = pd.read_csv('timeline_location.csv')
+df_lectures = pd.read_csv('timeline_lectures.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -84,6 +85,24 @@ graphs.create_boxplot(
 #     figure_width = 15
 )
 #### END: Create gpa boxplot ##############
+
+#### Create Lecture attendance line #########
+df_lectures_working = df_lectures.drop(columns = 'uid')
+df_lectures_working = df_lectures_working.drop(index = 33).reset_index().drop(columns = 'index')
+df_lectures_working = df_lectures_working.fillna(df_lectures_working.median())
+lectures_list = df_lectures_working.columns.tolist()
+
+graphs.create_line(
+    df_lectures_working,
+    lectures_list,
+    'Study Term', 
+    'Lecture Attendance', 
+    'How often did you come to lectures',
+    only_show_average = True,
+    sequential_labels = helpers.get_study_term_list(),
+    values_min = 1
+)
+#### END: Create lecture attendance line #######
 
 #### Create Co-op Category Stacked bar ##########
 
