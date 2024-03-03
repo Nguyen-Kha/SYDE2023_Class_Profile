@@ -288,6 +288,7 @@ def create_boxplot(
     file_name,                          # file name to save graph as
 
     vertical: bool = True,              # orientation of boxplots
+    column_labels = [],                 # Text to display on the title axis to replace the actual column_name being shown. Must be in the order of column_name_list
     comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
     comparison_labels = [],             # order of the comparison labels
     values_increment = None,            # values to increment by on the values axis
@@ -295,18 +296,20 @@ def create_boxplot(
     values_max = None,                  # largest value to display on graph
 #     colours = [],                     # list of hex code strings
     convert_to_string = False,          # use if need to convert column_values to string
-    drop_values = {}                    # {str(column_name): number, ...} , drop certain values or outliers if necessary
+    drop_values = {},                   # {str(column_name): number, ...} , drop certain values or outliers if necessary
+    figure_height: int = 9,             # Height of graph
+    figure_width: int = 11,             # Width of graph
 ):
     """
     Input Dataframe format: 
-    +---------------+-----+---------------+
-    | column_name_a | ... | column_name_n |
-    +---------------+-----+---------------+
-    | number_a1     |     | number_n1     |
-    | number_a2     |     | number_n2     |
-    | number_a3     |     | number_n3     |
-    | number_a4     |     | number_n4     |
-    +---------------+-----+---------------+
+    +---------------+-----+---------------+------------------------------+
+    | column_name_a | ... | column_name_n | comparison_column (optional) |
+    +---------------+-----+---------------+------------------------------+
+    | number a1     |     | number n1     | Female                       |
+    | number a2     |     | number n2     | Female                       |
+    | number a3     |     | number n3     | Male                         |
+    | number a4     |     | number n4     | Non-binary                   |
+    +---------------+-----+---------------+------------------------------+
     """
     if(convert_to_string):
         for i in range(0, len(column_name_list)):
@@ -323,16 +326,7 @@ def create_boxplot(
         df_boxplot = pd.concat(list_df)
     df_boxplot = df_boxplot.reset_index().drop(columns='index')
     
-    if(values_min == None):
-        values_min = min(df_boxplot['boxplot_value'])
-    
-    if(values_max == None):
-        values_max = max(df_boxplot['boxplot_value'])
-    
-    if(values_increment == None):
-        values_increment = math.ceil(values_max / 10)
-    
-    fig, ax = plt.subplots(figsize = (11,9))
+    fig, ax = plt.subplots(figsize = (figure_width, figure_height))
     
     if(vertical and comparison_column):
         ax = sns.boxplot(
@@ -342,9 +336,7 @@ def create_boxplot(
             hue = df_boxplot['comparison_column'],
     #         color = colours,
         )
-        ax.set_xlabel(title_label)
-        ax.set_ylabel(values_label)
-        ax.yaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
+        
     elif(vertical and not comparison_column):
         ax = sns.boxplot(
             x = df_boxplot['column_name'],
@@ -352,9 +344,6 @@ def create_boxplot(
             orient = 'v',
     #         color = colours,
         )
-        ax.set_xlabel(title_label)
-        ax.set_ylabel(values_label)
-        ax.yaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
     elif(not vertical and comparison_column):
         ax = sns.boxplot(
             x = df_boxplot['boxplot_value'],
@@ -363,9 +352,6 @@ def create_boxplot(
             hue = df_boxplot['comparison_column']
     #         color = colours,
         )
-        ax.set_xlabel(values_label)
-        ax.set_ylabel(title_label)
-        ax.xaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
     elif(not vertical and not comparison_column):
         ax = sns.boxplot(
             x = df_boxplot['boxplot_value'],
@@ -373,9 +359,6 @@ def create_boxplot(
             orient = 'h',
     #         color = colours,
         )
-        ax.set_xlabel(values_label)
-        ax.set_ylabel(title_label)
-        ax.xaxis.set_ticks(np.arange(values_min, values_max + values_increment, values_increment))
         
     plt.rcParams['axes.facecolor'] = '#F0F0F0'
     sns.set() # Gridlines
@@ -383,6 +366,33 @@ def create_boxplot(
     
     if(comparison_column):
         plt.legend(title=comparison_column)
+        
+    values_min_was_auto_set = False
+    values_max_was_auto_set = False
+    
+    if(values_min == None):
+        values_min = helpers.compute_initial_values_min(df_boxplot, 'boxplot_value')
+        values_min_was_auto_set = True
+    if(values_max == None):
+        values_max = helpers.compute_initial_values_max(df_boxplot, 'boxplot_value')
+        values_max_was_auto_set = True
+    if(values_increment == None):
+        values_increment = math.ceil(values_max / 10)
+    values_min = helpers.compute_displayed_values_min(values_min, values_increment, values_min_was_auto_set)
+    values_max = helpers.compute_displayed_values_max(values_max, values_increment, values_max_was_auto_set)
+    
+    if(vertical):
+        ax.yaxis.set_ticks(np.arange(values_min, values_max, values_increment))
+        ax.set_xlabel(title_label)
+        ax.set_ylabel(values_label)
+        if(column_labels):
+            ax.set_xticklabels(column_labels)
+    else:
+        ax.xaxis.set_ticks(np.arange(values_min, values_max, values_increment))
+        ax.set_xlabel(values_label)
+        ax.set_ylabel(title_label)
+        if(column_labels):
+            ax.set_yticklabels(column_labels)
 
     if(not file_name):
         file_name = str(column_name_list[0]) + "_boxplot"

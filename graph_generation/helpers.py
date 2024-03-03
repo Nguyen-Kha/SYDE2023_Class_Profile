@@ -330,7 +330,7 @@ def compute_displayed_values_min(values_min, values_increment, autoset: bool):
         
 def compute_displayed_values_max(values_max, values_increment, autoset: bool):
     if(autoset):
-        values_max = values_max - values_increment
+        values_max = values_max + values_increment
     else:
         values_max = values_max + (values_increment / 10000)
     return values_max
