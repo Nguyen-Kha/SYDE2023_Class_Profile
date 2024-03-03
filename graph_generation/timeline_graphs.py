@@ -192,3 +192,25 @@ graphs.create_bar_stacked(
     file_name = "coop_locations_stacked_bar"
 )
 #### END: Create co-op location stacked bar ##############
+
+#### Create Employment rate line graph ###################
+
+df_employed_working = df_employed.drop(columns = 'uid')
+employed_status_list = df_employed_working.columns.tolist()
+df_employed_working[employed_status_list] = df_employed_working[employed_status_list].applymap(lambda x: 1 if x == 'Yes' else 0)
+
+df_employed_working = helpers.transform_df_for_single_line(df_employed_working, employed_status_list, True)
+
+graphs.create_line(
+    df_employed_working,
+    employed_status_list,
+    'Co-op Term',
+    'Percent of class employed',
+    'SYDE 2023 Employment rate',
+    values_min = 0,
+    values_max = 100,
+    values_increment = 10,
+    value_is_percentage = True,
+    sequential_labels = ['Co-op 1','Co-op 2','Co-op 3','Co-op 4','Co-op 5','Co-op 6'],
+)
+#### END:  Create Employment rate line graph ###################
