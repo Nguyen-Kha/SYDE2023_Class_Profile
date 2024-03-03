@@ -198,8 +198,10 @@ def create_bar_stacked(
     values_increment = None,        # value to increment y axis by. If display_as_percentage = True, this value is 10
     values_max = None,              # The maximum y axis value of the graph. If display_as_percentage = True, this value is 100
     labels = [],                    # List of strings, specific order to arrange bars by. if passing multiple values in column_name_list, labels will be the same for all of them
-    colours = [],                   # list of hex code strings for column_name colours
+    column_labels = [],
+#     colours = [],                   # list of hex code strings for column_name colours
     display_as_percentage = False,  # Display the y axis values as a percentage instead of a count
+    num_decimals = 0,               # number of decimal places to display; only used if display_as_percentage=True
     title_label_rotation_angle = 0, # angle of the x axis labels. If overlapping, use 45
     convert_to_string = False,      # convert title labels to string
     legend_title = None ,           # Name of the legend title
@@ -219,8 +221,8 @@ def create_bar_stacked(
     
     The values in all the columns must be a part of the same set. AKA they should all be the same. Ex, ['Yes', 'No']: all columns have these values
     """
-    if (not colours):
-        colours = sns.color_palette('muted')
+#     if (not colours):
+#         colours = sns.color_palette('muted')
     
     list_df = []
     for column_name in column_name_list:
@@ -265,8 +267,13 @@ def create_bar_stacked(
         ax.set_ylabel(values_label)
         ax.set_xlabel(title_label)
         ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
+        if(column_labels):
+            ax.set_xticklabels(column_labels)
         if(title_label_rotation_angle != 0):
             plt.xticks(rotation = title_label_rotation_angle, ha = 'right')
+            
+        if(display_as_percentage):
+            ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
     else:
         # Horizontal graphs have ascending top to bottom display. Reverse this to keep it consistent with bar graph
         reverse_column_name = working_df['column_name'].tolist() # You could theoretically sort it by total, but that doesn't keep order
@@ -286,11 +293,18 @@ def create_bar_stacked(
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
         ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
+        if(column_labels):
+            column_labels.reverse()
+            ax.set_yticklabels(column_labels)
+        
+        if(display_as_percentage):
+            ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         
     if(not legend_title):
         legend_title = 'Legend'
     plt.legend(list_df_columns, title=legend_title, facecolor='white', bbox_to_anchor=(1.04, 1), loc='upper left')
     plt.title(title)
+
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
 
@@ -309,6 +323,8 @@ def create_boxplot(
     values_increment = None,            # values to increment by on the values axis
     values_min = None,                  # smallest value to display on graph
     values_max = None,                  # largest value to display on graph
+    value_is_percentage = False,
+    num_decimals = 0,
 #     colours = [],                     # list of hex code strings
     convert_to_string = False,          # use if need to convert column_values to string
     drop_values = {},                   # {str(column_name): number, ...} , drop certain values or outliers if necessary
@@ -380,7 +396,7 @@ def create_boxplot(
     plt.title(title)
     
     if(comparison_column):
-        plt.legend(title=comparison_column, bbox_to_anchor=(1.04, 1), loc='upper left')
+        plt.legend(title=comparison_column)
         
     values_min_was_auto_set = False
     values_max_was_auto_set = False
@@ -402,12 +418,16 @@ def create_boxplot(
         ax.set_ylabel(values_label)
         if(column_labels):
             ax.set_xticklabels(column_labels)
+        if(value_is_percentage):
+            ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
     else:
         ax.xaxis.set_ticks(np.arange(values_min, values_max, values_increment))
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
         if(column_labels):
             ax.set_yticklabels(column_labels)
+        if(value_is_percentage):
+            ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
 
     if(not file_name):
         file_name = str(column_name_list[0]) + "_boxplot"
@@ -425,19 +445,22 @@ def create_histogram(
 def create_line(
     df,                                     # pandas dataframe. see below for input format
     column_name_list,                       # list of the sequential columns in order (ex gpa_1a, gpa_1b, ...)
-    sequential_label,                       # Sequential axis (x axis) label
+    title_label,                       # title axis (x axis) label
     values_label,                           # y axis label
     title,                                  # title of graph
     file_name,                              # file name in which to save the graph to
-
+    
+    sequential_labels = [],
     values_min = None,                      # the minimum number to display on the graph
     values_max = None,                      # the maximum number to display on the graph
     values_increment = None,                # The value in which to increment the y axis by
+    value_is_percentage = False,
+    num_decimals = 0,                       # number of decimal places to display; only used if display_as_percentage=True
     handle_null_by: str = 'interpolation',  # Options: ('interpolation', 'drop_row', 'mean', 'median'), fill null values by using ...
     row_object_name = None,                 # str: legend name if the lines being graphed have some meaning
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
-    sequential_label_rotation_angle = 0,    # x axis rotation angle for overflow
+    title_label_rotation_angle = 0,    # x axis rotation angle for overflow
     figure_height: int = 9,                 # height of figure
     figure_width: int = 11                  # width of figure
 ):
@@ -519,9 +542,12 @@ def create_line(
             sort = False
         )
     
-    ax.set_xlabel(sequential_label)
+    ax.set_xlabel(title_label)
     ax.set_ylabel(values_label)
     plt.title(title)
+    
+    if(sequential_labels):
+        ax.set_xticklabels(sequential_labels)
     
     values_max_was_automatically_set = False
     values_min_was_automatically_set = False
@@ -541,12 +567,15 @@ def create_line(
     if(values_min_was_automatically_set):
         values_min = values_min - values_increment
         
+    if(value_is_percentage):
+        ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
+        
     ax.yaxis.set_ticks(np.arange(values_min, values_max, values_increment))
 
-    if(sequential_label_rotation_angle == 0):
-        plt.xticks(rotation=sequential_label_rotation_angle)
+    if(title_label_rotation_angle == 0):
+        plt.xticks(rotation=title_label_rotation_angle)
     else:
-        plt.xticks(rotation=sequential_label_rotation_angle, ha='right')
+        plt.xticks(rotation=title_label_rotation_angle, ha='right')
     
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()

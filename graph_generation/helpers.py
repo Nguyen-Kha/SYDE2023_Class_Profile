@@ -1,4 +1,5 @@
 from collections import Counter
+import numpy as np
 import pandas as pd
 import math
 
@@ -313,6 +314,38 @@ def transform_df_for_line_unnamed_rows(
     df = df.transpose().reset_index().drop(columns = 'index')
     df['index'] = column_name_list
     df = pd.melt(df, id_vars = ['index'], var_name = row_object_name)
+    return df
+
+def transform_df_for_single_line_percentage(
+    df,
+    column_name_list: list,
+):
+    """
+    Generates a dataframe to have a single line showing the change in percentage
+    Assumes already cleaned dataframe.
+    To be called before calling create_line()
+    
+    Input Dataframe format:
+    +------------------------+------+------------------------+
+    | sequence_column_part_1 | ...  | sequence_column_part_n |
+    +------------------------+------+------------------------+
+    | number a_part_1        |      | number a_part_n        |
+    | number b_part_1        |      | number b_part_n        |
+    | number c_part_1        |      | number c_part_n        |
+    +------------------------+------+------------------------+
+    
+    Returns Dataframe:
+    +------------------------+------+------------------------+
+    | sequence_column_part_1 | ...  | sequence_column_part_n |
+    +------------------------+------+------------------------+
+    | % a_part_1             |      | % a_part_n             |
+    +------------------------+------+------------------------+
+    """
+    number_of_answers = len(df)
+    df.loc['Total'] = df.sum(numeric_only = True, axis = 0)
+    df = df.drop(index = np.arange(0, number_of_answers, 1))
+    df[column_name_list] = df[column_name_list] / number_of_answers * 100
+    
     return df
 
 def compute_initial_values_min(df, column_name_list: list):
