@@ -18,6 +18,7 @@ df_coop_category = pd.read_csv('timeline_coop_category.csv')
 df_location = pd.read_csv('timeline_location.csv')
 df_lectures = pd.read_csv('timeline_lectures.csv')
 df_stress = pd.read_csv('timeline_stress.csv')
+df_rent = pd.read_csv('timeline_rent.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -122,6 +123,25 @@ graphs.create_line(
     figure_height = 7,
 )
 #### END: Create stress levels line ###############
+
+#### Create rent boxplot ##########################
+df_rent_working = df_rent.drop(columns = 'uid').drop(index = 33).reset_index().drop(columns = 'index')
+# df_rent_working = df_rent_working.fillna(df_rent_working.median())
+rent_columns = df_rent_working.columns.tolist()
+
+graphs.create_boxplot(
+    df_rent_working,
+    rent_columns,
+    'Term',
+    '$ CAD paid for rent',
+    'How much did you pay in rent',
+    column_labels = helpers.get_study_coop_term_list(),
+    values_min = 0,
+    values_max = 2400,
+    values_increment = 200,
+    drop_values = {'rent_1a': 4285, 'rent_c6': 4000}
+)
+#### END: Create rent boxplot ####################
 
 #### Create Co-op Category Stacked bar ##########
 
