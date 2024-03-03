@@ -176,7 +176,7 @@ def create_bar(
     plt.rcParams['axes.facecolor'] = '#F0F0F0'
     ax.grid(color='w', linestyle='solid', zorder=0)
     if(display_legend):
-        plt.legend(title="Legend", facecolor='white')
+        plt.legend(title="Legend", facecolor='white', bbox_to_anchor=(1.04, 1), loc='upper left')
 
     plt.title(title)
 
@@ -380,7 +380,7 @@ def create_boxplot(
     plt.title(title)
     
     if(comparison_column):
-        plt.legend(title=comparison_column)
+        plt.legend(title=comparison_column, bbox_to_anchor=(1.04, 1), loc='upper left')
         
     values_min_was_auto_set = False
     values_max_was_auto_set = False
@@ -734,7 +734,7 @@ def create_pie(
     
     if(legend_title == None):
         legend_title = "Legend"
-    plt.legend(df_temp['title'], title=legend_title)
+    plt.legend(df_temp['title'], title=legend_title, bbox_to_anchor=(1.04, 1), loc='upper left')
     plt.axis('equal')
 
     if(not file_name):
