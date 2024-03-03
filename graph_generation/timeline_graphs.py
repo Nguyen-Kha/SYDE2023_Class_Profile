@@ -19,6 +19,7 @@ df_location = pd.read_csv('timeline_location.csv')
 df_lectures = pd.read_csv('timeline_lectures.csv')
 df_stress = pd.read_csv('timeline_stress.csv')
 df_rent = pd.read_csv('timeline_rent.csv')
+df_pay = pd.read_csv('timeline_pay.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -272,3 +273,31 @@ graphs.create_line(
     sequential_labels = ['Co-op 1','Co-op 2','Co-op 3','Co-op 4','Co-op 5','Co-op 6'],
 )
 #### END:  Create Employment rate line graph ###################
+
+#### Create Co-op pay boxplot ########################
+df_pay_working = df_pay.join(df_employed.set_index('uid'), on = 'uid')
+df_pay_working = df_pay_working.drop(columns = 'uid').drop(index = 33).reset_index().drop(columns = 'index')
+
+pay_columns = df_pay_working.columns.tolist()[0:6]
+employed_columns = df_pay_working.columns.tolist()[6:]
+
+# If you didn't have a job, then your pay was 0
+for i in range(0, len(pay_columns)):
+    df_pay_working.loc[df_pay_working[employed_columns[i]] == 'No', pay_columns[i]] = 0
+    
+df_pay_working = df_pay_working.drop(columns = employed_columns)
+df_pay_working = df_pay_working.fillna(df_pay_working.median())
+df_pay_working
+
+graphs.create_boxplot(
+    df_pay_working,
+    pay_columns,
+    'Co-op Term',
+    '$ CAD per hour',
+    'What was your rate of compensation?',
+    column_labels = helpers.get_coop_term_list(),
+    values_min = 0.01,
+    values_max = 80,
+    values_increment = 5,
+)
+#### END: Create Co-op Pay boxplot ######################
