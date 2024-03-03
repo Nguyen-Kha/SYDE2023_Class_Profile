@@ -15,6 +15,7 @@ df_easy_useful = pd.read_csv('timeline_easy_useful_courses.csv')
 df_gpa = pd.read_csv('timeline_gpa.csv')
 df_employed = pd.read_csv('timeline_employed.csv')
 df_coop_category = pd.read_csv('timeline_coop_category.csv')
+df_location = pd.read_csv('timeline_location.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -78,6 +79,7 @@ graphs.create_boxplot(
     values_max = 100,
     values_increment = 5,
     column_labels = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B'],
+    value_is_percentage = True,
 #     figure_height = 15,
 #     figure_width = 15
 )
@@ -141,7 +143,52 @@ graphs.create_bar_stacked(
     'Co-op categories by term',
     display_as_percentage = True,
     vertical = True,
-    labels = ['Software', 'UI / UX','Product Management','Product Design', 'IT', 'QA', 'Analyst', 'Mechanical / Hardware',   'Project Management',   'DE / DS / ML / AI', 'Research', 'Technical Writing','Uncategorized', 'Unemployed']
+    labels = ['Software', 'UI / UX','Product Management','Product Design', 'IT', 'QA', 'Analyst', 'Mechanical / Hardware',   'Project Management',   'DE / DS / ML / AI', 'Research', 'Technical Writing','Uncategorized', 'Unemployed'],
+    column_labels = ['Co-op 1','Co-op 2','Co-op 3','Co-op 4','Co-op 5','Co-op 6'],
+    file_name="coop_term_roles_stacked_bar",
 )
 
 #### END: Create Co-op Category Stacked bar ##########
+
+#### Create Co-op Location Stacked bar ################
+
+def replace_blank_location(value):
+    if(value == ""):
+        return "Undisclosed"
+    return value
+
+def change_location_region(value):
+    if(value == 'GTA' or value == 'Halton' or value == 'Hamilton'):
+        value = 'GTHA'
+    elif(value == 'Southwestern US' or value == 'Midwestern US' or value == 'Southern US' or value == 'California'):
+        value = 'Other US'
+    elif(value == 'NCR'):
+        value = 'ON'
+    elif(value == 'NYC'):
+        value = 'Northeastern US'
+    return value
+
+df_location_working = df_location.drop(columns = 'uid')
+df_location_working = df_location_working.fillna("Undisclosed,Undisclosed,Undisclosed,Undisclosed,Undisclosed")
+location_columns = df_location_working.columns.tolist()
+
+# Get the region of the location
+df_location_working[location_columns] = df_location_working[location_columns].applymap(lambda x: x.split(",")[3].strip())
+for i in location_columns:
+    df_location_working[i] = df_location_working[i].apply(replace_blank_location)
+    df_location_working[i] = df_location_working[i].apply(change_location_region)
+df_location_working
+
+graphs.create_bar_stacked(
+    df_location_working,
+    location_columns,
+    'Co-op Term',
+    'Percentage of Class',
+    'Co-op Locations',
+    vertical = True,
+    labels = ['Toronto', 'GTHA', 'KWC', 'ON', 'BC', 'Central Canada', 'QC', 'Bay Area', 'Northwestern US', 'Northeastern US', 'Other US', 'Europe', 'Undisclosed'],
+    display_as_percentage = True,
+    column_labels = ['Co-op 1','Co-op 2','Co-op 3','Co-op 4','Co-op 5','Co-op 6'],
+    file_name = "coop_locations_stacked_bar"
+)
+#### END: Create co-op location stacked bar ##############
