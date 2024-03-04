@@ -42,8 +42,21 @@ SYDE_CORE_COURSES_LIST = [
     'SYDE 462'
 ]
 
+STUDY_TERM_LIST = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B']
+COOP_TERM_LIST = ['Co-op 1','Co-op 2','Co-op 3','Co-op 4','Co-op 5','Co-op 6']
+STUDY_COOP_TERM_LIST = ['1A', 'Co-op 1', '1B', 'Co-op 2', '2A', 'Co-op 3', '2B', 'Co-op 4', '3A', 'Co-op 5', '3B', 'Co-op 6', '4A', '4B']
+
 def get_syde_core_courses_list():
     return SYDE_CORE_COURSES_LIST
+
+def get_study_term_list():
+    return STUDY_TERM_LIST
+
+def get_coop_term_list():
+    return COOP_TERM_LIST
+
+def get_study_coop_term_list():
+    return STUDY_COOP_TERM_LIST
 
 def splice_cells_with_commas(df, column_name): # TODO: TEST
     """
@@ -316,9 +329,10 @@ def transform_df_for_line_unnamed_rows(
     df = pd.melt(df, id_vars = ['index'], var_name = row_object_name)
     return df
 
-def transform_df_for_single_line_percentage(
+def transform_df_for_single_line(
     df,
     column_name_list: list,
+    display_as_percentage = False
 ):
     """
     Generates a dataframe to have a single line showing the change in percentage
@@ -344,7 +358,9 @@ def transform_df_for_single_line_percentage(
     number_of_answers = len(df)
     df.loc['Total'] = df.sum(numeric_only = True, axis = 0)
     df = df.drop(index = np.arange(0, number_of_answers, 1))
-    df[column_name_list] = df[column_name_list] / number_of_answers * 100
+
+    if(display_as_percentage):
+        df[column_name_list] = df[column_name_list] / number_of_answers * 100
     
     return df
 
