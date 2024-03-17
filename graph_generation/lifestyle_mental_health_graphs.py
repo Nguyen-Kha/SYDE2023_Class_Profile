@@ -65,7 +65,7 @@ df_friends_ug = df_social[['friends_undergrad']].copy()
 df_friends_ug['friends_undergrad'] = df_friends_ug['friends_undergrad'].apply(helpers.turn_dates_into_actual_values)
 df_friends_ug = df_friends_ug.dropna()
 
-friends_undergrad_list = ['1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30', '30+']
+friends_undergrad_list = ['0', '1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30', '30+']
 
 graphs.create_bar(
     df_friends_ug,
@@ -106,7 +106,7 @@ df_friends_syde = df_friends_syde.dropna()
 df_friends_syde['friends_syde'] = df_friends_syde['friends_syde'].apply(helpers.remove_nonnumeric_char)
 df_friends_syde['friends_syde'] = df_friends_syde['friends_syde'].apply(bin_friends_syde)
 
-friends_syde_list = ['1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30', '30+']
+friends_syde_list = ['0', '1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30', '30+']
 
 graphs.create_bar(
     df_friends_syde,
