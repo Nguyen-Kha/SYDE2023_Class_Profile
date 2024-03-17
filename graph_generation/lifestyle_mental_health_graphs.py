@@ -79,3 +79,44 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: create friends in undergrad bar #############
+
+#### Create friends in syde bar ###############
+def bin_friends_syde(value):
+    value = int(value)
+    if(value == 0):
+        return '0'
+    elif(value >= 1 and value <= 5):
+        return '1 - 5'
+    elif(value >= 6 and value <= 10):
+        return '6 - 10'
+    elif(value >= 11 and value <= 15):
+        return '11 - 15'
+    elif(value >= 16 and value <= 20):
+        return '16 - 20'
+    elif(value >= 21 and value <= 25):
+        return '21 - 25'
+    elif(value >= 26 and value <= 30):
+        return '26 - 30'
+    else:
+        return '30+'
+    
+
+df_friends_syde = df_social[['friends_syde']].copy()
+df_friends_syde = df_friends_syde.dropna()
+df_friends_syde['friends_syde'] = df_friends_syde['friends_syde'].apply(helpers.remove_nonnumeric_char)
+df_friends_syde['friends_syde'] = df_friends_syde['friends_syde'].apply(bin_friends_syde)
+
+friends_syde_list = ['1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30', '30+']
+
+graphs.create_bar(
+    df_friends_syde,
+    'friends_syde',
+    'Number of friends in syde',
+    'Percentage of Respondents',
+    'How many friends did you have in SYDE?',
+    vertical = True,
+    display_as_percentage = True,
+    labels = friends_syde_list,
+    values_increment = 5
+)
+################

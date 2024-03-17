@@ -2,6 +2,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 import math
+import re
 
 SYDE_CORE_COURSES_LIST = [
     'SYDE 101',
@@ -163,7 +164,7 @@ def turn_dates_into_actual_values(dates):
     """
     Some of the values displayed as dates are meant to represent a range. This happens if the data is from Google Sheets or Excel
     To use this, do the following on your dataframe before generating a graph:
-    df['column_name'] = df['column_name'].apply(turn_dates_into_actual_values)
+    df['column_name'] = df['column_name'].apply(turn_dates_into_actu`al_values)
     """
     if(type(dates) == float):
         if(math.isnan(dates)):
@@ -197,6 +198,15 @@ def turn_dates_into_actual_values(dates):
         return '1 - 25'
     else:
         return dates
+    
+def remove_nonnumeric_char(string):
+    if(type(string) == float):
+        if(math.isnan(string)):
+            return string
+        
+    cleaned_string = re.sub("[^0-9.]", "", str(string))
+    cleaned_string = cleaned_string.strip()
+    return cleaned_string
     
 def transform_df_for_boxplot(
     df_working,                 # Pandas Dataframe, format shown below
