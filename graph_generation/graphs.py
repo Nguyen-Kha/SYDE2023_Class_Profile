@@ -25,6 +25,7 @@ def create_bar(
     values_max: float = None,           # the max value in the dataframe
     splice_required: bool = False,      # Use True if the values in the cells have commas that need to be split
     labels: list = [],                  # list of strings, order in which the x axis / title labels should be arranged
+    graph_name_labels: list = [],       # the names of the xaxis labels to be changed to (to be used for spelling mistakes or minor text changes)
     colours = [],                       # list of strings of hexcodes ['#0000FF', '#eb884a'] for bar colours
     display_as_percentage = False,      # display the y axis as a percentage rather than the count occurence
     display_legend = False,             # show the legend if necessary
@@ -79,34 +80,13 @@ def create_bar(
         
      ######################
     ## Put the counted values into a new dataframe
-    
-    if(labels):
-        title_temp = list(count.keys())
-        values_temp = list(count.values())
-        dictionary = {title_temp[i] : values_temp[i] for i in range(0, len(title_temp))}
-
-        df_temp = pd.DataFrame()
-        df_temp['title'] = labels
-        df_temp['values'] = 0
-
-        for key, value in dictionary.items():
-            df_temp.loc[df_temp.title == key, 'values'] = value
-        x = np.arange(len(labels))  # the label locations
-    
-    else:
-        df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
+            
+    df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
+    if(vertical):
         df_temp = df_temp.sort_values(by=['values'], ascending = False)
-        
-        if(not vertical):
-            reverse_title_order = df_temp['title'].tolist()
-            reverse_title_order.reverse()
-            df_temp['title'] = pd.Categorical(df_temp['title'], reverse_title_order)
-            df_temp = df_temp.sort_values('title')
-
-        x = df_temp['title'] # the label locations
-        if type(x[0]) == str:
-            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
-        
+    else:
+        df_temp = df_temp.sort_values(by=['values'], ascending = True)
+    
     ######################
     ## Convert amount of people responded into percentages
     if(display_as_percentage):
@@ -128,6 +108,14 @@ def create_bar(
     fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(vertical):
+        if(labels):
+            df_temp['title'] = pd.Categorical(df_temp['title'], labels)
+            df_temp = df_temp.sort_values('title')
+        x = df_temp['title'] # the label locations
+        
+        if type(x[0]) == str:
+            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
+            
         ax.bar(
             x = x,
             height = df_temp['values'],
@@ -140,9 +128,9 @@ def create_bar(
         ax.set_xlabel(title_label)
         ax.set_ylabel(values_label)
         ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
-        if(labels):
+        if(graph_name_labels):
             ax.set_xticks(x)
-            ax.set_xticklabels(labels)
+            ax.set_xticklabels(graph_name_labels)
         if(display_as_percentage):
             ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
@@ -151,6 +139,15 @@ def create_bar(
             plt.xticks(rotation=title_label_rotation_angle, ha='right')            
         
     else:
+        if(labels):
+            labels.reverse()
+            df_temp['title'] = pd.Categorical(df_temp['title'], labels)
+            df_temp = df_temp.sort_values('title')
+            
+        x = df_temp['title'] # the label locations
+        if type(x[0]) == str:
+            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
+        
         ax.barh(
             y = x,
             width = df_temp['values'],
@@ -163,9 +160,10 @@ def create_bar(
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
         ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
-        if(labels):
+        if(graph_name_labels):
+            graph_name_labels.reverse()
             ax.set_yticks(x)
-            ax.set_yticklabels(labels)
+            ax.set_yticklabels(graph_name_labels)
         if(display_as_percentage):
             ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
