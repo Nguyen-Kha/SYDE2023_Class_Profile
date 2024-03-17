@@ -82,6 +82,12 @@ def create_bar(
     ## Put the counted values into a new dataframe
             
     df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
+    if(labels):
+        missing_labels_values = list(set(labels).difference(df_temp['title'].unique().tolist()))
+        zeros_list = list(np.zeros(len(missing_labels_values)))
+        df_missing_labels = pd.DataFrame({'title': missing_labels_values, 'values': zeros_list})
+        df_temp = df_temp.append(df_missing_labels, ignore_index = True)
+        df_temp = df_temp.reset_index().drop(columns = 'index')
     if(vertical):
         df_temp = df_temp.sort_values(by=['values'], ascending = False)
     else:
