@@ -136,3 +136,20 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: create closest 5 friends in syde bar ##########
+
+#### Create clique bar #########
+df_clique = df_social[['clique']].copy()
+df_clique = df_clique.dropna()
+
+graphs.create_bar(
+    df_clique,
+    'clique',
+    'Cliquiness response',
+    'Percentage of Respondents',
+    'State your level of agreement: Our SYDE cohort was cliquey',
+    vertical = True,
+    display_as_percentage = True,
+    values_increment = 5,
+    labels = helpers.get_agree_scale()
+)
+#### END: create clique bar ##########
