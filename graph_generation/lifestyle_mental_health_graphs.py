@@ -31,3 +31,30 @@ graphs.create_bar(
 )
 #### END: Create disciplines of interest bar ################
 
+#### Create cali or bust bar ################
+def clean_cali_or_bust(answer):
+    if("busted" in answer.lower() and "cali" in answer.lower()):
+        return "Yes Cali-ed, Yes Busted"
+    elif("busted" in answer.lower()):
+        return "Yes Busted"
+    elif("cali" in answer.lower()):
+        return "Yes Cali-ed"
+    
+    return "No"
+df_cali_bust = df_pa[['cali_or_bust']]
+df_cali_bust = df_cali_bust.dropna()
+df_cali_bust['cali_or_bust'] = df_cali_bust['cali_or_bust'].apply(clean_cali_or_bust)
+
+graphs.create_bar(
+    df_cali_bust,
+    'cali_or_bust',
+    'Cali?',
+    'Number of Respondents',
+    'Did you Cali or bust?',
+    vertical = True,
+    splice_required = True,
+    figure_width = 7,
+    labels = ['Yes Cali-ed','Yes Busted', 'No'],
+    graph_name_labels = ['Yes, Cali-ed', 'Yes, Busted', 'No']
+)
+#### END: Create cali or bust bar ###############
