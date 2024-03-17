@@ -14,6 +14,7 @@ df1 = pd.read_csv('')
 
 df_pa = df_pa = pd.read_csv('professional_activities.csv')
 df_social = pd.read_csv('social.csv')
+df_st = pd.read_csv('syde_traditions.csv')
 
 #### Create disciplines of interest bar #####################
 df_disciplines = df_pa[['disciplines_of_interest']]
@@ -153,3 +154,27 @@ graphs.create_bar(
     labels = helpers.get_agree_scale()
 )
 #### END: create clique bar ##########
+
+#### Create syde events stacked bar #######
+syde_events_list = [
+    'syde_event_1a',
+    'syde_event_1b',
+    'syde_event_2a',
+    'syde_event_2b',
+    'syde_event_3a',
+    'syde_event_4a',
+    'syde_event_4b'
+]
+df_syde_events = df_st[syde_events_list].copy()
+
+graphs.create_bar_stacked(
+    df_syde_events,
+    syde_events_list,
+    'Term',
+    'Percentage of class',
+    'Did you attend a SYDE event in these terms?',
+    display_as_percentage = True,
+    vertical = False,
+    column_labels = ['1A', '1B', '2A', '2B', '3A', '4A', '4B']
+)
+#### END: create syde events stacked bar #############
