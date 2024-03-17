@@ -119,4 +119,20 @@ graphs.create_bar(
     labels = friends_syde_list,
     values_increment = 5
 )
-################
+#### END: create friends in syde bar ################
+
+#### Create closest 5 friends in syde bar #############
+df_friends_syde_5 = df_social[['friends_syde_5']].copy()
+df_friends_syde_5 = df_friends_syde_5.dropna()
+
+graphs.create_bar(
+    df_friends_syde_5,
+    'friends_syde_5',
+    'Number of closest friends in syde',
+    'Percentage of Respondents',
+    'Of your 5 closest friends, how many of them are in SYDE',
+    vertical = True,
+    display_as_percentage = True,
+    values_increment = 5
+)
+#### END: create closest 5 friends in syde bar ##########
