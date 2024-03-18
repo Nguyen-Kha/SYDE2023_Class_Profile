@@ -312,3 +312,30 @@ graphs.create_line_category_traversal(
     sequential_label_names = helpers.get_study_coop_term_list()
 )
 #### END: create weed category traversal line ######
+
+#### create party category traversal line ######
+list_party = [
+    'party_1a',
+    'party_1b',
+    'party_2a',
+    'party_2b',
+    'party_3a',
+    'party_3b',
+    'party_4a',
+    'party_4b',
+]
+
+df_party = df_wild[list_party]
+
+graphs.create_line_category_traversal(
+    df_party,
+    list_party,
+    'Term',
+    'Frequency of partying',
+    'How often did you party each term',
+    ['Never', 'Once or twice a term', 'Monthly', 'Biweekly', 'Weekly', '2 - 3 times a week', '4 - 7 times a week'],
+    only_show_average = True,
+    sequential_label_rotation_angle = 45,
+    sequential_label_names = helpers.get_study_term_list()
+)
+#### END: create party category traversal line ########
