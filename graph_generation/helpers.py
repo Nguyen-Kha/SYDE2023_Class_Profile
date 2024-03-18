@@ -168,7 +168,7 @@ def turn_dates_into_actual_values(dates):
     """
     Some of the values displayed as dates are meant to represent a range. This happens if the data is from Google Sheets or Excel
     To use this, do the following on your dataframe before generating a graph:
-    df['column_name'] = df['column_name'].apply(turn_dates_into_actu`al_values)
+    df['column_name'] = df['column_name'].apply(turn_dates_into_actual_values)
     """
     if(type(dates) == float):
         if(math.isnan(dates)):
