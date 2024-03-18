@@ -16,6 +16,7 @@ df_pa = df_pa = pd.read_csv('professional_activities.csv')
 df_social = pd.read_csv('social.csv')
 df_st = pd.read_csv('syde_traditions.csv')
 df_relationships = pd.read_csv('relationships.csv')
+df_wild = pd.read_csv('../csv/final/split/wild.csv')
 
 #### Create disciplines of interest bar #####################
 df_disciplines = df_pa[['disciplines_of_interest']]
@@ -239,7 +240,7 @@ df_sydecest_wish = df_relationships[['sydecest', 'sydecest_wishful']]
 df_sydecest_wish = df_sydecest_wish.dropna()
 df_sydecest_wish = df_sydecest_wish.loc[df_sydecest_wish['sydecest'] == 'No']
 
-create_pie(
+graphs.create_pie(
     df_sydecest_wish,
     'sydecest_wishful',
     'If you did not engage in sydecest, did you want to?',
@@ -247,3 +248,34 @@ create_pie(
     labels = ['Yes', 'No']
 )
 #### END: create sydecest wishful pie ########
+
+#### create alcohol category traversal line
+list_alcohol = ['alcohol_1a',
+ 'alcohol_c1',
+ 'alcohol_1b',
+ 'alcohol_c2',
+ 'alcohol_2a',
+ 'alcohol_c3',
+ 'alcohol_2b',
+ 'alcohol_c4',
+ 'alcohol_3a',
+ 'alcohol_c5',
+ 'alcohol_3b',
+ 'alcohol_c6',
+ 'alcohol_4a',
+ 'alcohol_4b']
+
+df_alcohol = df_wild[list_alcohol]
+
+graphs.create_line_category_traversal(
+    df_alcohol,
+    list_alcohol,
+    'Term',
+    'Frequency of alcohol usage',
+    'How often did you consume alcohol each term',
+    ['Never', 'Once or twice a term', 'Monthly', 'Biweekly', 'Weekly', '2 - 3 times a week', '4 - 7 times a week'],
+    only_show_average = True,
+    sequential_label_rotation_angle = 45,
+    sequential_label_names = helpers.get_study_coop_term_list()
+)
+#### END: create alcohol category traversal line #####
