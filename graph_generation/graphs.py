@@ -625,6 +625,7 @@ def create_line_category_traversal(
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
     sequential_label_rotation_angle = 0,    # x axis rotation angle for overflow
+    sequential_label_names = [],            # list of strings to change the sequential label text on the graph
     figure_height: int = 9,                 # height of figure
     figure_width: int = 11                  # width of figure
 ):
@@ -704,10 +705,16 @@ def create_line_category_traversal(
     categorical_order_list.insert(0, '') # Placed at front since the first value of the categorical_mapping_dict is 1, but seaborn will set 0 as the first value, so this value acts as a shift on the axis
     ax.set_yticklabels(categorical_order_list)
     
+    if(sequential_label_names):
+        ax.set_xticklabels(sequential_label_names)
+    
     if(sequential_label_rotation_angle == 0):
         plt.xticks(rotation=sequential_label_rotation_angle)
     else:
         plt.xticks(rotation=sequential_label_rotation_angle, ha='right')
+    
+    plt.rcParams['axes.facecolor'] = '#F0F0F0'
+    plt.grid()
     
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
