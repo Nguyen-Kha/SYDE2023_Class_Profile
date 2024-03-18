@@ -279,3 +279,36 @@ graphs.create_line_category_traversal(
     sequential_label_names = helpers.get_study_coop_term_list()
 )
 #### END: create alcohol category traversal line #####
+
+#### create weed category traversal line
+list_weed = [
+    'weed_1a',
+    'weed_c1',
+    'weed_1b',
+    'weed_c2',
+    'weed_2a',
+    'weed_c3',
+    'weed_2b',
+    'weed_c4',
+    'weed_3a',
+    'weed_c5',
+    'weed_3b',
+    'weed_c6',
+    'weed_4a',
+    'weed_4b'
+]
+
+df_weed = df_wild[list_weed]
+
+graphs.create_line_category_traversal(
+    df_weed,
+    list_weed,
+    'Term',
+    'Frequency of marijuana usage',
+    'How often did you consume marijuana each term',
+    ['Never', 'Once or twice a term', 'Monthly', 'Biweekly', 'Weekly', '2 - 3 times a week', '4 - 7 times a week'],
+    only_show_average = True,
+    sequential_label_rotation_angle = 45,
+    sequential_label_names = helpers.get_study_coop_term_list()
+)
+#### END: create weed category traversal line ######
