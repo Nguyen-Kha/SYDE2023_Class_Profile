@@ -16,7 +16,7 @@ df_pa = df_pa = pd.read_csv('professional_activities.csv')
 df_social = pd.read_csv('social.csv')
 df_st = pd.read_csv('syde_traditions.csv')
 df_relationships = pd.read_csv('relationships.csv')
-df_wild = pd.read_csv('../csv/final/split/wild.csv')
+df_wild = pd.read_csv('wild.csv')
 
 #### Create disciplines of interest bar #####################
 df_disciplines = df_pa[['disciplines_of_interest']]
