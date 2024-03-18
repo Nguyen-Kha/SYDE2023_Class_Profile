@@ -200,3 +200,23 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END create serious relationships bar ##########
+
+#### Create serious relationships meet bar
+def clean_sr_meet(value):
+    if('Extracurriculars (includes school clubs, design teams, external groups, etc.)' in value):
+        value = value.replace('Extracurriculars (includes school clubs, design teams, external groups, etc.)', 'Extracurriculars')
+    return value
+df_sr_meet = df_relationships[['serious_relationships_meet']]
+df_sr_meet = df_sr_meet.dropna()
+df_sr_meet['serious_relationships_meet'] = df_sr_meet['serious_relationships_meet'].apply(clean_sr_meet)
+
+graphs.create_bar(
+    df_sr_meet,
+    'serious_relationships_meet',
+    'Methods of meeting significant other',
+    'Number of respondents',
+    'How did you meet your partner in serious relationships',
+    vertical = False,
+    splice_required = True,
+)
+#### END: Create serious relationships meet bar
