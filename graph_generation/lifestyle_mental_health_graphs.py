@@ -9,9 +9,6 @@ import helpers
 import graphs
 import functools
 
-df = pd.read_csv('')
-df1 = pd.read_csv('')
-
 df_pa = df_pa = pd.read_csv('professional_activities.csv')
 df_social = pd.read_csv('social.csv')
 df_st = pd.read_csv('syde_traditions.csv')
@@ -177,7 +174,8 @@ graphs.create_bar_stacked(
     'Did you attend a SYDE event in these terms?',
     display_as_percentage = True,
     vertical = False,
-    column_labels = ['1A', '1B', '2A', '2B', '3A', '4A', '4B']
+    column_labels = ['1A', '1B', '2A', '2B', '3A', '4A', '4B'],
+    file_name = 'syde_event_attendance'
 )
 #### END: create syde events stacked bar #############
 
@@ -273,6 +271,7 @@ graphs.create_line_category_traversal(
     'Term',
     'Frequency of alcohol usage',
     'How often did you consume alcohol each term',
+    'alcohol_consumption',
     ['Never', 'Once or twice a term', 'Monthly', 'Biweekly', 'Weekly', '2 - 3 times a week', '4 - 7 times a week'],
     only_show_average = True,
     sequential_label_rotation_angle = 45,
@@ -306,6 +305,7 @@ graphs.create_line_category_traversal(
     'Term',
     'Frequency of marijuana usage',
     'How often did you consume marijuana each term',
+    'weed_consumption',
     ['Never', 'Once or twice a term', 'Monthly', 'Biweekly', 'Weekly', '2 - 3 times a week', '4 - 7 times a week'],
     only_show_average = True,
     sequential_label_rotation_angle = 45,
@@ -333,6 +333,7 @@ graphs.create_line_category_traversal(
     'Term',
     'Frequency of partying',
     'How often did you party each term',
+    'partying',
     ['Never', 'Once or twice a term', 'Monthly', 'Biweekly', 'Weekly', '2 - 3 times a week', '4 - 7 times a week'],
     only_show_average = True,
     sequential_label_rotation_angle = 45,
@@ -350,9 +351,10 @@ graphs.create_bar(
     'Milestones',
     'Number of respondents',
     'Which of the following have you participated in',
-    vertical = False,
+    vertical = True,
     splice_required = True,
-    figure_height = 18,
-    max_label_length = 45
+    figure_width = 22,
+    max_label_length = 45,
+    title_label_rotation_angle = 45,
 )
 #### END: create milestone bar
