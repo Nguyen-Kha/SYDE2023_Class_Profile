@@ -220,3 +220,30 @@ graphs.create_bar(
     splice_required = True,
 )
 #### END: Create serious relationships meet bar
+
+#### create sydecest pie #########
+df_sydecest = df_relationships[['sydecest']]
+df_sydecest
+
+graphs.create_pie(
+    df_sydecest,
+    'sydecest',
+    'Did you engage in sydecest',
+    percent_text_distance = 1.2,
+    labels = ['Yes', 'No']
+)
+#### END: create sydecest pie ##########
+
+#### create sydecest wishful pie ######
+df_sydecest_wish = df_relationships[['sydecest', 'sydecest_wishful']]
+df_sydecest_wish = df_sydecest_wish.dropna()
+df_sydecest_wish = df_sydecest_wish.loc[df_sydecest_wish['sydecest'] == 'No']
+
+create_pie(
+    df_sydecest_wish,
+    'sydecest_wishful',
+    'If you did not engage in sydecest, did you want to?',
+    percent_text_distance = 1.2,
+    labels = ['Yes', 'No']
+)
+#### END: create sydecest wishful pie ########
