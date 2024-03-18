@@ -15,6 +15,7 @@ df1 = pd.read_csv('')
 df_pa = df_pa = pd.read_csv('professional_activities.csv')
 df_social = pd.read_csv('social.csv')
 df_st = pd.read_csv('syde_traditions.csv')
+df_relationships = pd.read_csv('relationships.csv')
 
 #### Create disciplines of interest bar #####################
 df_disciplines = df_pa[['disciplines_of_interest']]
@@ -178,3 +179,24 @@ graphs.create_bar_stacked(
     column_labels = ['1A', '1B', '2A', '2B', '3A', '4A', '4B']
 )
 #### END: create syde events stacked bar #############
+
+#### Create serious relationships bar #######3
+def clean_sr(value):
+    if(value == '0.5 lol'):
+        return 0
+    else:
+        return int(value)
+df_sr = df_relationships[['serious_relationships']]
+df_sr = df_sr.dropna()
+df_sr['serious_relationships'] = df_sr['serious_relationships'].apply(clean_sr)
+
+graphs.create_bar(
+    df_sr,
+    'serious_relationships',
+    'Number of relationships',
+    'Number of respondents',
+    'How many serious relationships have you been in',
+    vertical = True,
+    values_increment = 5
+)
+#### END create serious relationships bar ##########
