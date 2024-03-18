@@ -713,17 +713,18 @@ def create_line_category_traversal(
     plt.close()
 
 def create_pie( 
-    df,                         # pandas DataFrame, Non Aggregate and cleaned
-    column_name,                # column name in the dataframe
-    title,                      # title of the pie chart
+    df,                             # pandas DataFrame, Non Aggregate and cleaned
+    column_name,                    # column name in the dataframe
+    title,                          # title of the pie chart
 
-    labels = [],                # labels for the legend to follow in specific order,
-    drop_values = [],           # list of strings. If need to drop column value quickly, use this
-    colours = [],               # list of strings. Hex colours for pie chart 
-    file_name = None,           # Name of file to save bar graph to,
-    legend_title = None,        # Name to be displayed on legend
-    figure_height: int = 9,     # height of figure
-    figure_width: int = 11      # width of figure
+    labels = [],                    # labels for the legend to follow in specific order,
+    drop_values = [],               # list of strings. If need to drop column value quickly, use this
+    colours = [],                   # list of strings. Hex colours for pie chart 
+    file_name = None,               # Name of file to save bar graph to,
+    legend_title = None,            # Name to be displayed on legend
+    figure_height: int = 9,         # height of figure
+    figure_width: int = 11,         # width of figure
+    percent_text_distance = 1.05,   # position of percentage per pie slice. Set < 1 for inside pie, set > 1 for outside pie
 ):
     """
     DataFrame format:
@@ -773,7 +774,7 @@ def create_pie(
         labels = df_temp['title'],
         autopct = '%1.1f%%',
         startangle = 90,
-        pctdistance = 1.05,
+        pctdistance = percent_text_distance,
         labeldistance = None,
         colors = colours
        )
