@@ -339,3 +339,20 @@ graphs.create_line_category_traversal(
     sequential_label_names = helpers.get_study_term_list()
 )
 #### END: create party category traversal line ########
+
+#### Create milestone bar #######
+df_milestones = df_wild[['hye_milestones']]
+df_milestones = df_milestones.dropna()
+
+graphs.create_bar(
+    df_milestones,
+    'hye_milestones',
+    'Milestones',
+    'Number of respondents',
+    'Which of the following have you participated in',
+    vertical = False,
+    splice_required = True,
+    figure_height = 18,
+    max_label_length = 45
+)
+#### END: create milestone bar
