@@ -77,3 +77,20 @@ graphs.create_pie(
     percent_text_distance=1.2
 )
 #### END: create choose syde again pie
+
+#### Create alt syde choice #####################
+df_other_school = df_ug_reflections[['syde_again', 'other_school_program']]
+df_other_school = df_other_school.loc[df_other_school['syde_again'] == 'No']
+df_other_school = df_other_school.dropna()
+
+graphs.create_bar(
+    df_other_school,
+    'other_school_program',
+    'Alternative school and program',
+    'Number of respondents',
+    'Which program would you have gone into instead',
+    vertical = False,
+    splice_required = True,
+    max_label_length = 30
+)
+#### END; crate alt syde choice ##################
