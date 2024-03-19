@@ -115,3 +115,24 @@ graphs.create_bar_stacked(
     column_labels = ['I am satisfied with the SYDE Program', 'I belonged in SYDE', 'I felt like I was a part of the SYDE community']
 )
 #### END:  Create syde satisfaction stacked bar ###########
+
+#### Create engineering stacked bar ######
+aspire_eng_list = ['aspiring_engineer',
+ 'syde_trad_eng',
+]
+
+df_aspire_eng = df_ug_reflections[aspire_eng_list]
+df_aspire_eng = df_aspire_eng.dropna()
+
+graphs.create_bar_stacked(
+    df_aspire_eng,
+    aspire_eng_list,
+    '',
+    'Percent of respondents',
+    'State your level of agreement with your view on engineering',
+    vertical = False,
+    display_as_percentage = True,
+    labels = helpers.get_agree_no_opinion_scale(),
+    column_labels = ['I consider myself to be an aspiring engineer', 'SYDE prepared me for a traditional engineering career']
+)
+#### END: create engineering stacked bar ##############
