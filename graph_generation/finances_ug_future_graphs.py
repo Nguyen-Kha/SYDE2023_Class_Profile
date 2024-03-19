@@ -136,3 +136,25 @@ graphs.create_bar_stacked(
     column_labels = ['I consider myself to be an aspiring engineer', 'SYDE prepared me for a traditional engineering career']
 )
 #### END: create engineering stacked bar ##############
+
+#### create syde quality stacked bar ##########33
+syde_quality_list = ['syde_prof_quality',
+ 'syde_course_quality',
+ 'syde_support_quality',
+]
+
+df_syde_quality = df_ug_reflections[syde_quality_list]
+df_syde_quality = df_syde_quality.dropna()
+
+graphs.create_bar_stacked(
+    df_syde_quality,
+    syde_quality_list,
+    '',
+    'Percent of respondents',
+    'State your level of agreement with the quality of SYDE',
+    vertical = False,
+    display_as_percentage = True,
+    labels = helpers.get_agree_no_opinion_scale(),
+    column_labels = ["The quality of professors' instructional content was acceptable", 'The quality of the SYDE courses was acceptable', 'The support given by the SYDE administration was acceptable']
+)
+#### END: create syde quality stacked bar #################3
