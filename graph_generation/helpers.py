@@ -2,6 +2,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 import math
+import re
 
 SYDE_CORE_COURSES_LIST = [
     'SYDE 101',
@@ -45,6 +46,7 @@ SYDE_CORE_COURSES_LIST = [
 STUDY_TERM_LIST = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B']
 COOP_TERM_LIST = ['Co-op 1','Co-op 2','Co-op 3','Co-op 4','Co-op 5','Co-op 6']
 STUDY_COOP_TERM_LIST = ['1A', 'Co-op 1', '1B', 'Co-op 2', '2A', 'Co-op 3', '2B', 'Co-op 4', '3A', 'Co-op 5', '3B', 'Co-op 6', '4A', '4B']
+AGREE_SCALE = ['Strongly Disagree', 'Disagree', 'Slightly Disagree', 'Neutral', 'Slightly Agree', 'Agree', 'Strongly Agree']
 
 def get_syde_core_courses_list():
     return SYDE_CORE_COURSES_LIST
@@ -57,6 +59,9 @@ def get_coop_term_list():
 
 def get_study_coop_term_list():
     return STUDY_COOP_TERM_LIST
+
+def get_agree_scale():
+    return AGREE_SCALE
 
 def splice_cells_with_commas(df, column_name): # TODO: TEST
     """
@@ -197,6 +202,15 @@ def turn_dates_into_actual_values(dates):
         return '1 - 25'
     else:
         return dates
+    
+def remove_nonnumeric_char(string):
+    if(type(string) == float):
+        if(math.isnan(string)):
+            return string
+        
+    cleaned_string = re.sub("[^0-9.]", "", str(string))
+    cleaned_string = cleaned_string.strip()
+    return cleaned_string
     
 def transform_df_for_boxplot(
     df_working,                 # Pandas Dataframe, format shown below

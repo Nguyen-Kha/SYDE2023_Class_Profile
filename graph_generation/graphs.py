@@ -25,6 +25,7 @@ def create_bar(
     values_max: float = None,           # the max value in the dataframe
     splice_required: bool = False,      # Use True if the values in the cells have commas that need to be split
     labels: list = [],                  # list of strings, order in which the x axis / title labels should be arranged
+    graph_name_labels: list = [],       # the names of the xaxis labels to be changed to (to be used for spelling mistakes or minor text changes)
     colours = [],                       # list of strings of hexcodes ['#0000FF', '#eb884a'] for bar colours
     display_as_percentage = False,      # display the y axis as a percentage rather than the count occurence
     display_legend = False,             # show the legend if necessary
@@ -79,34 +80,19 @@ def create_bar(
         
      ######################
     ## Put the counted values into a new dataframe
-    
+            
+    df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
     if(labels):
-        title_temp = list(count.keys())
-        values_temp = list(count.values())
-        dictionary = {title_temp[i] : values_temp[i] for i in range(0, len(title_temp))}
-
-        df_temp = pd.DataFrame()
-        df_temp['title'] = labels
-        df_temp['values'] = 0
-
-        for key, value in dictionary.items():
-            df_temp.loc[df_temp.title == key, 'values'] = value
-        x = np.arange(len(labels))  # the label locations
-    
-    else:
-        df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
+        missing_labels_values = list(set(labels).difference(df_temp['title'].unique().tolist()))
+        zeros_list = list(np.zeros(len(missing_labels_values)))
+        df_missing_labels = pd.DataFrame({'title': missing_labels_values, 'values': zeros_list})
+        df_temp = df_temp.append(df_missing_labels, ignore_index = True)
+        df_temp = df_temp.reset_index().drop(columns = 'index')
+    if(vertical):
         df_temp = df_temp.sort_values(by=['values'], ascending = False)
-        
-        if(not vertical):
-            reverse_title_order = df_temp['title'].tolist()
-            reverse_title_order.reverse()
-            df_temp['title'] = pd.Categorical(df_temp['title'], reverse_title_order)
-            df_temp = df_temp.sort_values('title')
-
-        x = df_temp['title'] # the label locations
-        if type(x[0]) == str:
-            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
-        
+    else:
+        df_temp = df_temp.sort_values(by=['values'], ascending = True)
+    
     ######################
     ## Convert amount of people responded into percentages
     if(display_as_percentage):
@@ -128,6 +114,14 @@ def create_bar(
     fig, ax = plt.subplots(figsize = (figure_width,figure_height))
     
     if(vertical):
+        if(labels):
+            df_temp['title'] = pd.Categorical(df_temp['title'], labels)
+            df_temp = df_temp.sort_values('title')
+        x = df_temp['title'] # the label locations
+        
+        if type(x[0]) == str:
+            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
+            
         ax.bar(
             x = x,
             height = df_temp['values'],
@@ -140,9 +134,9 @@ def create_bar(
         ax.set_xlabel(title_label)
         ax.set_ylabel(values_label)
         ax.yaxis.set_ticks(np.arange(0, values_max, values_increment))
-        if(labels):
+        if(graph_name_labels):
             ax.set_xticks(x)
-            ax.set_xticklabels(labels)
+            ax.set_xticklabels(graph_name_labels)
         if(display_as_percentage):
             ax.yaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
@@ -151,6 +145,15 @@ def create_bar(
             plt.xticks(rotation=title_label_rotation_angle, ha='right')            
         
     else:
+        if(labels):
+            labels.reverse()
+            df_temp['title'] = pd.Categorical(df_temp['title'], labels)
+            df_temp = df_temp.sort_values('title')
+            
+        x = df_temp['title'] # the label locations
+        if type(x[0]) == str:
+            x = [ '\n'.join(wrap(label, max_label_length)) for label in x ]
+        
         ax.barh(
             y = x,
             width = df_temp['values'],
@@ -163,9 +166,10 @@ def create_bar(
         ax.set_xlabel(values_label)
         ax.set_ylabel(title_label)
         ax.xaxis.set_ticks(np.arange(0, values_max, values_increment))
-        if(labels):
+        if(graph_name_labels):
+            graph_name_labels.reverse()
             ax.set_yticks(x)
-            ax.set_yticklabels(labels)
+            ax.set_yticklabels(graph_name_labels)
         if(display_as_percentage):
             ax.xaxis.set_major_formatter(mtick.PercentFormatter(decimals=num_decimals))
         if(title_label_rotation_angle == 0):
@@ -621,6 +625,7 @@ def create_line_category_traversal(
     row_object_list = [],                   # list of str: the actual meaning of each line being graphed. will show up in legend
     only_show_average = False,              # Shows the average line for all of the dataset. Only available for no row_object_name and no row_object_list,
     sequential_label_rotation_angle = 0,    # x axis rotation angle for overflow
+    sequential_label_names = [],            # list of strings to change the sequential label text on the graph
     figure_height: int = 9,                 # height of figure
     figure_width: int = 11                  # width of figure
 ):
@@ -700,26 +705,33 @@ def create_line_category_traversal(
     categorical_order_list.insert(0, '') # Placed at front since the first value of the categorical_mapping_dict is 1, but seaborn will set 0 as the first value, so this value acts as a shift on the axis
     ax.set_yticklabels(categorical_order_list)
     
+    if(sequential_label_names):
+        ax.set_xticklabels(sequential_label_names)
+    
     if(sequential_label_rotation_angle == 0):
         plt.xticks(rotation=sequential_label_rotation_angle)
     else:
         plt.xticks(rotation=sequential_label_rotation_angle, ha='right')
     
+    plt.rcParams['axes.facecolor'] = '#F0F0F0'
+    plt.grid()
+    
     plt.savefig('./graphs/' + str(file_name) + '.png', bbox_inches='tight')
     plt.close()
 
 def create_pie( 
-    df,                         # pandas DataFrame, Non Aggregate and cleaned
-    column_name,                # column name in the dataframe
-    title,                      # title of the pie chart
+    df,                             # pandas DataFrame, Non Aggregate and cleaned
+    column_name,                    # column name in the dataframe
+    title,                          # title of the pie chart
 
-    labels = [],                # labels for the legend to follow in specific order,
-    drop_values = [],           # list of strings. If need to drop column value quickly, use this
-    colours = [],               # list of strings. Hex colours for pie chart 
-    file_name = None,           # Name of file to save bar graph to,
-    legend_title = None,        # Name to be displayed on legend
-    figure_height: int = 9,     # height of figure
-    figure_width: int = 11      # width of figure
+    labels = [],                    # labels for the legend to follow in specific order,
+    drop_values = [],               # list of strings. If need to drop column value quickly, use this
+    colours = [],                   # list of strings. Hex colours for pie chart 
+    file_name = None,               # Name of file to save bar graph to,
+    legend_title = None,            # Name to be displayed on legend
+    figure_height: int = 9,         # height of figure
+    figure_width: int = 11,         # width of figure
+    percent_text_distance = 1.05,   # position of percentage per pie slice. Set < 1 for inside pie, set > 1 for outside pie
 ):
     """
     DataFrame format:
@@ -769,7 +781,7 @@ def create_pie(
         labels = df_temp['title'],
         autopct = '%1.1f%%',
         startangle = 90,
-        pctdistance = 1.05,
+        pctdistance = percent_text_distance,
         labeldistance = None,
         colors = colours
        )
