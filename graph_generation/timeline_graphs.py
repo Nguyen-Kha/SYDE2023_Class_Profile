@@ -9,19 +9,17 @@ import helpers
 import graphs
 import functools
 
-df = pd.read_csv('')
-df1 = pd.read_csv('')
-df_easy_useful = pd.read_csv('timeline_easy_useful_courses.csv')
-df_gpa = pd.read_csv('timeline_gpa.csv')
-df_employed = pd.read_csv('timeline_employed.csv')
-df_coop_category = pd.read_csv('timeline_coop_category.csv')
-df_location = pd.read_csv('timeline_location.csv')
-df_lectures = pd.read_csv('timeline_lectures.csv')
-df_stress = pd.read_csv('timeline_stress.csv')
-df_rent = pd.read_csv('timeline_rent.csv')
-df_pay = pd.read_csv('timeline_pay.csv')
-df_find_job = pd.read_csv('timeline_find_job.csv')
-df_ww_rating = pd.read_csv('timeline_ww_rating.csv')
+df_easy_useful = pd.read_csv('../csv/final/split/timeline_easy_useful_courses.csv')
+df_gpa = pd.read_csv('../csv/final/split/timeline_gpa.csv')
+df_employed = pd.read_csv('../csv/final/split/timeline_employed.csv')
+df_coop_category = pd.read_csv('../csv/final/split/timeline_coop_category.csv')
+df_location = pd.read_csv('../csv/final/split/timeline_location.csv')
+df_lectures = pd.read_csv('../csv/final/split/timeline_lectures.csv')
+df_stress = pd.read_csv('../csv/final/split/timeline_stress.csv')
+df_rent = pd.read_csv('../csv/final/split/timeline_rent.csv')
+df_pay = pd.read_csv('../csv/final/split/timeline_pay.csv')
+df_find_job = pd.read_csv('../csv/final/split/timeline_find_job.csv')
+df_ww_rating = pd.read_csv('../csv/final/split/timeline_ww_rating.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
@@ -80,6 +78,7 @@ graphs.create_boxplot(
     'Term',
     'Percentage',
     'GPA per Term',
+    file_name = 'gpa_per_term_boxplot',
     vertical = True,
     values_min = 60,
     values_max = 100,
@@ -103,6 +102,7 @@ graphs.create_line(
     'Study Term', 
     'Lecture Attendance', 
     'How often did you come to lectures',
+    'lecture_attendace_line',
     only_show_average = True,
     sequential_labels = helpers.get_study_term_list(),
     values_min = 1
@@ -120,6 +120,7 @@ graphs.create_line(
     'Study Term',
     'Reported Stress Level',
     'How stressful was this term',
+    'stress_levels_line',
     values_min = 1,
     sequential_labels = helpers.get_study_term_list(),
     only_show_average = True,
@@ -138,6 +139,7 @@ graphs.create_boxplot(
     'Term',
     '$ CAD paid for rent',
     'How much did you pay in rent',
+    file_name='rent_boxplot',
     column_labels = helpers.get_study_coop_term_list(),
     values_min = 0,
     values_max = 2400,
@@ -268,6 +270,7 @@ graphs.create_line(
     'Co-op Term',
     'Percent of class employed',
     'SYDE 2023 Employment rate',
+    'employment_rate_line',
     values_min = 0,
     values_max = 100,
     values_increment = 10,
@@ -297,6 +300,7 @@ graphs.create_boxplot(
     'Co-op Term',
     '$ CAD per hour',
     'What was your rate of compensation?',
+    'pay_per_term_boxplot',
     column_labels = helpers.get_coop_term_list(),
     values_min = 0.01,
     values_max = 80,
@@ -324,6 +328,7 @@ graphs.create_bar_stacked(
     'Co-op Term',
     'Percentage of Students',
     'How did you find your co-op job',
+    'find_job_bar_stacked',
     vertical = True,
     column_labels = helpers.get_coop_term_list(),
     display_as_percentage = True,
@@ -350,6 +355,7 @@ graphs.create_bar_stacked(
     'Co-op Term',
     'Percentage of Students',
     'What was your rating on WaterlooWorks for that co-op term',
+    'ww_rating_bar_stacked',
     vertical = True,
     column_labels = helpers.get_coop_term_list(),
     display_as_percentage = True,
