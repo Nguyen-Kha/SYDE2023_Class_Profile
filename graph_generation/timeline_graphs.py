@@ -9,8 +9,6 @@ import helpers
 import graphs
 import functools
 
-df = pd.read_csv('')
-df1 = pd.read_csv('')
 df_easy_useful = pd.read_csv('timeline_easy_useful_courses.csv')
 df_gpa = pd.read_csv('timeline_gpa.csv')
 df_employed = pd.read_csv('timeline_employed.csv')
@@ -80,6 +78,7 @@ graphs.create_boxplot(
     'Term',
     'Percentage',
     'GPA per Term',
+    file_name = 'gpa_per_term_boxplot',
     vertical = True,
     values_min = 60,
     values_max = 100,
@@ -103,6 +102,7 @@ graphs.create_line(
     'Study Term', 
     'Lecture Attendance', 
     'How often did you come to lectures',
+    'lecture_attendace_line',
     only_show_average = True,
     sequential_labels = helpers.get_study_term_list(),
     values_min = 1
@@ -120,6 +120,7 @@ graphs.create_line(
     'Study Term',
     'Reported Stress Level',
     'How stressful was this term',
+    'stress_levels_line',
     values_min = 1,
     sequential_labels = helpers.get_study_term_list(),
     only_show_average = True,
@@ -138,6 +139,7 @@ graphs.create_boxplot(
     'Term',
     '$ CAD paid for rent',
     'How much did you pay in rent',
+    file_name='rent_boxplot',
     column_labels = helpers.get_study_coop_term_list(),
     values_min = 0,
     values_max = 2400,
@@ -268,6 +270,7 @@ graphs.create_line(
     'Co-op Term',
     'Percent of class employed',
     'SYDE 2023 Employment rate',
+    'employment_rate_line',
     values_min = 0,
     values_max = 100,
     values_increment = 10,
@@ -297,6 +300,7 @@ graphs.create_boxplot(
     'Co-op Term',
     '$ CAD per hour',
     'What was your rate of compensation?',
+    'pay_per_term_boxplot',
     column_labels = helpers.get_coop_term_list(),
     values_min = 0.01,
     values_max = 80,
@@ -324,6 +328,7 @@ graphs.create_bar_stacked(
     'Co-op Term',
     'Percentage of Students',
     'How did you find your co-op job',
+    'find_job_bar_stacked',
     vertical = True,
     column_labels = helpers.get_coop_term_list(),
     display_as_percentage = True,
@@ -350,6 +355,7 @@ graphs.create_bar_stacked(
     'Co-op Term',
     'Percentage of Students',
     'What was your rating on WaterlooWorks for that co-op term',
+    'ww_rating_bar_stacked',
     vertical = True,
     column_labels = helpers.get_coop_term_list(),
     display_as_percentage = True,

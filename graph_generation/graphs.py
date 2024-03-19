@@ -323,7 +323,7 @@ def create_boxplot(
     title_label: str,                   # title label of graph (x axis label for vertical graph) 
     values_label: str,                  # values label of graph (y axis label for horizontal graph)
     title,                              # title of graph
-    file_name,                          # file name to save graph as
+    file_name = None,                          # file name to save graph as
 
     vertical: bool = True,              # orientation of boxplots
     column_labels = [],                 # List of strings, used to rename the column_name for each box on graph
