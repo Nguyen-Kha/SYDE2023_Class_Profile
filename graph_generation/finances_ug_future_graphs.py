@@ -13,6 +13,7 @@ df = pd.read_csv('')
 df1 = pd.read_csv('')
 
 df_finance = pd.read_csv('../csv/final/split/finances.csv')
+df_ug_reflections = pd.read_csv('../csv/final/split/undergrad_reflections.csv')
 
 #### Create debt bar ############3
 def bin_debt(value):
@@ -64,3 +65,15 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: create tuition bar #############
+
+#### create choose syde again pie #######
+df_syde_again = df_ug_reflections[['syde_again']]
+df_syde_again = df_syde_again.dropna()
+
+graphs.create_pie(
+    df_syde_again,
+    'syde_again',
+    'If you went back in time, would you have chosen SYDE again',
+    percent_text_distance=1.2
+)
+#### END: create choose syde again pie
