@@ -5,7 +5,7 @@ import math
 import matplotlib.pyplot as plt   # use to make graphs
 import seaborn as sns
 from collections import Counter
-# import helpers
+import helpers
 import graphs
 import functools
 
@@ -94,3 +94,24 @@ graphs.create_bar(
     max_label_length = 30
 )
 #### END; crate alt syde choice ##################
+
+#### Create syde satisfaction stacked bar ###########
+syde_satisfaction_list = [ 'syde_satisfied',
+ 'syde_belonged',
+ 'syde_community']
+
+df_syde_satisfaction = df_ug_reflections[syde_satisfaction_list]
+df_syde_satisfaction
+
+graphs.create_bar_stacked(
+    df_syde_satisfaction,
+    syde_satisfaction_list,
+    '',
+    'Percent of respondents',
+    'State your level of agreement with your satisfaction with SYDE',
+    vertical = False,
+    display_as_percentage = True,
+    labels = helpers.get_agree_no_opinion_scale(),
+    column_labels = ['I am satisfied with the SYDE Program', 'I belonged in SYDE', 'I felt like I was a part of the SYDE community']
+)
+#### END:  Create syde satisfaction stacked bar ###########
