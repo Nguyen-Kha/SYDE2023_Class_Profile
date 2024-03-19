@@ -46,3 +46,21 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: create debt bar ####################3
+
+#### create tuition bar ###########33
+df_tuition = df_finance[['tuition_self_fund']].copy()
+df_tuition = df_tuition.dropna()
+tuition_list = ['0%', '1% - 20%', '21% - 40%', '41% - 60%', '61% - 80%', '80% - 99%', '100%']
+
+graphs.create_bar(
+    df_tuition,
+    'tuition_self_fund',
+    'Percent of tuition that YOU paid',
+    'Percentage of respondents',
+    'How much of tuition did you pay for on your own?',
+    vertical = True,
+    display_as_percentage = True,
+    labels = tuition_list,
+    values_increment = 5
+)
+#### END: create tuition bar #############
