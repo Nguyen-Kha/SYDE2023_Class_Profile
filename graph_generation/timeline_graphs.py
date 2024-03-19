@@ -9,17 +9,17 @@ import helpers
 import graphs
 import functools
 
-df_easy_useful = pd.read_csv('../csv/final/split/timeline_easy_useful_courses.csv')
-df_gpa = pd.read_csv('../csv/final/split/timeline_gpa.csv')
-df_employed = pd.read_csv('../csv/final/split/timeline_employed.csv')
-df_coop_category = pd.read_csv('../csv/final/split/timeline_coop_category.csv')
-df_location = pd.read_csv('../csv/final/split/timeline_location.csv')
-df_lectures = pd.read_csv('../csv/final/split/timeline_lectures.csv')
-df_stress = pd.read_csv('../csv/final/split/timeline_stress.csv')
-df_rent = pd.read_csv('../csv/final/split/timeline_rent.csv')
-df_pay = pd.read_csv('../csv/final/split/timeline_pay.csv')
-df_find_job = pd.read_csv('../csv/final/split/timeline_find_job.csv')
-df_ww_rating = pd.read_csv('../csv/final/split/timeline_ww_rating.csv')
+df_easy_useful = pd.read_csv('timeline_easy_useful_courses.csv')
+df_gpa = pd.read_csv('timeline_gpa.csv')
+df_employed = pd.read_csv('timeline_employed.csv')
+df_coop_category = pd.read_csv('timeline_coop_category.csv')
+df_location = pd.read_csv('timeline_location.csv')
+df_lectures = pd.read_csv('timeline_lectures.csv')
+df_stress = pd.read_csv('timeline_stress.csv')
+df_rent = pd.read_csv('timeline_rent.csv')
+df_pay = pd.read_csv('timeline_pay.csv')
+df_find_job = pd.read_csv('timeline_find_job.csv')
+df_ww_rating = pd.read_csv('timeline_ww_rating.csv')
 
 #### Create easiness vs usefulness scatter plot ###################
 df_eu_working = df_easy_useful.drop(columns = 'uid')
