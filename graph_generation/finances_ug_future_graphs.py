@@ -157,4 +157,32 @@ graphs.create_bar_stacked(
     labels = helpers.get_agree_no_opinion_scale(),
     column_labels = ["The quality of professors' instructional content was acceptable", 'The quality of the SYDE courses was acceptable', 'The support given by the SYDE administration was acceptable']
 )
-#### END: create syde quality stacked bar #################3
+#### END: create syde quality stacked bar #################
+
+#### create uni satisfaction stacked bar
+uni_satisfaction_list = ['uw_satisfied',
+ 'friends_outside_syde',
+ 'friends_outside_eng',
+ 'ec_satisfied'
+]
+
+df_uni_satisfaction = df_ug_reflections[uni_satisfaction_list]
+df_uni_satisfaction = df_uni_satisfaction.dropna()
+
+graphs.create_bar_stacked(
+    df_uni_satisfaction,
+    uni_satisfaction_list,
+    '',
+    'Percent of respondents',
+    'State your level of agreement with the following university experiences',
+    vertical = False,
+    display_as_percentage = True,
+    labels = helpers.get_agree_no_opinion_scale(),
+    column_labels = [
+        'I am satisfied with my experience at UW',
+        'I made a lot of friends outside of SYDE',
+        'I made a lot of friends outside of UW Engineering',
+        'I am satisfied with the extracurriculars I participated in'
+    ]
+)
+#### END: create uni satisfaction stacked bar #########
