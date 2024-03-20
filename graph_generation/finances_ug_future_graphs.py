@@ -254,3 +254,27 @@ graphs.create_bar(
     max_label_length = 10
 )
 #### END: create children bar ##########
+
+#### Create post grad plans bar ##########
+def clean_postgrad_plans(value):
+    if(value == 'Working (already have a job lined up)'):
+        return 'Working'
+    elif(value == 'Grad school / Professional school / Other Education'):
+        return 'Further Education'
+    return value
+
+df_postgrad = df_future_plans[['postgrad_plans']].copy()
+df_postgrad = df_postgrad.dropna()
+df_postgrad['postgrad_plans'] = df_postgrad['postgrad_plans'].apply(clean_postgrad_plans)
+
+graphs.create_bar(
+    df_postgrad,
+    'postgrad_plans',
+    '',
+    'Percentage of respondents',
+    'What are your post-grad plans',
+    vertical = True,
+    display_as_percentage = True,
+    values_increment = 5
+)
+#### END: Create post grad plans bar
