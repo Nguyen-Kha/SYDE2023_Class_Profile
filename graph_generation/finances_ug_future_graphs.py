@@ -410,3 +410,25 @@ graphs.create_boxplot(
     file_name = 'ft_tc_boxplot'
 )
 #### END: create FT TC boxplot ######
+
+#### Create FT TC country compare boxplot #############
+df_ft_tc_country = df_ft[['ft_tc', 'ft_tc_base', 'ft_job_country']]
+df_ft_tc_country = df_ft_tc_country.dropna()
+df_ft_tc_country = df_ft_tc_country.loc[df_ft_tc_country['ft_job_country'] != 'England']
+
+graphs.create_boxplot(
+    df_ft_tc_country,
+    ['ft_tc', 'ft_tc_base'],
+    '',
+    'Compensation (CAD)',
+    'What is your salary in CAD',
+    comparison_column = 'ft_job_country',
+    comparison_labels = ['Canada', 'USA'],
+    values_min = 0,
+    values_max = 400000,
+    values_increment = 25000,
+    column_labels = ['1st Year Total Compensation \n(Base Salary + (1/4) Equity + Signing Bonus)', 'Base Salary'],
+    max_label_length= 30,
+    file_name = 'ft_tc_boxplot_country'
+)
+#### END: create FT TC country compare boxplot #########
