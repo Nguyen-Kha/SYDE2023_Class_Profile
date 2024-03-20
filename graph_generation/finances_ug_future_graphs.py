@@ -9,13 +9,10 @@ import helpers
 import graphs
 import functools
 
-df = pd.read_csv('')
-df1 = pd.read_csv('')
-
-df_finance = pd.read_csv('../csv/final/split/finances.csv')
-df_ug_reflections = pd.read_csv('../csv/final/split/undergrad_reflections.csv')
-df_future_plans = pd.read_csv('../csv/final/split/future_plans.csv')
-df_ft = pd.read_csv('../csv/final/split/full_time_jobs.csv')
+df_finance = pd.read_csv('finances.csv')
+df_ug_reflections = pd.read_csv('undergrad_reflections.csv')
+df_future_plans = pd.read_csv('future_plans.csv')
+df_ft = pd.read_csv('full_time_jobs.csv')
 
 #### Create debt bar ############3
 def bin_debt(value):
@@ -114,7 +111,8 @@ graphs.create_bar_stacked(
     vertical = False,
     display_as_percentage = True,
     labels = helpers.get_agree_no_opinion_scale(),
-    column_labels = ['I am satisfied with the SYDE Program', 'I belonged in SYDE', 'I felt like I was a part of the SYDE community']
+    column_labels = ['I am satisfied with the SYDE Program', 'I belonged in SYDE', 'I felt like I was a part of the SYDE community'],
+    file_name='syde_satisfaction_stacked_bar'
 )
 #### END:  Create syde satisfaction stacked bar ###########
 
@@ -135,7 +133,8 @@ graphs.create_bar_stacked(
     vertical = False,
     display_as_percentage = True,
     labels = helpers.get_agree_no_opinion_scale(),
-    column_labels = ['I consider myself to be an aspiring engineer', 'SYDE prepared me for a traditional engineering career']
+    column_labels = ['I consider myself to be an aspiring engineer', 'SYDE prepared me for a traditional engineering career'],
+    file_name='aspiring_eng_stacked_bar'
 )
 #### END: create engineering stacked bar ##############
 
@@ -157,7 +156,8 @@ graphs.create_bar_stacked(
     vertical = False,
     display_as_percentage = True,
     labels = helpers.get_agree_no_opinion_scale(),
-    column_labels = ["The quality of professors' instructional content was acceptable", 'The quality of the SYDE courses was acceptable', 'The support given by the SYDE administration was acceptable']
+    column_labels = ["The quality of professors' instructional content was acceptable", 'The quality of the SYDE courses was acceptable', 'The support given by the SYDE administration was acceptable'],
+    file_name="syde_quality_stacked_bar"
 )
 #### END: create syde quality stacked bar #################
 
@@ -185,7 +185,8 @@ graphs.create_bar_stacked(
         'I made a lot of friends outside of SYDE',
         'I made a lot of friends outside of UW Engineering',
         'I am satisfied with the extracurriculars I participated in'
-    ]
+    ],
+    file_name= 'uni_satisfaction_stacked_bar'
 )
 #### END: create uni satisfaction stacked bar #########
 
@@ -452,6 +453,7 @@ graphs.create_bar_stacked(
     column_labels = [''],
     display_as_percentage = True,
     figure_height = 3,
-    figure_width = 13
+    figure_width = 13,
+    file_name = 'ft_find_job_bar_stacked'
 )
 #### END: create ft find job stacked bar #######
