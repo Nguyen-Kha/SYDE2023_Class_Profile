@@ -391,3 +391,22 @@ graphs.create_pie(
     percent_text_distance=1.07
 )
 #### END: create ft country pie ##########
+
+#### Create FT TC boxplot ######
+df_ft_tc = df_ft[['ft_tc', 'ft_tc_base']]
+df_ft_tc = df_ft_tc.dropna()
+
+graphs.create_boxplot(
+    df_ft_tc,
+    ['ft_tc', 'ft_tc_base'],
+    '',
+    'Compensation (CAD)',
+    'What is your salary in CAD',
+    values_min = 0,
+    values_max = 400000,
+    values_increment = 25000,
+    column_labels = ['1st Year Total Compensation \n(Base Salary + (1/4) Equity + Signing Bonus)', 'Base Salary'],
+    max_label_length= 30,
+    file_name = 'ft_tc_boxplot'
+)
+#### END: create FT TC boxplot ######
