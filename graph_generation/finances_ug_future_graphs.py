@@ -278,3 +278,16 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: Create post grad plans bar
+
+#### Create postgrad leave canada pie #############
+df_postgrad_leave_ca = df_future_plans[['postgrad_leave_canada']]
+df_postgrad_leave_ca = df_postgrad_leave_ca.dropna()
+
+graphs.create_pie(
+    df_postgrad_leave_ca,
+    'postgrad_leave_canada',
+    'Do your post-grad plans require you to leave Canada',
+    labels = ['Yes', 'No'],
+    percent_text_distance=1.2
+)
+#### END: create postgrad leave canada pie #########
