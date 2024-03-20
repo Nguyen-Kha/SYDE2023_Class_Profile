@@ -47,6 +47,7 @@ STUDY_TERM_LIST = ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B']
 COOP_TERM_LIST = ['Co-op 1','Co-op 2','Co-op 3','Co-op 4','Co-op 5','Co-op 6']
 STUDY_COOP_TERM_LIST = ['1A', 'Co-op 1', '1B', 'Co-op 2', '2A', 'Co-op 3', '2B', 'Co-op 4', '3A', 'Co-op 5', '3B', 'Co-op 6', '4A', '4B']
 AGREE_SCALE = ['Strongly Disagree', 'Disagree', 'Slightly Disagree', 'Neutral', 'Slightly Agree', 'Agree', 'Strongly Agree']
+AGREE_NO_OPINION_SCALE = ['Strongly Disagree', 'Disagree', 'Slightly Disagree', 'Neutral / No Opinion', 'Slightly Agree', 'Agree', 'Strongly Agree']
 
 def get_syde_core_courses_list():
     return SYDE_CORE_COURSES_LIST
@@ -62,6 +63,9 @@ def get_study_coop_term_list():
 
 def get_agree_scale():
     return AGREE_SCALE
+
+def get_agree_no_opinion_scale():
+    return AGREE_NO_OPINION_SCALE
 
 def splice_cells_with_commas(df, column_name): # TODO: TEST
     """
@@ -418,7 +422,7 @@ def compute_displayed_values_min(values_min, values_increment, autoset: bool):
     if(autoset):
         values_min = values_min - values_increment
     else:
-        values_min = values_min - (values_increment / 10000)
+        values_min = values_min - (values_increment / 1000000)
     return values_min
         
 def compute_displayed_values_max(values_max, values_increment, autoset: bool):
@@ -433,5 +437,5 @@ def compute_displayed_values_max(values_max, values_increment, autoset: bool):
     if(autoset):
         values_max = values_max + values_increment
     else:
-        values_max = values_max + (values_increment / 10000)
+        values_max = values_max + (values_increment / 1000000)
     return values_max
