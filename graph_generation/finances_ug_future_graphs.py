@@ -228,3 +228,29 @@ graphs.create_bar(
     max_label_length = 10 
 )
 #### END; Create marriage bar #############
+
+#### create children bar ##########
+def clean_children(value):
+    if(value == 0):
+        return 'I do not plan on having children'
+    return str(int(value))
+
+df_children = df_future_plans[['age_of_children']] 
+df_children = df_children.dropna()
+df_children = df_children[df_children['age_of_children'] != 2]
+df_children['age_of_children'] = df_children['age_of_children'].apply(clean_children)
+children_list = np.arange(26, 36, 1) # list(sorted(df_children['age_of_children'].unique().tolist()))
+children_list = list(map(lambda x: str(int(x)), children_list))
+children_list.insert(0, 'I do not plan on having children')
+
+graphs.create_bar(
+    df_children,
+    'age_of_children',
+    'Desired age of having children',
+    'Number of respondents',
+    'At which age would you like to have children',
+    vertical = True,
+    labels = children_list,
+    max_label_length = 10
+)
+#### END: create children bar ##########
