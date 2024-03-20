@@ -343,3 +343,38 @@ graphs.create_bar(
     max_label_length=15
 )
 #### END: create ft job cat bar #############
+
+#### create ft city  bar ##########
+df_ft_city = df_ft[['ft_job_city']]
+df_ft_city = df_ft_city.dropna()
+
+city_list = [
+    'Burnaby',
+    'Vancouver',
+    'Kitchener',
+    'Waterloo',
+    'Toronto',
+    'San Francisco',
+    'San Jose',
+    'Santa Clara',
+    'Boston',
+    'New York City',
+    'Pittsburgh',
+    'Redmond',
+    'Seattle',
+    'Austin',
+    'London',
+]
+
+graphs.create_bar(
+    df_ft_city,
+    'ft_job_city',
+    'City',
+    'Percentage of respondents',
+    'In which city is your FT job located',
+    vertical = False,
+    display_as_percentage = True,
+    values_increment = 5,
+    labels = city_list
+)
+#### END; create ft city bar #######
