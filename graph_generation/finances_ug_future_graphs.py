@@ -378,3 +378,16 @@ graphs.create_bar(
     labels = city_list
 )
 #### END; create ft city bar #######
+
+#### create ft country pie #####
+df_ft_country = df_ft[['ft_job_country']]
+df_ft_country = df_ft_country.dropna()
+
+graphs.create_pie(
+    df_ft_country,
+    'ft_job_country',
+    'In which country is your FT job',
+    labels = ['Canada', 'USA', 'England'],
+    percent_text_distance=1.07
+)
+#### END: create ft country pie ##########
