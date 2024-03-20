@@ -15,6 +15,7 @@ df1 = pd.read_csv('')
 df_finance = pd.read_csv('../csv/final/split/finances.csv')
 df_ug_reflections = pd.read_csv('../csv/final/split/undergrad_reflections.csv')
 df_future_plans = pd.read_csv('../csv/final/split/future_plans.csv')
+df_ft = pd.read_csv('../csv/final/split/full_time_jobs.csv')
 
 #### Create debt bar ############3
 def bin_debt(value):
@@ -320,3 +321,25 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: create return to Canada
+
+#### Create ft job cat bar ##############
+def clean_ft_cat(value):
+    if(value == 'Data Engineering'):
+        return 'DE / DS / ML / AI'
+    return value
+df_ft_cat = df_ft[['ft_category']]
+df_ft_cat = df_ft_cat.dropna()
+df_ft_cat['ft_category'] = df_ft_cat['ft_category'].apply(clean_ft_cat)
+
+graphs.create_bar(
+    df_ft_cat,
+    'ft_category',
+    'Job Categories',
+    'Percentage of respondents',
+    'Which category best represents your FT job',
+    vertical = True,
+    display_as_percentage = True,
+    values_increment = 5,
+    max_label_length=15
+)
+#### END: create ft job cat bar #############
