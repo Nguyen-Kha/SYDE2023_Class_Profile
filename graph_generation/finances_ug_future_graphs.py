@@ -200,3 +200,31 @@ graphs.create_pie(
     percent_text_distance = 1.07
 )
 #### END: create p eng pie ##########
+
+#### create marriage bar #########
+def clean_marriage(value):
+    if(value == 0):
+        return 'I do not intend on getting married'
+    return str(int(value))
+
+df_marriage = df_future_plans[['age_of_marriage']]
+df_marriage = df_marriage.dropna()
+# marriage_list = list(map(lambda x: str(int(x)), sorted(df_marriage['age_of_marriage'].unique().tolist())))
+marriage_list = np.arange(25, 35, 1) # get bounds from above
+marriage_list = list(map(lambda x: str(int(x)), marriage_list))
+marriage_list.insert(0, 'I do not intend on getting married')
+
+df_marriage['age_of_marriage'] = df_marriage['age_of_marriage'].apply(clean_marriage)
+df_marriage
+
+graphs.create_bar(
+    df_marriage,
+    'age_of_marriage',
+    'Desired age of marriage',
+    'Number of respondents',
+    'At which age would you like to get married',
+    vertical = True,
+    labels = marriage_list,
+    max_label_length = 10 
+)
+#### END; Create marriage bar #############
