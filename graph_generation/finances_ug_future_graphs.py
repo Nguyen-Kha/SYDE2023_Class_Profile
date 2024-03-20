@@ -291,3 +291,32 @@ graphs.create_pie(
     percent_text_distance=1.2
 )
 #### END: create postgrad leave canada pie #########
+
+#### Create return to canada bar ##########
+df_return = df_future_plans[['postgrad_leave_canada', 'return_to_canada']]
+df_return = df_return.loc[df_return['postgrad_leave_canada'] == 'Yes']
+df_return = df_return.drop(columns = 'postgrad_leave_canada')
+df_return = df_return.dropna()
+
+return_to_canada_list = [
+    'Unsure',
+    '1 - 2 years',
+    '2 - 3 years',
+    '3 - 5 years',
+    '5 - 10 years',
+    '10+ years',
+    'I do not plan on returning to Canada'
+]
+
+graphs.create_bar(
+    df_return,
+    'return_to_canada',
+    'Time until return to Canada',
+    'Percentage of respondents who are leaving Canada',
+    'When do you expect to return to Canada',
+    vertical = True,
+    display_as_percentage = True,
+    labels = return_to_canada_list,
+    values_increment = 5
+)
+#### END: create return to Canada
