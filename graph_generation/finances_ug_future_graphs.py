@@ -14,6 +14,7 @@ df1 = pd.read_csv('')
 
 df_finance = pd.read_csv('../csv/final/split/finances.csv')
 df_ug_reflections = pd.read_csv('../csv/final/split/undergrad_reflections.csv')
+df_future_plans = pd.read_csv('../csv/final/split/future_plans.csv')
 
 #### Create debt bar ############3
 def bin_debt(value):
@@ -186,3 +187,16 @@ graphs.create_bar_stacked(
     ]
 )
 #### END: create uni satisfaction stacked bar #########
+
+#### Create p eng pie ###########
+df_peng = df_future_plans[['p_eng']]
+df_peng = df_peng.dropna()
+
+graphs.create_pie(
+    df_peng,
+    'p_eng',
+    'Do you intend on getting a P.Eng',
+    labels = ['Yes', 'Undecided', 'No'],
+    percent_text_distance = 1.07
+)
+#### END: create p eng pie ##########
