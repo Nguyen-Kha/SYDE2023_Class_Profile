@@ -432,3 +432,26 @@ graphs.create_boxplot(
     file_name = 'ft_tc_boxplot_country'
 )
 #### END: create FT TC country compare boxplot #########
+
+#### Create ft find job stacked bar ##########
+def clean_ft_find_job(value):
+    if(value == 'Scouted (recruiter reached out)'):
+        return 'Scouted'
+    return value
+
+df_ft_find_job = df_ft[['ft_find_job']]
+df_ft_find_job = df_ft_find_job.dropna()
+df_ft_find_job['ft_find_job'] = df_ft_find_job['ft_find_job'].apply(clean_ft_find_job)
+
+graphs.create_bar_stacked(
+    df_ft_find_job,
+    ['ft_find_job'],
+    '',
+    'Percentage of class',
+    'How did you find your full time job',
+    column_labels = [''],
+    display_as_percentage = True,
+    figure_height = 3,
+    figure_width = 13
+)
+#### END: create ft find job stacked bar #######
