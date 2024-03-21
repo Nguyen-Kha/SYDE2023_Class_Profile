@@ -83,11 +83,21 @@ def create_bar(
             
     df_temp = pd.DataFrame({'title': list(count.keys()), 'values': list(count.values())})
     if(labels):
+        # Account for labels that are given in labels list but don't exist in df_temp or whatever is counted
+        # All values in labels AND NOT IN df_temp['title']
         missing_labels_values = list(set(labels).difference(df_temp['title'].unique().tolist()))
         zeros_list = list(np.zeros(len(missing_labels_values)))
         df_missing_labels = pd.DataFrame({'title': missing_labels_values, 'values': zeros_list})
         df_temp = df_temp.append(df_missing_labels, ignore_index = True)
         df_temp = df_temp.reset_index().drop(columns = 'index')
+        
+        # Account for any extra values in df_temp that aren't given in labels list, and remove them
+        # All values in df_temp['title'] AND NOT IN labels
+        extra_df_temp_title_labels = list(set(df_temp['title'].unique().tolist()).difference(labels))
+        if(len(extra_df_temp_title_labels) != 0):
+            df_temp = df_temp[~df_temp['title'].isin(extra_df_temp_title_labels)]
+            df_temp = df_temp.reset_index().drop(columns = 'index') # need this drop index here since x[0] check below
+
     if(vertical):
         df_temp = df_temp.sort_values(by=['values'], ascending = False)
     else:
@@ -908,8 +918,8 @@ def create_scatter(
 def create_wordcloud(
     df,                         # pandas dataframe, shown in format below
     column_name,                # column name in dataframe
-    file_name,                  # name of the wordcloud image
 
+    file_name = None,           # name of the wordcloud image
     width: int = 600,           # width of the image
     height: int = 400,          # height of the image
     background_color = None,    # str: colours or hex representation of colour. Use None for transparent background,
@@ -946,4 +956,6 @@ def create_wordcloud(
     plt.imshow(wordcloud, interpolation = 'bilinear')
     plt.axis("off")
 
+    if(not file_name):
+        file_name = str(column_name)
     wordcloud.to_file('./graphs/' + file_name + '_wordmap.png')
