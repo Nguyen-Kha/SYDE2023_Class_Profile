@@ -238,3 +238,59 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: why syde #########
+
+#### other unis and programs applied to - top 15
+df_uni_programs_applied = df_before_syde[['uni_programs_applied']]
+df_uni_programs_applied = df_uni_programs_applied.dropna()
+
+# Get Top 15 programs (which is programs with 4 or more applications, actual value top 13)
+df_top_programs = df_uni_programs_applied.copy()
+df_top_programs['uni_programs_applied'] = df_top_programs['uni_programs_applied'].map(lambda x: x.split(', '))
+df_top_programs = df_top_programs.explode('uni_programs_applied')
+df_top_programs = df_top_programs['uni_programs_applied'].value_counts().reset_index()
+df_top_programs = df_top_programs.loc[df_top_programs['uni_programs_applied'] >= 4]
+top_programs_list = df_top_programs['index'].tolist()
+
+graphs.create_bar(
+    df_uni_programs_applied,
+    'uni_programs_applied',
+    '',
+    'Number of respondents',
+    'Which other university and programs did you apply to',
+    vertical = False,
+    splice_required = True,
+    labels = top_programs_list,
+    max_label_length=40,
+    values_increment = 5
+)
+
+#### END: other unis and programs applied to top 15 #########
+
+#### other unis applied ######
+df_unis_applied = df_before_syde[['other_unis_applied']]
+df_unis_applied = df_unis_applied.dropna()
+
+graphs.create_bar(
+    df_unis_applied,
+    'other_unis_applied',
+    '',
+    'Number of respondents',
+    'Which other universities did you apply to (that was not SYDE @ UWaterloo)',
+    vertical = False,
+    splice_required = True,
+    values_increment = 5
+)
+#### END: other unis applied to #######
+
+#### uni programs wordcloud ####
+df_uni_program_wordcloud = df_before_syde[['uni_programs_applied']]
+df_uni_program_wordcloud = df_uni_program_wordcloud.dropna()
+
+graphs.create_wordcloud(
+    df_uni_program_wordcloud,
+    'uni_programs_applied',
+    width = 1200,
+    height = 1000,
+    background_color='None',
+)
+#### END: uni progarms wordcloud
