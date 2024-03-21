@@ -129,3 +129,19 @@ graphs.create_bar(
 )
 #### END: create education parents #########
 
+#### create parents stem eng ######
+df_stem_eng = df_household[['stem_edu_parents', 'eng_parents']]
+df_stem_eng = df_stem_eng.dropna()
+
+graphs.create_bar_stacked(
+    df_stem_eng,
+    ['stem_edu_parents', 'eng_parents'],
+    '',
+    'Percentage of respondents',
+    'Your Parents with STEM and Engineering',
+    labels = ['Yes', 'No'],
+    column_labels = ['Did any of your parents study STEM', 'Do any of your parents work in engineering'],
+    figure_height = 4,
+    display_as_percentage = True
+)
+#### END: create parents stem eng ######
