@@ -2,17 +2,13 @@
 import numpy as np                # use for array and matrix stuff
 import pandas as pd               # use for dataframes, think of it as excel
 import math
-import matplotlib.pyplot as plt   # use to make graphs
-import seaborn as sns
-from collections import Counter
 # import helpers
 import graphs
-import functools
 
-df_before_syde = pd.read_csv('csv/before_syde.csv')
-df_household = pd.read_csv('../csv/final/split/household.csv')
-df_high_school = pd.read_csv('../csv/final/split/high_school.csv')
-df_personas = pd.read_csv('../csv/final/split/syde_personas.csv')
+df_before_syde = pd.read_csv('before_syde.csv')
+df_household = pd.read_csv('household.csv')
+df_high_school = pd.read_csv('high_school.csv')
+df_personas = pd.read_csv('syde_personas.csv')
 
 ## HOW DID YOU HEAR ABOUT SYDE
 graphs.create_bar(
@@ -144,7 +140,8 @@ graphs.create_bar_stacked(
     labels = ['Yes', 'No'],
     column_labels = ['Did any of your parents study STEM', 'Do any of your parents work in engineering'],
     figure_height = 4,
-    display_as_percentage = True
+    display_as_percentage = True,
+    file_name="stem_edu_parents_stacked_bar"
 )
 #### END: create parents stem eng ######
 
@@ -284,16 +281,15 @@ graphs.create_bar(
 #### END: other unis applied to #######
 
 #### uni programs wordcloud ####
-df_uni_program_wordcloud = df_before_syde[['uni_programs_applied']]
-df_uni_program_wordcloud = df_uni_program_wordcloud.dropna()
+# df_uni_program_wordcloud = df_before_syde[['uni_programs_applied']]
+# df_uni_program_wordcloud = df_uni_program_wordcloud.dropna()
 
-graphs.create_wordcloud(
-    df_uni_program_wordcloud,
-    'uni_programs_applied',
-    width = 1200,
-    height = 1000,
-    background_color='None',
-)
+# graphs.create_wordcloud(
+#     df_uni_program_wordcloud,
+#     'uni_programs_applied',
+#     width = 1200,
+#     height = 1000
+# )
 #### END: uni progarms wordcloud
 
 #### syde personas ########
@@ -309,7 +305,8 @@ graphs.create_bar_stacked(
     display_as_percentage = True,
     column_labels = ['SYDE 1st year Persona'],
     figure_height = 4,
-    figure_width = 12
+    figure_width = 12,
+    file_name="syde_personas_1"
 )
 
 df_persona_2 = df_personas[['persona_2']]
@@ -324,7 +321,8 @@ graphs.create_bar_stacked(
     display_as_percentage = True,
     column_labels = ['SYDE 2nd year Persona'],
     figure_height = 4,
-    figure_width = 12
+    figure_width = 12,
+    file_name="syde_personas_2"
 )
 
 df_persona_3 = df_personas[['persona_3']]
@@ -340,7 +338,8 @@ graphs.create_bar_stacked(
     labels = ['SYDE Career-Open', 'SYDE Career-Focused', 'SYDE Risk Assessor', 'SYDE Life-Aware', 'SYDE Entrepreneur', 'SYDE Determined'],
     column_labels = ['SYDE 3rd year Persona'],
     figure_height = 4,
-    figure_width = 12
+    figure_width = 12,
+    file_name="syde_personas_3"
 )
 
 df_persona_4 = df_personas[['persona_4']]
@@ -355,6 +354,7 @@ graphs.create_bar_stacked(
     display_as_percentage = True,
     column_labels = ['SYDE 4th year Persona'],
     figure_height = 4,
-    figure_width = 12
+    figure_width = 12,
+    file_name="syde_personas_4"
 )
 #### END: syde personas ###########
