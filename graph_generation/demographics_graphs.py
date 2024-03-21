@@ -11,6 +11,7 @@ import functools
 
 df_before_syde = pd.read_csv('csv/before_syde.csv')
 df_household = pd.read_csv('../csv/final/split/household.csv')
+df_high_school = pd.read_csv('../csv/final/split/high_school.csv')
 
 ## HOW DID YOU HEAR ABOUT SYDE
 graphs.create_bar(
@@ -145,3 +146,22 @@ graphs.create_bar_stacked(
     display_as_percentage = True
 )
 #### END: create parents stem eng ######
+
+#### admission average #########
+df_ad_avg = df_high_school[['admission_average']].copy()
+df_ad_avg = df_ad_avg.dropna()
+df_ad_avg['admission_average'] = df_ad_avg['admission_average'].map(lambda x: math.floor(x))
+df_ad_avg = df_ad_avg.loc[df_ad_avg['admission_average'] != 9]
+
+graphs.create_bar(
+    df_ad_avg,
+    'admission_average',
+    'Admission Average (%)',
+    'Percentage of class',
+    'What was your admission average in high school',
+    vertical = True,
+    display_as_percentage = True,
+    labels = list(np.arange(89, 100, 1)),
+    graph_name_labels = list(np.arange(89, 100, 1))
+)
+#### END: admission average ############
