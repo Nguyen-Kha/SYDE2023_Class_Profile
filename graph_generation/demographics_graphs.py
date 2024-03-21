@@ -91,3 +91,41 @@ graphs.create_bar(
     title_label_rotation_angle=45
 )
 #### END: household income ######
+
+#### create education parents #########
+def clean_edu_parents(value):
+    if(value == 'Professional Degree (JD, MD, etc.)'):
+        return 'Professional Degree'
+    elif(value == 'High school diploma or equivalent'):
+        return 'High School Diploma'
+    return value
+
+df_edu_parents = df_household[['edu_parents']].copy()
+df_edu_parents = df_edu_parents.dropna()
+df_edu_parents['edu_parents'] = df_edu_parents['edu_parents'].apply(clean_edu_parents)
+df_edu_parents['edu_parents'].unique().tolist()
+
+edu_parents_list = [
+    'Less than high school',
+    'High School Diploma',
+    'Diploma',
+    "Associate's Degree",
+    "Bachelor's Degree",
+    "Master's Degree",
+    'Doctoral Degree (PhD)',
+    'Professional Degree'
+]
+
+graphs.create_bar(
+    df_edu_parents,
+    'edu_parents',
+    'Level of Education Achieved',
+    'Percentage of respondents',
+    'What was the highest level attained by your parents',
+    vertical = True,
+    display_as_percentage = True,
+    labels = edu_parents_list,
+    title_label_rotation_angle=30
+)
+#### END: create education parents #########
+
