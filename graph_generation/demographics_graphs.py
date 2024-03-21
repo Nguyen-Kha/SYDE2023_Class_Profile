@@ -9,11 +9,12 @@ from collections import Counter
 import graphs
 import functools
 
-df = pd.read_csv('csv/before_syde.csv')
+df_before_syde = pd.read_csv('csv/before_syde.csv')
+df_household = pd.read_csv('../csv/final/split/household.csv')
 
 ## HOW DID YOU HEAR ABOUT SYDE
 graphs.create_bar(
-    df, 
+    df_before_syde, 
     'hear_about_syde', 
     'Option', 
     'Percentage of Respondents', 
@@ -23,3 +24,70 @@ graphs.create_bar(
     values_increment=5,
     convert_to_string=True,
 )
+#### END: how did you hear about SYDE
+
+#### household income #####
+df_income = df_household[['household_income']]
+df_income = df_income.dropna()
+
+income_list = [
+    '$1 - $25 000',
+    '$25 001 - $50 000',
+    '$50 001 - $75 000',
+    '$75 001 - $100 000',
+    '$100 001 - $150 000',
+    '$150 001 - $200 000',
+    '$200 001 - $250 000',
+    '$250 001 - $300 000',
+    '$300 000 +',
+    'Unsure',
+    'Prefer not to say'
+]
+
+graphs.create_bar(
+    df_income,
+    'household_income',
+    'Household Income (CAD)',
+    'Percentage of respondents',
+    'What was your household income in 2018',
+    vertical = True,
+    display_as_percentage = True,
+    labels = income_list,
+    title_label_rotation_angle=45
+)
+
+def group_lower_income(value):
+    if(value == '$1 - $25 000' or value == '$25 001 - $50 000'):
+        return '$1 - $50 000'
+    elif(value == '$50 001 - $75 000' or value == '$75 001 - $100 000'):
+        return '$50 001 - $100 000'
+    return value
+
+df_income_grouped = df_household[['household_income']].copy()
+df_income_grouped = df_income_grouped.dropna()
+df_income_grouped['household_income'] = df_income_grouped['household_income'].apply(group_lower_income)
+
+income_grouped_list = [
+    '$1 - $50 000',
+    '$50 001 - $100 000',
+    '$100 001 - $150 000',
+    '$150 001 - $200 000',
+    '$200 001 - $250 000',
+    '$250 001 - $300 000',
+    '$300 000 +',
+    'Unsure',
+    'Prefer not to say'
+]
+
+graphs.create_bar(
+    df_income_grouped,
+    'household_income',
+    'Household Income (CAD)',
+    'Percentage of respondents',
+    'What was your household income in 2018',
+    vertical = True,
+    display_as_percentage = True,
+    labels = income_grouped_list,
+    title_label_rotation_angle=45
+)
+#### END: household income ######
