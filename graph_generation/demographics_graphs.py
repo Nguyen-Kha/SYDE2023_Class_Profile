@@ -300,7 +300,7 @@ graphs.create_wordcloud(
 df_persona_1 = df_personas[['persona_1']]
 df_persona_1 = df_persona_1.dropna()
 
-create_bar_stacked(
+graphs.create_bar_stacked(
     df_persona_1,
     ['persona_1'],
     '',
@@ -315,7 +315,7 @@ create_bar_stacked(
 df_persona_2 = df_personas[['persona_2']]
 df_persona_2 = df_persona_2.dropna()
 
-create_bar_stacked(
+graphs.create_bar_stacked(
     df_persona_2,
     ['persona_2'],
     '',
@@ -330,7 +330,7 @@ create_bar_stacked(
 df_persona_3 = df_personas[['persona_3']]
 df_persona_3 = df_persona_3.dropna()
 
-create_bar_stacked(
+graphs.create_bar_stacked(
     df_persona_3,
     ['persona_3'],
     '',
@@ -346,7 +346,7 @@ create_bar_stacked(
 df_persona_4 = df_personas[['persona_4']]
 df_persona_4 = df_persona_4.dropna()
 
-create_bar_stacked(
+graphs.create_bar_stacked(
     df_persona_4,
     ['persona_4'],
     '',
