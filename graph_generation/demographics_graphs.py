@@ -12,6 +12,7 @@ import functools
 df_before_syde = pd.read_csv('csv/before_syde.csv')
 df_household = pd.read_csv('../csv/final/split/household.csv')
 df_high_school = pd.read_csv('../csv/final/split/high_school.csv')
+df_personas = pd.read_csv('../csv/final/split/syde_personas.csv')
 
 ## HOW DID YOU HEAR ABOUT SYDE
 graphs.create_bar(
@@ -294,3 +295,66 @@ graphs.create_wordcloud(
     background_color='None',
 )
 #### END: uni progarms wordcloud
+
+#### syde personas ########
+df_persona_1 = df_personas[['persona_1']]
+df_persona_1 = df_persona_1.dropna()
+
+create_bar_stacked(
+    df_persona_1,
+    ['persona_1'],
+    '',
+    'Percentage of respondents',
+    'Which SYDE 1st year did you best identify with',
+    display_as_percentage = True,
+    column_labels = ['SYDE 1st year Persona'],
+    figure_height = 4,
+    figure_width = 12
+)
+
+df_persona_2 = df_personas[['persona_2']]
+df_persona_2 = df_persona_2.dropna()
+
+create_bar_stacked(
+    df_persona_2,
+    ['persona_2'],
+    '',
+    'Percentage of respondents',
+    'Which SYDE 2nd year did you best identify with',
+    display_as_percentage = True,
+    column_labels = ['SYDE 2nd year Persona'],
+    figure_height = 4,
+    figure_width = 12
+)
+
+df_persona_3 = df_personas[['persona_3']]
+df_persona_3 = df_persona_3.dropna()
+
+create_bar_stacked(
+    df_persona_3,
+    ['persona_3'],
+    '',
+    'Percentage of respondents',
+    'Which SYDE 3rd year did you best identify with',
+    display_as_percentage = True,
+    labels = ['SYDE Career-Open', 'SYDE Career-Focused', 'SYDE Risk Assessor', 'SYDE Life-Aware', 'SYDE Entrepreneur', 'SYDE Determined'],
+    column_labels = ['SYDE 3rd year Persona'],
+    figure_height = 4,
+    figure_width = 12
+)
+
+df_persona_4 = df_personas[['persona_4']]
+df_persona_4 = df_persona_4.dropna()
+
+create_bar_stacked(
+    df_persona_4,
+    ['persona_4'],
+    '',
+    'Percentage of respondents',
+    'Which SYDE 4th year did you best identify with',
+    display_as_percentage = True,
+    column_labels = ['SYDE 4th year Persona'],
+    figure_height = 4,
+    figure_width = 12
+)
+#### END: syde personas ###########
