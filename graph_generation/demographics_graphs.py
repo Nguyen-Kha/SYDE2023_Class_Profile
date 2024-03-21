@@ -181,3 +181,30 @@ graphs.create_bar(
     splice_required = True
 )
 #### END: high school specialized programs
+
+#### high school specialized extracurriculars
+def clean_hs_spec_ec(value):
+    if("An Engineering related club (Robotics, Programming, etc)" in value):
+        value = value.replace('An Engineering related club (Robotics, Programming, etc)', 'Engineering related club')
+    if('Research affiliated with a university / recognized research body' in value):
+        value = value.replace('Research affiliated with a university / recognized research body', 'Academic Research')
+    if('A job in an engineering field (includes software + tech)' in value):
+        value = value.replace('A job in an engineering field (includes software + tech)', 'Job in an engineering field')
+    return value
+
+df_hs_spec_ec = df_high_school[['hs_spec_ec']]
+df_hs_spec_ec = df_hs_spec_ec.dropna()
+df_hs_spec_ec['hs_spec_ec'] = df_hs_spec_ec['hs_spec_ec'].apply(clean_hs_spec_ec)
+
+graphs.create_bar(
+    df_hs_spec_ec,
+    'hs_spec_ec',
+    '',
+    'Percentage of respondents',
+    'Were you involved in any of the following extracurriculars',
+    vertical = False,
+    display_as_percentage = True,
+    splice_required = True,
+    values_increment = 5
+)
+#### END: high school specialized extracurriculars
