@@ -208,3 +208,33 @@ graphs.create_bar(
     values_increment = 5
 )
 #### END: high school specialized extracurriculars
+
+#### why syde ########
+def clean_why_syde(value):
+    if('Looked at the courses' in value):
+        response = value.split(", ")
+        value = ""
+        for i in range(0, len(response) - 2):
+            if(value == ""):
+                value = value + response[i]
+            else:
+                value = value + ", " + response[i]
+    return value
+
+df_why_syde = df_before_syde[['why_syde']]
+df_why_syde = df_why_syde.dropna()
+df_why_syde['why_syde'] = df_why_syde['why_syde'].apply(clean_why_syde)
+
+graphs.create_bar(
+    df_why_syde,
+    'why_syde',
+    '',
+    'Number of respondents',
+    'Why did you choose SYDE',
+    vertical = False,
+    splice_required = True,
+    figure_height = 13,
+    max_label_length=40,
+    values_increment = 5
+)
+#### END: why syde #########
