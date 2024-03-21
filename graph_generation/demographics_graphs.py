@@ -165,3 +165,19 @@ graphs.create_bar(
     graph_name_labels = list(np.arange(89, 100, 1))
 )
 #### END: admission average ############
+
+#### high school specialized programs
+df_hs_spec_programs = df_high_school[['hs_spec_programs']]
+df_hs_spec_programs = df_hs_spec_programs.dropna()
+df_hs_spec_programs = df_hs_spec_programs[df_hs_spec_programs['hs_spec_programs'] != 'None']
+
+graphs.create_bar(
+    df_hs_spec_programs,
+    'hs_spec_programs',
+    'Specialized Programs',
+    'Number of responses',
+    'Were you enrolled in any specialized programs while in High School',
+    vertical = False,
+    splice_required = True
+)
+#### END: high school specialized programs
