@@ -97,7 +97,7 @@ def create_bar(
         if(len(extra_df_temp_title_labels) != 0):
             df_temp = df_temp[~df_temp['title'].isin(extra_df_temp_title_labels)]
             df_temp = df_temp.reset_index().drop(columns = 'index') # need this drop index here since x[0] check below
-            
+
     if(vertical):
         df_temp = df_temp.sort_values(by=['values'], ascending = False)
     else:
@@ -918,8 +918,8 @@ def create_scatter(
 def create_wordcloud(
     df,                         # pandas dataframe, shown in format below
     column_name,                # column name in dataframe
-    file_name,                  # name of the wordcloud image
 
+    file_name = None,           # name of the wordcloud image
     width: int = 600,           # width of the image
     height: int = 400,          # height of the image
     background_color = None,    # str: colours or hex representation of colour. Use None for transparent background,
@@ -956,4 +956,6 @@ def create_wordcloud(
     plt.imshow(wordcloud, interpolation = 'bilinear')
     plt.axis("off")
 
+    if(not file_name):
+        file_name = str(column_name)
     wordcloud.to_file('./graphs/' + file_name + '_wordmap.png')
