@@ -11,6 +11,7 @@ import graphs
 import functools
 
 df_school = pd.read_csv("csv/school.csv")
+df_fydp = pd.read_csv('../csv/final/split/fydp.csv')
 
 #### TE #########
 df_te = df_school[['te']]
@@ -217,3 +218,16 @@ graphs.create_bar(
     splice_required = True
 )
 #### END; op spec minor #############
+
+#### fydp proud ##########
+df_fydp_proud = df_fydp[['fydp_proud']]
+df_fydp_proud = df_fydp_proud.dropna()
+
+graphs.create_pie(
+    df_fydp_proud,
+    'fydp_proud',
+    'Are you proud of your FYDP',
+    labels = ['Yes', 'No', 'Somewhat'],
+    percent_text_distance=1.08
+)
+#### END: fydp proud
