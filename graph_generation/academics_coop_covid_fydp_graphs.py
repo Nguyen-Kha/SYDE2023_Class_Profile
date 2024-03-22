@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt  # use to make graphs
 import seaborn as sns
 from collections import Counter
 
-# import helpers
+import helpers
 import graphs
 import functools
 
 df_school = pd.read_csv("csv/school.csv")
 
+#### favourite core course #######
 graphs.create_bar(
     df_school,
     "fav_core",
@@ -22,7 +23,9 @@ graphs.create_bar(
     display_as_percentage=True,
     values_increment=5,
 )
+#### END: favourite core course #######3
 
+#### create favourite profs ######
 graphs.create_bar(
     df_school,
     "fav_profs",
@@ -33,7 +36,9 @@ graphs.create_bar(
     display_as_percentage=True,
     splice_required=True,
 )
+#### END: create favourite profs ############
 
+#### favourite TE #########
 graphs.create_bar(
     df_school,
     "fav_te",
@@ -45,7 +50,9 @@ graphs.create_bar(
     splice_required=True,
     max_label_length=40,
 )
+#### END: favourite TE ##############
 
+#### favourite CSE #########
 graphs.create_bar(
     df_school,
     "fav_cse",
@@ -56,7 +63,9 @@ graphs.create_bar(
     display_as_percentage=True,
     splice_required=True,
 )
+#### END: favourite CSE ############3
 
+#### CR NCR ############
 graphs.create_bar(
     df_school,
     "cr_ncr",
@@ -66,7 +75,9 @@ graphs.create_bar(
     True,
     display_as_percentage=True,
 )
+#### END: CR NCR #########
 
+#### failures #######
 graphs.create_bar(
     df_school,
     "failed",
@@ -85,3 +96,45 @@ graphs.create_bar(
         "A quiz / test",
     ],
 )
+#### END failures #########
+
+#### easiest term, hardest term, favourite term ######
+df_terms = df_school[['easiest_term', 'hardest_term', 'fav_term']]
+
+graphs.create_pie(
+    df_terms,
+    'easiest_term',
+    'Which term did you find the easiest',
+    labels = helpers.get_study_term_list(),
+    percent_text_distance=1.08
+)
+
+graphs.create_pie(
+    df_terms,
+    'hardest_term',
+    'Which term did you find the hardest',
+    labels = helpers.get_study_term_list(),
+    percent_text_distance=1.08
+)
+
+graphs.create_pie(
+    df_terms,
+    'fav_term',
+    'Which term was your favourite',
+    labels = helpers.get_study_term_list(),
+    percent_text_distance=1.08
+)
+#### END: easiest term, hardest term, favourite term ######
+
+#### least favourite term ########
+df_least_fav_term = df_school[['least_fav_term']]
+df_least_fav_term = df_least_fav_term.dropna()
+
+graphs.create_pie(
+    df_least_fav_term,
+    'least_fav_term',
+    'Which term was your least favourite',
+    labels = helpers.get_study_term_list(),
+    percent_text_distance=1.08
+)
+#### END: least favourite term ########33
