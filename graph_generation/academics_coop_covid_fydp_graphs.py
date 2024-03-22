@@ -268,3 +268,26 @@ graphs.create_line(
     values_min = 0
 )
 #### END: enjoy coop position ########
+
+#### enjoy coop location ##########
+enjoy_loc_list = [
+    '1a_coop_enjoy_loc',
+    '1b_coop_enjoy_loc',
+    '2a_coop_enjoy_loc',
+    '2b_coop_enjoy_loc',
+    '3a_coop_enjoy_loc',
+    '3b_coop_enjoy_loc'
+]
+df_coop_enjoy_loc = df_coop[enjoy_loc_list]
+
+graphs.create_line(
+    df_coop_enjoy_loc,
+    enjoy_loc_list,
+    'Co-op Term',
+    'Enjoyment rating',
+    'How much did you enjoy your co-op location',
+    sequential_labels = helpers.get_coop_term_list(),
+    only_show_average=True,
+    values_min = 0
+)
+#### END: enjoy coop location ##########
