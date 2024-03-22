@@ -1,18 +1,12 @@
 # necessary imports
-import numpy as np  # use for array and matrix stuff
 import pandas as pd  # use for dataframes, think of it as excel
-import math
-import matplotlib.pyplot as plt  # use to make graphs
-import seaborn as sns
-from collections import Counter
 
 import helpers
 import graphs
-import functools
 
-df_school = pd.read_csv("csv/school.csv")
-df_fydp = pd.read_csv('../csv/final/split/fydp.csv')
-df_coop = pd.read_csv('../csv/final/split/coop.csv')
+df_school = pd.read_csv("school.csv")
+df_fydp = pd.read_csv('fydp.csv')
+df_coop = pd.read_csv('coop.csv')
 
 #### TE #########
 df_te = df_school[['te']]
@@ -265,7 +259,8 @@ graphs.create_line(
     'How much did you enjoy your co-op position',
     sequential_labels = helpers.get_coop_term_list(),
     only_show_average=True,
-    values_min = 0
+    values_min = 0,
+    file_name='enjoy_coop_position_line'
 )
 #### END: enjoy coop position ########
 
@@ -288,7 +283,8 @@ graphs.create_line(
     'How much did you enjoy your co-op location',
     sequential_labels = helpers.get_coop_term_list(),
     only_show_average=True,
-    values_min = 0
+    values_min = 0,
+    file_name='enjoy_coop_location_line'
 )
 #### END: enjoy coop location ##########
 
