@@ -116,10 +116,6 @@ graphs.create_bar(
 )
 #### END: favourite TE ##############
 
-#### least favourite TE #########
-
-#### END: least favourite TE #########
-
 #### favourite CSE #########
 graphs.create_bar(
     df_school,
@@ -132,10 +128,6 @@ graphs.create_bar(
     splice_required=True,
 )
 #### END: favourite CSE ############
-
-#### least favourite CSE #########
-
-#### END: least favourite CSE #########
 
 #### CR NCR ############
 graphs.create_bar(
@@ -211,3 +203,17 @@ graphs.create_pie(
 )
 #### END: least favourite term ########
 
+#### op spec minor ##########
+df_op_spec_minor = df_school[['op_spec_minor']]
+df_op_spec_minor = df_op_spec_minor.dropna()
+
+graphs.create_bar(
+    df_op_spec_minor,
+    'op_spec_minor',
+    '',
+    'Number of respondents',
+    'Options, Specializations, or Minors you enrolled in',
+    vertical = False,
+    splice_required = True
+)
+#### END; op spec minor #############
