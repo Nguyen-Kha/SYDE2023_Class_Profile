@@ -231,3 +231,16 @@ graphs.create_pie(
     percent_text_distance=1.08
 )
 #### END: fydp proud
+
+#### fydp future ##########
+df_fydp_future = df_fydp[['fydp_future']]
+df_fydp_future = df_fydp_future.dropna()
+
+graphs.create_pie(
+    df_fydp_future,
+    'fydp_future',
+    'Do you intend on continuing your FYDP in the future',
+    labels = ['Yes', 'No', 'Unsure'],
+    percent_text_distance=1.08
+)
+#### END: fydp future
