@@ -75,7 +75,18 @@ graphs.create_bar(
 #### END: favourite core course #######
 
 #### least favourite core #########
+df_least_fav_core = df_school[['least_fav_core']]
+df_least_fav_core = df_least_fav_core.dropna()
 
+graphs.create_bar(
+    df_least_fav_core,
+    'least_fav_core',
+    '',
+    'Percent of respondents',
+    'What was your least favourite core course',
+    vertical = False,
+    display_as_percentage = True
+)
 #### END: least favourite core #########
 
 #### create favourite profs ######
