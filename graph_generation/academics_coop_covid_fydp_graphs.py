@@ -38,7 +38,27 @@ graphs.create_bar(
 #### END: TE #########
 
 #### CSE #########
+df_cse = df_school[['cse']]
+df_cse = df_cse.dropna()
 
+df_top_cse = df_cse.copy()
+df_top_cse['cse'] = df_top_cse['cse'].map(lambda x: x.split(", "))
+df_top_cse = df_top_cse.explode('cse')
+df_top_cse = df_top_cse['cse'].value_counts().reset_index()
+df_top_cse = df_top_cse.loc[df_top_cse['cse'] > 3]
+top_cse_list = df_top_cse['index'].tolist()
+
+graphs.create_bar(
+    df_cse,
+    'cse',
+    'course',
+    'Number of respondents',
+    'CSEs that you took',
+    vertical = False,
+    splice_required = True,
+    labels = top_cse_list,
+    values_increment = 2
+)
 #### END: CSE #########
 
 #### favourite core course #######
