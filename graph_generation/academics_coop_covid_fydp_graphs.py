@@ -12,6 +12,35 @@ import functools
 
 df_school = pd.read_csv("csv/school.csv")
 
+#### TE #########
+df_te = df_school[['te']]
+df_te = df_te.dropna()
+
+# Top 15 TEs
+df_top_te = df_te.copy()
+df_top_te['te'] = df_top_te['te'].map(lambda x: x.split(", "))
+df_top_te = df_top_te.explode('te')
+df_top_te  = df_top_te['te'].value_counts().reset_index()
+df_top_te = df_top_te.loc[df_top_te['te'] > 3]
+top_te_list = df_top_te['index'].tolist()
+
+graphs.create_bar(
+    df_te,
+    'te',
+    'course',
+    'number of respondents',
+    'TEs that you took',
+    vertical = False,
+    splice_required = True,
+    labels = top_te_list,
+    max_label_length=40
+)
+#### END: TE #########
+
+#### CSE #########
+
+#### END: CSE #########
+
 #### favourite core course #######
 graphs.create_bar(
     df_school,
@@ -23,7 +52,11 @@ graphs.create_bar(
     display_as_percentage=True,
     values_increment=5,
 )
-#### END: favourite core course #######3
+#### END: favourite core course #######
+
+#### least favourite core #########
+
+#### END: least favourite core #########
 
 #### create favourite profs ######
 graphs.create_bar(
@@ -52,6 +85,10 @@ graphs.create_bar(
 )
 #### END: favourite TE ##############
 
+#### least favourite TE #########
+
+#### END: least favourite TE #########
+
 #### favourite CSE #########
 graphs.create_bar(
     df_school,
@@ -63,7 +100,11 @@ graphs.create_bar(
     display_as_percentage=True,
     splice_required=True,
 )
-#### END: favourite CSE ############3
+#### END: favourite CSE ############
+
+#### least favourite CSE #########
+
+#### END: least favourite CSE #########
 
 #### CR NCR ############
 graphs.create_bar(
@@ -137,4 +178,5 @@ graphs.create_pie(
     labels = helpers.get_study_term_list(),
     percent_text_distance=1.08
 )
-#### END: least favourite term ########33
+#### END: least favourite term ########
+
