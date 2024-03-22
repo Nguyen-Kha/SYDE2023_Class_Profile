@@ -304,3 +304,21 @@ graphs.create_pie(
     percent_text_distance=1.2
 )
 #### END: return to previous employer #########
+
+#### why return to employer ##########
+df_why_return_employer = df_coop[['why_return_to_employer']]
+df_why_return_employer = df_why_return_employer.dropna()
+
+graphs.create_bar(
+    df_why_return_employer,
+    'why_return_to_employer',
+    '',
+    'Percent of respondents',
+    'Why did you return to a previous employer',
+    vertical = False,
+    display_as_percentage = True,
+    splice_required = True,
+    values_increment = 5,
+    max_label_length=40
+)
+#### END: why return to employer ##########
