@@ -291,3 +291,16 @@ graphs.create_line(
     values_min = 0
 )
 #### END: enjoy coop location ##########
+
+#### return to previous employer #########
+df_return_employer = df_coop[['return_to_employer']]
+df_return_employer = df_return_employer.dropna()
+
+graphs.create_pie(
+    df_return_employer,
+    'return_to_employer',
+    'Have you ever returned to a previous employer for one of your co-ops',
+    labels = ['Yes', 'No'],
+    percent_text_distance=1.2
+)
+#### END: return to previous employer #########
