@@ -12,6 +12,7 @@ import functools
 
 df_school = pd.read_csv("csv/school.csv")
 df_fydp = pd.read_csv('../csv/final/split/fydp.csv')
+df_coop = pd.read_csv('../csv/final/split/coop.csv')
 
 #### TE #########
 df_te = df_school[['te']]
@@ -244,3 +245,26 @@ graphs.create_pie(
     percent_text_distance=1.08
 )
 #### END: fydp future
+
+#### enjoy coop position ########
+enjoy_pos_list = [
+    '1a_coop_enjoy_pos',
+    '1b_coop_enjoy_pos',
+    '2a_coop_enjoy_pos',
+    '2b_coop_enjoy_pos',
+    '3a_coop_enjoy_pos',
+    '3b_coop_enjoy_pos'
+]
+df_coop_enjoy_pos = df_coop[enjoy_pos_list]
+
+graphs.create_line(
+    df_coop_enjoy_pos,
+    enjoy_pos_list,
+    'Co-op Term',
+    'Enjoyment rating',
+    'How much did you enjoy your co-op position',
+    sequential_labels = helpers.get_coop_term_list(),
+    only_show_average=True,
+    values_min = 0
+)
+#### END: enjoy coop position ########
