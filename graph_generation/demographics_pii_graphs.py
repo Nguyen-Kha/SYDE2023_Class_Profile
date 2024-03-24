@@ -109,8 +109,10 @@ graphs.create_bar(
     'If the election was held today (June 2023), which party would you vote for?', 
     vertical = True,
     display_as_percentage = True,
-    title_label_rotation_angle = 45,
-    labels = ['Green', 'NDP', 'Liberal', 'Conservative', "People's Party of Canada", 'I would not vote']
+    title_label_rotation_angle = 30,
+    labels = ['Green', 'NDP', 'Liberal', 'Conservative', "People's Party of Canada", 'I would not vote'],
+    colours=['green', 'orange', 'red', 'blue','purple', 'brown'],
+    values_increment=5,
 )
 
 df_religion = df[['religion']].dropna(axis=0)

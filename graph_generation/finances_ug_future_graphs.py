@@ -223,11 +223,13 @@ graphs.create_bar(
     df_marriage,
     'age_of_marriage',
     'Desired age of marriage',
-    'Number of respondents',
+    'Percentage of respondents',
     'At which age would you like to get married',
     vertical = True,
+    display_as_percentage=True,
     labels = marriage_list,
-    max_label_length = 10 
+    max_label_length = 10,
+    values_increment=5
 )
 #### END; Create marriage bar #############
 
@@ -253,7 +255,9 @@ graphs.create_bar(
     'At which age would you like to have children',
     vertical = True,
     labels = children_list,
-    max_label_length = 10
+    max_label_length = 10,
+    display_as_percentage=True,
+    values_increment=5
 )
 #### END: create children bar ##########
 

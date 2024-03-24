@@ -126,14 +126,14 @@ graphs.create_bar(
 #### END: favourite CSE ############
 
 #### CR NCR ############
-graphs.create_bar(
-    df_school,
+df_cr_ncr = df_school[['cr_ncr']]
+df_cr_ncr = df_cr_ncr.dropna()
+df_cr_ncr['cr_ncr'] = df_cr_ncr['cr_ncr'].map(lambda x: int(x))
+
+graphs.create_pie(
+    df_cr_ncr,
     "cr_ncr",
-    "Number of Courses",
-    "Percentage of Respondents",
-    "How many courses did you CR/NCR?",
-    True,
-    display_as_percentage=True,
+    'How many courses did you CR / NCR'
 )
 #### END: CR NCR #########
 
@@ -155,6 +155,7 @@ graphs.create_bar(
         "An assignment",
         "A quiz / test",
     ],
+    values_increment=10
 )
 #### END failures #########
 

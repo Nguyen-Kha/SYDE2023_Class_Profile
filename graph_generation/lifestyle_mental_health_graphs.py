@@ -193,9 +193,10 @@ graphs.create_bar(
     df_sr,
     'serious_relationships',
     'Number of relationships',
-    'Number of respondents',
+    'Percentage of respondents',
     'How many serious relationships have you been in',
     vertical = True,
+    display_as_percentage=5,
     values_increment = 5
 )
 #### END create serious relationships bar ##########

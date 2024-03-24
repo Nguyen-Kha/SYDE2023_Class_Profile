@@ -123,7 +123,8 @@ graphs.create_bar(
     vertical = True,
     display_as_percentage = True,
     labels = edu_parents_list,
-    title_label_rotation_angle=30
+    title_label_rotation_angle=30,
+    values_increment= 5
 )
 #### END: create education parents #########
 
