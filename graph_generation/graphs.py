@@ -339,6 +339,7 @@ def create_boxplot(
     column_labels = [],                 # List of strings, used to rename the column_name for each box on graph
     comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
     comparison_labels = [],             # order of the comparison labels
+    comparison_name: str = None,        # name of the comparison to be put in the legend
     values_increment = None,            # values to increment by on the values axis
     values_min = None,                  # smallest value to display on graph
     values_max = None,                  # largest value to display on graph
@@ -417,8 +418,10 @@ def create_boxplot(
     sns.set() # Gridlines
     plt.title(title)
     
-    if(comparison_column):
-        plt.legend(title=comparison_column)
+    if(comparison_column and comparison_name == None):
+        plt.legend(title='Legend')
+    elif(comparison_column and comparison_name):
+        plt.legend(title=comparison_name)
         
     values_min_was_auto_set = False
     values_max_was_auto_set = False
@@ -920,11 +923,13 @@ def create_wordcloud(
     column_name,                # column name in dataframe
 
     file_name = None,           # name of the wordcloud image
-    width: int = 600,           # width of the image
-    height: int = 400,          # height of the image
-    background_color = None,    # str: colours or hex representation of colour. Use None for transparent background,
+    width: int = 1280,          # width of the image
+    height: int = 720,          # height of the image
+    background_color = 'white', # str: colours or hex representation of colour. Use None for transparent background, but this doesn't work
     include_numbers = True,     # include numbers when plotting words in wordcloud
-    stopwords = None            # set. Pass in a set of words to ignore. Ex: ('The', 'it', 'a', 'because', ...) If None, default stopwords are used
+    stopwords = None,           # data type: set. Pass in a set of words to ignore. Ex: ('The', 'it', 'a', 'because', ...) If None, default stopwords are used,
+    drop_values = [],           # drop values that you dont want to see in wordcloud
+    colormap: str = 'Dark2'     # matplotlib colormap as 
 ):
     """
     Dataframe input format:
@@ -944,13 +949,19 @@ def create_wordcloud(
     column_values = helpers.splice_cells_with_commas(df, column_name)
     for i in column_values:
         count[i] += 1
+        
+    if(drop_values):
+        for i in drop_values:
+            if(i in count):
+                del count[i]
     
     wordcloud = WordCloud(
         width = width, 
         height = height, 
         background_color = background_color,
         include_numbers = include_numbers,
-        stopwords = stopwords
+        stopwords = stopwords,
+        colormap = colormap,
     ).generate_from_frequencies(count)
 
     plt.imshow(wordcloud, interpolation = 'bilinear')

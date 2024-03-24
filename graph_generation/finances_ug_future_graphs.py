@@ -112,7 +112,8 @@ graphs.create_bar_stacked(
     display_as_percentage = True,
     labels = helpers.get_agree_no_opinion_scale(),
     column_labels = ['I am satisfied with the SYDE Program', 'I belonged in SYDE', 'I felt like I was a part of the SYDE community'],
-    file_name='syde_satisfaction_stacked_bar'
+    file_name='syde_satisfaction_stacked_bar',
+    figure_height=6
 )
 #### END:  Create syde satisfaction stacked bar ###########
 
@@ -134,7 +135,8 @@ graphs.create_bar_stacked(
     display_as_percentage = True,
     labels = helpers.get_agree_no_opinion_scale(),
     column_labels = ['I consider myself to be an aspiring engineer', 'SYDE prepared me for a traditional engineering career'],
-    file_name='aspiring_eng_stacked_bar'
+    file_name='aspiring_eng_stacked_bar',
+    figure_height=5
 )
 #### END: create engineering stacked bar ##############
 
@@ -157,7 +159,8 @@ graphs.create_bar_stacked(
     display_as_percentage = True,
     labels = helpers.get_agree_no_opinion_scale(),
     column_labels = ["The quality of professors' instructional content was acceptable", 'The quality of the SYDE courses was acceptable', 'The support given by the SYDE administration was acceptable'],
-    file_name="syde_quality_stacked_bar"
+    file_name="syde_quality_stacked_bar",
+    figure_height=6
 )
 #### END: create syde quality stacked bar #################
 
@@ -186,7 +189,8 @@ graphs.create_bar_stacked(
         'I made a lot of friends outside of UW Engineering',
         'I am satisfied with the extracurriculars I participated in'
     ],
-    file_name= 'uni_satisfaction_stacked_bar'
+    file_name= 'uni_satisfaction_stacked_bar',
+    figure_height=7
 )
 #### END: create uni satisfaction stacked bar #########
 
@@ -223,11 +227,13 @@ graphs.create_bar(
     df_marriage,
     'age_of_marriage',
     'Desired age of marriage',
-    'Number of respondents',
+    'Percentage of respondents',
     'At which age would you like to get married',
     vertical = True,
+    display_as_percentage=True,
     labels = marriage_list,
-    max_label_length = 10 
+    max_label_length = 10,
+    values_increment=5
 )
 #### END; Create marriage bar #############
 
@@ -253,7 +259,9 @@ graphs.create_bar(
     'At which age would you like to have children',
     vertical = True,
     labels = children_list,
-    max_label_length = 10
+    max_label_length = 10,
+    display_as_percentage=True,
+    values_increment=5
 )
 #### END: create children bar ##########
 
