@@ -339,6 +339,7 @@ def create_boxplot(
     column_labels = [],                 # List of strings, used to rename the column_name for each box on graph
     comparison_column: str = None,      # use to compare values within the column_names (ex: split boxplot values by gender)
     comparison_labels = [],             # order of the comparison labels
+    comparison_name: str = None,        # name of the comparison to be put in the legend
     values_increment = None,            # values to increment by on the values axis
     values_min = None,                  # smallest value to display on graph
     values_max = None,                  # largest value to display on graph
@@ -417,8 +418,10 @@ def create_boxplot(
     sns.set() # Gridlines
     plt.title(title)
     
-    if(comparison_column):
-        plt.legend(title=comparison_column)
+    if(comparison_column and comparison_name == None):
+        plt.legend(title='Legend')
+    elif(comparison_column and comparison_name):
+        plt.legend(title=comparison_name)
         
     values_min_was_auto_set = False
     values_max_was_auto_set = False
