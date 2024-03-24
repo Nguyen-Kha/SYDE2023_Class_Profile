@@ -75,7 +75,13 @@ graphs.create_bar(
     title_label_rotation_angle = 0
 )
 
+#### hometown #########
 df_hometown = df[['hometown_location']].dropna(axis=0)
+df_top_hometown = df_hometown.copy()
+df_top_hometown = df_top_hometown['hometown_location'].value_counts().reset_index()
+df_top_hometown = df_top_hometown.loc[df_top_hometown['hometown_location'] > 2]
+top_hometown_list = df_top_hometown['index'].tolist()
+
 graphs.create_bar(
     df_hometown, 
     'hometown_location', 
@@ -84,8 +90,9 @@ graphs.create_bar(
     'In which city do you consider to be your hometown?', 
     vertical = False,
     display_as_percentage = True,
-    title_label_rotation_angle = 0
+    labels = top_hometown_list,
 )
+#### END: hometown
 
 df_politics = df[['politics']].dropna(axis=0)
 graphs.create_bar(
@@ -154,6 +161,7 @@ graphs.create_bar(
     splice_required = True,
     values_increment = 5,
     display_as_percentage = False,
+    drop_values=['English']
 )
 
 df_citizenship = df[['citizenship']].dropna(axis = 0)

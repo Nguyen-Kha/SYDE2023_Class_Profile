@@ -269,15 +269,23 @@ graphs.create_bar(
 df_unis_applied = df_before_syde[['other_unis_applied']]
 df_unis_applied = df_unis_applied.dropna()
 
+df_top_unis_applied = df_unis_applied.copy()
+df_top_unis_applied['other_unis_applied'] = df_top_unis_applied['other_unis_applied'].map(lambda x: x.split(', '))
+df_top_unis_applied = df_top_unis_applied.explode('other_unis_applied')
+df_top_unis_applied = df_top_unis_applied['other_unis_applied'].value_counts().reset_index()
+df_top_unis_applied = df_top_unis_applied.loc[df_top_unis_applied['other_unis_applied'] > 5]
+top_unis_applied = df_top_unis_applied['index'].tolist()
+
 graphs.create_bar(
     df_unis_applied,
     'other_unis_applied',
     '',
-    'Number of respondents',
+    'Number of applications sent',
     'Which other universities did you apply to (that was not SYDE @ UWaterloo)',
     vertical = False,
     splice_required = True,
-    values_increment = 5
+    values_increment = 5,
+    labels = top_unis_applied
 )
 #### END: other unis applied to #######
 

@@ -41,32 +41,42 @@ df_top_cse = df_cse.copy()
 df_top_cse['cse'] = df_top_cse['cse'].map(lambda x: x.split(", "))
 df_top_cse = df_top_cse.explode('cse')
 df_top_cse = df_top_cse['cse'].value_counts().reset_index()
-df_top_cse = df_top_cse.loc[df_top_cse['cse'] > 3]
+df_top_cse = df_top_cse.loc[df_top_cse['cse'] > 6]
 top_cse_list = df_top_cse['index'].tolist()
 
 graphs.create_bar(
     df_cse,
     'cse',
     'course',
-    'Number of respondents',
+    'Percentage of respondents',
     'CSEs that you took',
     vertical = False,
     splice_required = True,
     labels = top_cse_list,
-    values_increment = 2
+    values_increment = 5,
+    display_as_percentage = True,
 )
 #### END: CSE #########
 
 #### favourite core course #######
+df_fav_core = df_school[['fav_core']]
+df_fav_core = df_fav_core.dropna()
+
+df_top_fav_core = df_fav_core.copy()
+df_top_fav_core = df_top_fav_core['fav_core'].value_counts().reset_index()
+df_top_fav_core = df_top_fav_core.loc[df_top_fav_core['fav_core'] > 2]
+top_fav_core = df_top_fav_core['index'].tolist()
+
 graphs.create_bar(
-    df_school,
+    df_fav_core,
     "fav_core",
-    "Core Course",
+    "",
     "Percentage of Respondents",
     "What was your favourite core course?",
     False,
     display_as_percentage=True,
     values_increment=5,
+    labels = top_fav_core
 )
 #### END: favourite core course #######
 
