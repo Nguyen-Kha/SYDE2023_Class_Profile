@@ -1,6 +1,11 @@
 csv/
 *.txt
 keys/
+graph_generation/graphs/
+graph_generation/notebooks/
+data_cleaning/*.ipynb
+data_cleaning/*/*.ipynb
+data_cleaning/6_anon/
 
 
 
