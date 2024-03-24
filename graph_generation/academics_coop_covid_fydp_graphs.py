@@ -4,7 +4,7 @@ import pandas as pd  # use for dataframes, think of it as excel
 import helpers
 import graphs
 
-df_school = pd.read_csv("school.csv")
+df_school = pd.read_csv('school.csv')
 df_fydp = pd.read_csv('fydp.csv')
 df_coop = pd.read_csv('coop.csv')
 

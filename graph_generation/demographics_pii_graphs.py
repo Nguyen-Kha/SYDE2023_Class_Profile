@@ -9,7 +9,7 @@ from collections import Counter
 import graphs
 import functools
 
-df = pd.read_csv('C:\\Users\\Kha\\Documents\\Programming\\SYDE2023_Class_Profile\\csv\\final\\1_DHP_PII_final.csv')
+df = pd.read_csv('')
 
 df_join_year = df[['join_year']]
 df_join_year = df_join_year.dropna(axis=0)
@@ -72,7 +72,8 @@ graphs.create_bar(
     'Where were you born?', 
     vertical = False,
     display_as_percentage = True,
-    title_label_rotation_angle = 0
+    title_label_rotation_angle = 0,
+    max_label_length=40
 )
 
 #### hometown #########
@@ -146,7 +147,6 @@ graphs.create_bar(
     splice_required = True,
     values_increment = 5,
     display_as_percentage = False,
-    title_label_rotation_angle = 45,
     drop_values = ['English']
 )
 
@@ -191,7 +191,7 @@ graphs.create_bar_stacked(
     vertical = True,
     labels = ['Left', 'Center Left', 'Center', 'Center Right', 'Right', 'Far Right', 'No Answer'],
     values_increment = 5,
-    colours = ['#F62D2D', '#D3212D', '#A2264B', '#722B6A', '#412F88', '#1034A6','black'],
+    # colours = ['#F62D2D', '#D3212D', '#A2264B', '#722B6A', '#412F88', '#1034A6','black'],
     legend_title = "Parents' political views",
     file_name= 'political_views_vs_parents_political_views'
 )
@@ -220,7 +220,7 @@ graphs.create_bar_stacked(
     vertical = True,
     labels = labels_politics_vs_election_politics,
     values_increment = 5,
-    colours = ['#F62D2D', '#D3212D', '#A2264B', '#722B6A', '#412F88', '#1034A6'],
+    # colours = ['#F62D2D', '#D3212D', '#A2264B', '#722B6A', '#412F88', '#1034A6'],
     title_label_rotation_angle=45,
     legend_title = 'SYDE 2023 political views',
     file_name='political_views_vs_election_vote_intention'
@@ -229,7 +229,8 @@ graphs.create_bar_stacked(
 
 
 
-df_religion_vs_parents = df[['religion', 'religion_parents']].dropna(axis = 0)
+df_religion_vs_parents = df[['religion', 'religion_parents']].copy()
+df_religion_vs_parents = df_religion_vs_parents.dropna(axis = 0)
 df_religion_splice = df_religion_vs_parents[df_religion_vs_parents['religion_parents'].str.contains(',')]
 df_religion_no_splice = df_religion_vs_parents[~df_religion_vs_parents['religion_parents'].str.contains(',')]
 df_religion_splice['religion_parents'] = df_religion_splice['religion_parents'].map(lambda x: x.split(", ")) # turn commas into array

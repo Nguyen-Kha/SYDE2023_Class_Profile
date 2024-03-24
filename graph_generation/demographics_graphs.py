@@ -51,7 +51,8 @@ graphs.create_bar(
     vertical = True,
     display_as_percentage = True,
     labels = income_list,
-    title_label_rotation_angle=45
+    title_label_rotation_angle=45,
+    file_name="household_income_original"
 )
 
 def group_lower_income(value):

@@ -29,6 +29,7 @@ graphs.create_bar(
     splice_required = True,
     figure_height = 12,
     max_label_length = 30,
+    values_increment=2
 )
 #### END: Create disciplines of interest bar ################
 

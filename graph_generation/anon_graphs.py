@@ -6,7 +6,7 @@ import graphs
 
 # Figure out better way to do rice purity
 
-df = pd.read_csv('')
+df = pd.read_csv()
 
 list_71 = ['hye_fabricated',
  'hye_collab',
@@ -71,7 +71,8 @@ graphs.create_bar_stacked(
     vertical = False,
     display_as_percentage = True,
     column_labels=['Were you a virgin before entering university', 'Were you a virgin after leaving university'],
-    file_name='virginity'
+    file_name='virginity',
+    figure_height=5
 )
 
 df_unique_sex_partners = df[['unique_sex_partners']]
@@ -183,7 +184,7 @@ graphs.create_bar_stacked(
     display_as_percentage = True,
     labels = ['Yes', 'No'],
     column_labels=['Drank in the SYDE lounge', 'Consumed marijuana in the SYDE lounge', 'Done harder drugs in the SYDE lounge', 'Engaged in sexual activity in the SYDE lounge'],
-    figure_height= 7,
+    figure_height= 6,
     file_name='syde_lounge_activities'
 )
 
