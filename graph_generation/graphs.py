@@ -923,11 +923,12 @@ def create_wordcloud(
     column_name,                # column name in dataframe
 
     file_name = None,           # name of the wordcloud image
-    width: int = 600,           # width of the image
-    height: int = 400,          # height of the image
-    background_color = None,    # str: colours or hex representation of colour. Use None for transparent background,
+    width: int = 1280,           # width of the image
+    height: int = 720,          # height of the image
+    background_color = 'white', # str: colours or hex representation of colour. Use None for transparent background, but this doesn't work
     include_numbers = True,     # include numbers when plotting words in wordcloud
-    stopwords = None            # set. Pass in a set of words to ignore. Ex: ('The', 'it', 'a', 'because', ...) If None, default stopwords are used
+    stopwords = None,           # set. Pass in a set of words to ignore. Ex: ('The', 'it', 'a', 'because', ...) If None, default stopwords are used
+    drop_values = []
 ):
     """
     Dataframe input format:
@@ -947,13 +948,19 @@ def create_wordcloud(
     column_values = helpers.splice_cells_with_commas(df, column_name)
     for i in column_values:
         count[i] += 1
+
+    if(drop_values):
+        for i in drop_values:
+            if(i in count):
+                del count[i]
     
     wordcloud = WordCloud(
         width = width, 
         height = height, 
         background_color = background_color,
         include_numbers = include_numbers,
-        stopwords = stopwords
+        stopwords = stopwords,
+        colormap = 'Dark2'
     ).generate_from_frequencies(count)
 
     plt.imshow(wordcloud, interpolation = 'bilinear')
